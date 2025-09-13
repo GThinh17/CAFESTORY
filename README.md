@@ -1,2 +1,4 @@
 # CAFESTORY
-THIS IS BLOG APP ABOUT REVIEWING THE CAFE BLOG 
+# init project
+
+# 2 - init backend, frontend
