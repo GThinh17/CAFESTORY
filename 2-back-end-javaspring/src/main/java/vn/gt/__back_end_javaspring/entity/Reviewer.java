@@ -1,30 +1,29 @@
 package vn.gt.__back_end_javaspring.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import java.time.LocalDate;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-
-@Table(name = "reviewers")
 @Entity
-@Data
+@Table(name = "reviewer")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Reviewer {
+	@Id
+	@Column(name = "reviewerID")
+	String reviewerID;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Column(name = "userID")
+	String userID;
 
-    @Column(name = "name", nullable = false, length = 100)
-    private String name;
+	@Column(name = "reviewerName")
+	String reviewerName;
 
-    @Column(name = "like", nullable = false)
-    private Long like;
-
-    @Column(name = "dislike", nullable = false)
-    private Long dislike;
-
-    @Column(name = "follower", nullable = false)
-    private Long follower;
 }

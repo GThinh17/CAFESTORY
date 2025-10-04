@@ -1,46 +1,63 @@
 package vn.gt.__back_end_javaspring.entity;
-import jakarta.persistence.*;
-import lombok.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Table(name = "users")
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Table(name = "user")
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	private Long id;
 
-    @Column(name = "full_name", nullable = false, length = 100)
-    private String fullName;
+	@Column(name = "name", nullable = false, length = 100)
+	private String name;
 
-    @Column(name = "phone", unique = true, nullable = false, length = 15)
-    private String phone;
+	@Column(name = "full_name", nullable = false, length = 100)
+	private String fullName;
 
-    @Column(name = "email", unique = true, nullable = false, length = 100)
-    private String email;
+	@Column(name = "phone", unique = true, nullable = false, length = 15)
+	private String phone;
 
-    @Column(name = "password", nullable = false, length = 100)
-    private String password;
+	@Column(name = "email", unique = true, nullable = false, length = 100)
+	private String email;
 
-    @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
+	@Column(name = "password", nullable = false, length = 100)
+	private String password;
 
-    @Column(name = "address", length = 255)
-    private String address;
+	@Column(name = "date_of_birth")
+	private LocalDate dateOfBirth;
 
-    @Column(name = "avatar", length = 255)
-    private String avatar;
+	@Column(name = "address", length = 255)
+	private String address;
 
-    
+	@Column(name = "avatar", length = 255)
+	private String avatar;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+	@Column(name = "userFollower")
+	String userFollower;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+	@Column(name = "userLike")
+	String userLike;
+
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private LocalDateTime createdAt;
+
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
 
 }
