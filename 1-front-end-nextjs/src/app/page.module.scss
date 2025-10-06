@@ -1,0 +1,31 @@
+@import "./layout.scss";
+.page {
+  display: flex;
+  justify-content: center; /* Căn giữa nội dung */
+  align-items: center;
+  min-height: 100vh; /* Toàn màn hình */
+}
+
+.main {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+}
+
+.leftContainer {
+  flex: 2;
+  @include medium {
+    display: none;
+  }
+}
+.mainContainer {
+  flex: 4;
+}
+.rightContainer {
+  flex: 2;
+  @include small {
+    display: none;
+  }
+}
