@@ -1,0 +1,72 @@
+.suggestions {
+  width: 300px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.suggestions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.suggestions-header .title {
+  font-weight: 600;
+}
+
+.suggestions-header .see-all {
+  font-size: 13px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #777;
+}
+
+.user-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.user-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-suggest {
+  width: 40px;
+  height: 40px;
+  background-color: #333;
+  border-radius: 50%;
+}
+
+.username-suggest {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.followers {
+  font-size: 12px;
+  color: #999;
+}
+
+.follow-btn {
+  background: none;
+  border: none;
+  color: #0095f6;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.follow-btn:hover {
+  color: #0078e9;
+}

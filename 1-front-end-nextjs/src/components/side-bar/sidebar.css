@@ -5,17 +5,17 @@
   width: 250px;
   height: 100vh;
   border-right: 1px solid var(--border);
-  background-color:var(--background);
+  background-color: var(--background);
   padding: 20px 10px;
   position: fixed;
 }
 
 .sidebar__logo {
   font-family: "Billabong", cursive;
-  font-size: 24px;
+  font-size: 32px;
   margin-bottom: 25px;
   margin-left: 10px;
-  color:var(--foreground);
+  color: var(--foreground);
 }
 
 .sidebar__menu,
@@ -45,7 +45,6 @@
   transform: translateX(4px);
   transition: all 0.25s ease-in-out;
 }
-
 
 .sidebar__menu li span,
 .sidebar__bottom li span {
