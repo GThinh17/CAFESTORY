@@ -15,12 +15,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "like")
+@Table(name = "likes")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class Like {
 	@Id
 	@Column(name = "likeID")
@@ -31,9 +27,9 @@ public class Like {
 	private String userID_1;
 
 	@Column(name = "userID_2")
-	boolean userID_2; // reciever
+	private String userID_2; // reciever
 
 	@Column(name = "createAt")
-	Date createAt;
+	private Date createAt;
 
 }

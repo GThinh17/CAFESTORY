@@ -17,23 +17,19 @@ import lombok.Setter;
 @Table(name = "share")
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class Share {
 	@Id
 	@Column(name = "shareID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int followerID;
+	int shareID;
 
 	@Column(name = "userID_1")
 	private String userID_1;
 
 	@Column(name = "userID_2")
-	boolean userID_2;
+	private String userID_2;
 
 	@Column(name = "createAt")
-	Date createAt;
+	private Date createAt;
 
 }

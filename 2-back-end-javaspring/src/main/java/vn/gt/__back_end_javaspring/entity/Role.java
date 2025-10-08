@@ -7,10 +7,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "Role")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Role {
@@ -22,31 +26,7 @@ public class Role {
 	@Column(name = "userID")
 	String userID;
 
-	public String getUserID() {
-		return userID;
-	}
-
-	public void setUserID(String userID) {
-		this.userID = userID;
-	}
-
 	@Column(name = "roleName")
 	String roleName;
-
-	public String getRoleID() {
-		return roleID;
-	}
-
-	public void setRoleID(String roleID) {
-		this.roleID = roleID;
-	}
-
-	public String getRoleName() {
-		return roleName;
-	}
-
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
-	}
 
 }
