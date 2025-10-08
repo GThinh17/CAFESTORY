@@ -14,7 +14,9 @@ export function Suggestions() {
     <div className="suggestions">
       <div className="suggestions-header">
         <span className="title">Suggestions for you</span>
-        <a href="#" className="see-all">See All</a>
+        <a href="#" className="see-all">
+          See All
+        </a>
       </div>
 
       <ul className="user-list">

@@ -1,8 +1,7 @@
 import styles from "./page.module.scss";
 import { Sidebar } from "@/components/side-bar/side-bar";
-import { OnlineAvt } from "@/components/online-avt/onlineAvt";
-import { Suggestions } from "@/components/suggestions/suggestions";
-import { PostList } from "@/components/PostCf/PostList";
+import { ProfileInfo } from "@/components/profileHeader/profileInfo";
+import { ProfilePostList } from "@/components/profilePost/profilePostList";
 export default function Home() {
   return (
     <div className={styles.page}>
@@ -10,16 +9,15 @@ export default function Home() {
         <div className={styles.leftContainer}>
           <Sidebar />
         </div>
+
         <div className={styles.mainContainer}>
-          <div className={styles.onlineCon}>
-            <OnlineAvt />
+          <div className={styles.profileHeader}>
+            <ProfileInfo/>
           </div>
-          <div className={styles.postCon}>
-            <PostList/>
+
+          <div className={styles.profileMain}>
+            <ProfilePostList/>
           </div>
-        </div>
-        <div className={styles.rightContainer}>
-          <Suggestions/>
         </div>
       </main>
       <footer></footer>

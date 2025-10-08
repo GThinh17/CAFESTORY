@@ -1,3 +1,5 @@
+@import "../../app/layout.scss";
+
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -8,6 +10,10 @@
   background-color: var(--background);
   padding: 20px 10px;
   position: fixed;
+  @include medium {
+    width: 60px;
+    padding: 5px;
+  }
 }
 
 .sidebar__logo {
@@ -16,6 +22,19 @@
   margin-bottom: 25px;
   margin-left: 10px;
   color: var(--foreground);
+  @include medium {
+    display: none;
+  }
+}
+
+.logoCon {
+  display: none;
+  @include medium {
+    display: flex;
+    margin-left: 15px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+  }
 }
 
 .sidebar__menu,
@@ -49,4 +68,10 @@
 .sidebar__menu li span,
 .sidebar__bottom li span {
   font-size: 15px;
+}
+
+.sidebarComp {
+  @include medium {
+    display: none;
+  }
 }

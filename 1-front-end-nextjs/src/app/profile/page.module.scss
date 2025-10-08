@@ -1,4 +1,4 @@
-@import "./layout.scss";
+@import "../layout.scss";
 .page {
   display: flex;
   justify-content: center; /* Căn giữa nội dung */
@@ -15,7 +15,7 @@
 }
 
 .leftContainer {
-  flex: 2;
+  flex: 1;
   @include medium {
     flex: 0.5;
   }
@@ -25,31 +25,31 @@
 }
 
 .mainContainer {
-  flex: 4;
+  flex: 5;
   flex-direction: column;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.rightContainer {
-  flex: 2;
+.profileHeader {
+  display: flex;
+  flex: 1;
   align-items: center;
-  justify-content: center;
-  padding-top: 50px;
-  @include small {
-    display: none;
+  width: 80%;
+  border-bottom: 1px solid var(--color-border);
+  @include exsmall {
+    width: 98%;
   }
 }
 
-.onlineCon {
-  flex: 1;
-  padding-left: 10px;
-  padding-top: 40px;
+.profileMain {
+  display: flex;
+  flex: 2;
   width: 80%;
-}
-
-.postCon {
-  width: 80%;
-  flex: 10;
+  padding-top: 5px;
+  justify-content: center;
+  @include exsmall {
+    width: 98%;
+  }
 }
