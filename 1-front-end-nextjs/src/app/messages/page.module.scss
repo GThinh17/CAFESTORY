@@ -1,0 +1,48 @@
+@import "../layout.scss";
+.page {
+  display: flex;
+  justify-content: center; /* Căn giữa nội dung */
+  align-items: center;
+  min-height: 100vh; /* Toàn màn hình */
+}
+
+.main {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  width: 100vw;
+  min-height: 100vh;
+}
+
+.leftContainer {
+  flex: 1;
+  @include medium {
+    flex: 0.5;
+  }
+  @include exsmall {
+    display: none;
+  }
+}
+
+.mainContainer {
+  flex: 5;
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .mainLeft {
+    display: flex;
+    flex: 1;
+    min-height: 100vh;
+    border-right: 1px solid var(--border);
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .mainRight {
+    display: flex;
+    flex: 2;
+    min-height: 100vh;
+  }
+}

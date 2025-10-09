@@ -1,4 +1,7 @@
+"use client";
 import React from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import {
   Home,
   Search,
@@ -15,6 +18,19 @@ import { ModeToggle } from "@/components/dark-theme-btn";
 import "./sidebar.scss";
 
 export function Sidebar() {
+  const pathname = usePathname();
+
+  const menuItems = [
+    { href: "/", icon: Home, label: "Home" },
+    { href: "/search", icon: Search, label: "Search" },
+    { href: "/explore", icon: Compass, label: "Explore" },
+    { href: "/reels", icon: Film, label: "Reels" },
+    { href: "/messages", icon: MessageCircle, label: "Messages" },
+    { href: "/notifications", icon: Heart, label: "Notifications" },
+    { href: "/create", icon: PlusSquare, label: "Create" },
+    { href: "/profile", icon: User, label: "Profile" },
+  ];
+
   return (
     <div className="sidebar">
       <div className="sidebar__top">
@@ -22,33 +38,19 @@ export function Sidebar() {
         <span className="logoCon">
           <Coffee />
         </span>
+
         <ul className="sidebar__menu">
-          <li>
-            <Home size={22} /> <span className="sidebarComp">Home</span>
-          </li>
-          <li>
-            <Search size={22} /> <span className="sidebarComp">Search</span>
-          </li>
-          <li>
-            <Compass size={22} /> <span className="sidebarComp">Explore</span>
-          </li>
-          <li>
-            <Film size={22} /> <span className="sidebarComp">Reels</span>
-          </li>
-          <li>
-            <MessageCircle size={22} />{" "}
-            <span className="sidebarComp">Messages</span>
-          </li>
-          <li>
-            <Heart size={22} />{" "}
-            <span className="sidebarComp">Notifications</span>
-          </li>
-          <li>
-            <PlusSquare size={22} /> <span className="sidebarComp">Create</span>
-          </li>
-          <li>
-            <User size={22} /> <span className="sidebarComp">Profile</span>
-          </li>
+          {menuItems.map(({ href, icon: Icon, label }) => (
+            <li key={href} className={pathname === href ? "" : ""}>
+              <Link href={href} className="sidebar__link">
+                <Icon
+                  size={22}
+                  fill={pathname === href ? "currentColor" : "none"}
+                />
+                <span className="sidebarComp">{label}</span>
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
 

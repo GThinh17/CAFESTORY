@@ -1,13 +1,14 @@
 import React from "react";
 import "./suggestions.css";
+import Image from "next/image";
 
 export function Suggestions() {
   const users = [
-    { name: "imkir", followers: "2.5M" },
-    { name: "organic__al", followers: "2M" },
-    { name: "im_gr", followers: "1.4M" },
-    { name: "abh952", followers: "1M" },
-    { name: "sakbrl", followers: "209.2k" },
+    { name: "imkir", followers: "2.5M", image: "/testPost.jpg" },
+    { name: "organic__al", followers: "2M", image: "/testPost.jpg" },
+    { name: "im_gr", followers: "1.4M", image: "/testPost.jpg" },
+    { name: "abh952", followers: "1M", image: "/testPost.jpg" },
+    { name: "sakbrl", followers: "209.2k", image: "/testPost.jpg" },
   ];
 
   return (
@@ -23,7 +24,13 @@ export function Suggestions() {
         {users.map((user, index) => (
           <li key={index} className="user-item">
             <div className="user-left">
-              <div className="avatar-suggest"></div>
+              <Image
+                src={user.image}
+                alt="avatar"
+                width={30}
+                height={30}
+                className="avatar-suggest"
+              />
               <div>
                 <div className="username-suggest">{user.name}</div>
                 <div className="followers">{user.followers} follows</div>

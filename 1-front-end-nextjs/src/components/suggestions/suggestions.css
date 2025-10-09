@@ -46,7 +46,7 @@
 .avatar-suggest {
   width: 45px;
   height: 45px;
-  background-color: var(--border);
+  object-fit: cover;
   border-radius: 50%;
 }
 

@@ -22,6 +22,30 @@ export function ProfilePostList() {
       likes: 103,
       time: "5h",
     },
+    {
+      image: "/testPost2.jpg",
+      caption: "Finally completed my RX-78 build 😍",
+      likes: 103,
+      time: "5h",
+    },
+    {
+      image: "/testPost2.jpg",
+      caption: "Finally completed my RX-78 build 😍",
+      likes: 103,
+      time: "5h",
+    },
+    {
+      image: "/testPost2.jpg",
+      caption: "Finally completed my RX-78 bsssssssssssssssssssssssssssssssssssssssssssssssssssuild 😍",
+      likes: 103,
+      time: "5h",
+    },
+    {
+      image: "/testPost2.jpg",
+      caption: "Finally completed my RX-78 build 😍",
+      likes: 103,
+      time: "5h",
+    },
   ];
 
   return (

@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/side-bar/side-bar";
 import { OnlineAvt } from "@/components/online-avt/onlineAvt";
 import { Suggestions } from "@/components/suggestions/suggestions";
 import { PostList } from "@/components/PostCf/PostList";
+import { MsgModal } from "@/components/msgModal/msgModal";
 export default function Home() {
   return (
     <div className={styles.page}>
@@ -21,6 +22,7 @@ export default function Home() {
         <div className={styles.rightContainer}>
           <Suggestions/>
         </div>
+        <MsgModal/>
       </main>
       <footer></footer>
     </div>
