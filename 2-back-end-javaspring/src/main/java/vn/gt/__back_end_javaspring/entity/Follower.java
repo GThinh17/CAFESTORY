@@ -1,13 +1,11 @@
 package vn.gt.__back_end_javaspring.entity;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -15,25 +13,35 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "follower")
+@Table(name = "follower",
+uniqueConstraints = @UniqueConstraint(columnNames = {"follower_id", "following_id"})
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Follower {
 	@Id
-	@Column(name = "followerID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int followerID;
+	@GeneratedValue(strategy = GenerationType.UUID)
+	String id;
 
-	@Column(name = "userID_1")
-	private String userID_1;
+    //Nguoi theo doi
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "follower_id", referencedColumnName = "id", nullable = false)
+	private User follower;
 
-	@Column(name = "userID_2")
-	boolean userID_2;
+    //Nguoi duoc theo doi
+    //Delay fetch this column
+    @ManyToOne(fetch =  FetchType.LAZY, optional = false)
+    @JoinColumn(name = "following_id", referencedColumnName = "id")
+    private User following;
 
-	@Column(name = "createAt")
-	Date createAt;
+	@Column(name = "created_at")
+    LocalDateTime createAt;
+
+    @PrePersist
+    protected void onCreate(){
+        createAt = LocalDateTime.now();
+    }
 
 }

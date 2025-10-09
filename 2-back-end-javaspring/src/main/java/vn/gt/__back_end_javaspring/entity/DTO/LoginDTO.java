@@ -1,7 +1,9 @@
 package vn.gt.__back_end_javaspring.entity.DTO;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
+@Data
 public class LoginDTO {
 	@NotBlank(message = "useranme is not blank")
 	private String username;

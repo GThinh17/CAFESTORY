@@ -1,35 +1,45 @@
 package vn.gt.__back_end_javaspring.entity;
 
-import java.sql.Date;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import vn.gt.__back_end_javaspring.enums.LikeTargetType;
 
 @Entity
-@Table(name = "likes")
+@Table(name = "likes",
+uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "target_id", "target_type"})
+})
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Like {
 	@Id
-	@Column(name = "likeID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int likeID;
+	@GeneratedValue(strategy = GenerationType.UUID)
+    String id;
 
-	@Column(name = "userID_1")
-	private String userID_1;
+    @ManyToOne
+    @JoinColumn(name = "user_id",  nullable = false)
+	private User user; //Nguoi like
 
-	@Column(name = "userID_2")
-	private String userID_2; // reciever
+    @Column(name = "target_id", nullable = false)
+    private String targetId; //Receiver
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "target_type")
+    private LikeTargetType targetType;
 
 	@Column(name = "createAt")
-	private Date createAt;
+	private LocalDateTime createAt;
+
+    @PrePersist
+    protected  void onCreate(){
+        createAt = LocalDateTime.now();
+    }
 
 }
