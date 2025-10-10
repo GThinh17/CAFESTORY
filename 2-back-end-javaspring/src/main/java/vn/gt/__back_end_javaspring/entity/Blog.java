@@ -28,16 +28,20 @@ public class Blog {
 	private String imageUrl;
 
 	@Column(name = "likes_count", updatable = true)
-	private int likeCount;
+	private int likeCount ;
 
 	@Column(name = "shares_count")
 	private int shareCount;
+
+
+    @Column(name = "comments_count")
+    private int commentCount;
 
 	@Column(name = "status",  nullable = false,  updatable = true)
 	private boolean status;
 
 	@Column(name = "created_at")
-	private LocalDateTime createAt;
+	private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -55,7 +59,10 @@ public class Blog {
     @PrePersist
     protected void onCreate()
     {
-        createAt = LocalDateTime.now();
+        createdAt = LocalDateTime.now();
+        likeCount = 0;
+        commentCount = 0;
+        shareCount = 0;
     }
 
 }

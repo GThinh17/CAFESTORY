@@ -69,7 +69,7 @@ public class User {
     private List<Follower> followings;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "blog")
+    @OneToMany(mappedBy = "user")
     private List<Blog> blogs;
 
     @PrePersist
