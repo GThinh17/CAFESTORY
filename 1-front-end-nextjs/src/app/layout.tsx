@@ -1,4 +1,5 @@
 import "./globals.css";
+import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import { ThemeProvider } from "@/components/theme-provider";
 
 type RootLayoutProps = {

@@ -100,7 +100,9 @@
   padding: 0;
 }
 
-.add-comment {
+.add-comment input {
+  background-color: var(--background);
+  border: none;
   padding: 10px 0px;
   font-size: 14px;
   color: var(--muted-foreground);

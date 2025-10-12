@@ -45,17 +45,53 @@ const messages = [
   },
   {
     id: 6,
+    name: "Hai Danjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjg",
+    avatar: "/testPost.jpg",
+    lastMessage: "Activvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvve 1h ago",
+    active: true,
+  },
+    {
+    id: 7,
     name: "Hai Dang",
     avatar: "/testPost.jpg",
     lastMessage: "Active 1h ago",
     active: true,
   },
+    {
+    id: 8,
+    name: "Hai Dang",
+    avatar: "/testPost.jpg",
+    lastMessage: "Active 1h ago",
+    active: true,
+  },
+    {
+    id: 9,
+    name: "Hai Dang",
+    avatar: "/testPost.jpg",
+    lastMessage: "Active 1h ago",
+    active: true,
+  },
+    {
+    id: 10,
+    name: "Hai Dang",
+    avatar: "/testPost.jpg",
+    lastMessage: "Active 1h ago",
+    active: true,
+  },
+    {
+    id: 11,
+    name: "Hai Dang",
+    avatar: "/testPost.jpg",
+    lastMessage: "Active 1h ago",
+    active: true,
+  },
+
 ];
 
 export function MessageList() {
   return (
     <div className={styles.wrapper}>
-      <h3 className={styles.title}>Messages</h3>
+    
       <div className={styles.list}>
         {messages.map((msg, index) => (
           <MessageItem key={index} {...msg} />

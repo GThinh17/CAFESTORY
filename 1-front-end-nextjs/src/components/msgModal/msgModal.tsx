@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MessageCircle, X, Pencil } from "lucide-react";
 import Image from "next/image";
+import { MessageList } from "../msgList/msgList";
 import "./msgModal.scss";
 
 export function MsgModal() {
@@ -39,6 +40,12 @@ export function MsgModal() {
       avatar: "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
       status: "You sent an attachment · 16w",
     },
+    {
+      id: 5,
+      name: "Nguyễn Duy Khánh",
+      avatar: "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
+      status: "You sent an attachment · 16w",
+    },
   ];
 
   return (
@@ -60,21 +67,7 @@ export function MsgModal() {
           </div>
 
           <div className="msg-list">
-            {messages.map((msg) => (
-              <div key={msg.id} className="msg-item">
-                <Image
-                  src={msg.avatar}
-                  alt={msg.name}
-                  width={40}
-                  height={40}
-                  className="msg-avatar"
-                />
-                <div>
-                  <p className="msg-name">{msg.name}</p>
-                  <p className="msg-status">{msg.status}</p>
-                </div>
-              </div>
-            ))}
+            <MessageList/>
           </div>
 
           <button className="msg-compose">

@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Heart, MessageCircle, Send, MoreHorizontal } from "lucide-react";
+import { Input } from "../ui/input";
 import "./post.css";
 
 interface PostProps {
@@ -86,7 +87,7 @@ export function Post({
       </div>
 
       {/* Add Comment */}
-      <div className="add-comment">Add a comment...</div>
+      <div className="add-comment"><Input placeholder="Add a comment"/></div>
     </div>
   );
 }

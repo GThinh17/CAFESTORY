@@ -3,7 +3,8 @@
   display: flex;
   justify-content: center; /* Căn giữa nội dung */
   align-items: center;
-  min-height: 100vh; /* Toàn màn hình */
+  max-height: 100vh; /* Toàn màn hình */
+  position: fixed;
 }
 
 .main {
@@ -11,7 +12,7 @@
   flex-direction: row;
   box-sizing: border-box;
   width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .leftContainer {
@@ -31,18 +32,50 @@
   align-items: center;
   justify-content: center;
 
-  .mainLeft {
+  .mainRight {
     display: flex;
     flex: 1;
-    min-height: 100vh;
-    border-right: 1px solid var(--border);
+    max-height: 100vh;
+    border-left: 1px solid var(--border);
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+
+    .chatHeader {
+      display: flex;
+      min-height: 20vh;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .chatMain {
+      display: flex;
+      flex: 1;
+      justify-content: center;
+     width: 100%;
+      height: 100%;
+    }
   }
-  .mainRight {
+  .mainLeft {
     display: flex;
     flex: 2;
-    min-height: 100vh;
+    height: 100vh;
+    flex-direction: column;
+
+    .chatHeader {
+      display: flex;
+      min-height: fit-content;
+      align-items: center;
+      justify-content: center;
+      min-width: 100%;
+      border-bottom: 1px solid var(--border);
+    }
+    .chatMain {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      min-width: 100%;
+    }
   }
 }
