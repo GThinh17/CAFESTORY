@@ -6,13 +6,13 @@ import {
   Home,
   Search,
   Compass,
-  Film,
   MessageCircle,
   Heart,
   PlusSquare,
   User,
   Menu,
   Coffee,
+  Crown,
 } from "lucide-react";
 import { ModeToggle } from "@/components/dark-theme-btn";
 import "./sidebar.scss";
@@ -24,7 +24,6 @@ export function Sidebar() {
     { href: "/", icon: Home, label: "Home" },
     { href: "/search", icon: Search, label: "Search" },
     { href: "/explore", icon: Compass, label: "Explore" },
-    { href: "/reels", icon: Film, label: "Reels" },
     { href: "/messages", icon: MessageCircle, label: "Messages" },
     { href: "/notifications", icon: Heart, label: "Notifications" },
     { href: "/create", icon: PlusSquare, label: "Create" },
@@ -58,8 +57,12 @@ export function Sidebar() {
         <li>
           <ModeToggle />
         </li>
+
         <li>
           <Menu size={22} /> <span className="sidebarComp">More</span>
+        </li>
+        <li>
+          <Crown size={22} /> <span className="sidebarComp">Go pro</span>
         </li>
       </div>
     </div>

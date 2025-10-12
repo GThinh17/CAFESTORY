@@ -4,11 +4,14 @@ import { useState } from "react";
 import { MessageCircle, X, Pencil } from "lucide-react";
 import Image from "next/image";
 import { MessageList } from "../msgList/msgList";
+import { ChatHeader } from "../chatHeader/chatHeader";
+import { ChatMessageList } from "../chatMessage/chatMsgList";
 import "./msgModal.scss";
 
 export function MsgModal() {
   const [open, setOpen] = useState(false);
-
+  const [isList, setIsList] = useState(true);
+  const [isChat, setIsChat] = useState(false);
   const messages = [
     {
       id: 1,
@@ -66,9 +69,17 @@ export function MsgModal() {
             </button>
           </div>
 
-          <div className="msg-list">
-            <MessageList/>
-          </div>
+          {isList && (
+            <div className="msg-list">
+              <MessageList />
+            </div>
+          )}
+          {isChat && (
+            <div className="msg-list">
+              <ChatHeader />
+              <ChatMessageList />
+            </div>
+          )}
 
           <button className="msg-compose">
             <Pencil className="icon" />

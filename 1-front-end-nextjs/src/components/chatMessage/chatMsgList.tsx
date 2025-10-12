@@ -51,7 +51,6 @@ export const ChatMessageList: React.FC = () => {
                 position: "single",
               }}
             >
-              {!msg.isOwn && <Avatar src="/avatar.png" name="Alex" />}
             </Message>
           ))}
         </MessageList>
