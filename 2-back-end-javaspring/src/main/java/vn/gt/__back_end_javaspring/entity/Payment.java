@@ -4,6 +4,8 @@ import java.sql.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -13,36 +15,30 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Blog")
+@Table(name = "payment")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Blog {
+public class Payment {
 	@Id
-	@Column(name = "logID")
-	String blogID;
+	@Column(name = "paymentID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long paymentID;
 
-	@Column(name = "blogContext")
-	private String blogContext;
+	@Column(name = "extraFeeID")
+	Long extraFeeID;
 
-	@Column(name = "blogImage")
-	private String blogImage;
-
-	@Column(name = "blogLike")
-	private int blogLike;
-
-	@Column(name = "blogShare")
-	private int blogShare;
-
-	@Column(name = "status")
-	private boolean status;
+	@Column(name = "userID")
+	Long userID;
 
 	@Column(name = "createAt")
-	private Date createAt;
+	Date createAt;
 
-	@Column(name = "owner")
-	private String owner;
+	@Column(name = "amount")
+	Long amount;
 
+	@Column(name = "expired")
+	Date expired;
 }

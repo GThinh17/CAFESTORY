@@ -1,38 +1,45 @@
-
 package vn.gt.__back_end_javaspring.entity;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-
-@Table(name = "pages")
 @Entity
-@Data
+@Table(name = "page")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Page {
+	@Id
+	@Column(name = "pageID")
+	String pageID;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Column(name = "userid")
+	String userID;
 
-    @Column(name = "name", nullable = false, length = 200)
-    private String name;
+	@Column(name = "pageName")
+	String pageName;
 
-    @Column(name = "address", nullable = false)
-    private String address;
+	@Column(name = "pageAdress")
+	String pageAdress;
 
-    @Column(name = "description", nullable = false, length = 500)
-    private String description;
+	@Column(name = "pageRegion")
+	String pageRegion;
 
+	@Column(name = "pageLike")
+	String pageLike;
 
-    @Column(name = "region", nullable = false)
-    private String region;
+	@Column(name = "pageFollower")
+	String pageFollower;
 
-    @Column(name = "like", nullable = false)
-    private Long like;
+	@Column(name = "status")
+	boolean status;
 
-    @Column(name = "follower", nullable = false)
-    private Long follower;
 }
