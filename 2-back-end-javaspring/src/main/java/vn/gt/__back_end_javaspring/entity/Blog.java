@@ -1,11 +1,10 @@
 package vn.gt.__back_end_javaspring.entity;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -17,32 +16,53 @@ import lombok.Setter;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class Blog {
 	@Id
-	@Column(name = "logID")
-	String blogID;
+    @GeneratedValue(strategy = GenerationType.UUID)
+	private String id;
 
-	@Column(name = "blogContext")
-	private String blogContext;
+	@Column(name = "content", nullable = false,  length = 1000,updatable = true)
+	private String content;
 
-	@Column(name = "blogImage")
-	private String blogImage;
+	@Column(name = "image_url")
+	private String imageUrl;
 
-	@Column(name = "blogLike")
-	private int blogLike;
+	@Column(name = "likes_count", updatable = true)
+	private int likeCount ;
 
-	@Column(name = "blogShare")
-	private int blogShare;
+	@Column(name = "shares_count")
+	private int shareCount;
 
-	@Column(name = "status")
+
+    @Column(name = "comments_count")
+    private int commentCount;
+
+	@Column(name = "status",  nullable = false,  updatable = true)
 	private boolean status;
 
-	@Column(name = "createAt")
-	private Date createAt;
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
 
-	@Column(name = "owner")
-	private String owner;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+    //No se noi la Blog khong so huu khoa ngoai, khoa ngoai nam o ben Commet va trong blog
+    @OneToMany(mappedBy = "blog")
+    private List<Comment> comments;
+
+
+    @OneToMany(mappedBy = "blog")
+    private List<Share> shares;
+
+
+    @PrePersist
+    protected void onCreate()
+    {
+        createdAt = LocalDateTime.now();
+        likeCount = 0;
+        commentCount = 0;
+        shareCount = 0;
+    }
 
 }

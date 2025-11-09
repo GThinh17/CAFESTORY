@@ -2,7 +2,9 @@ package vn.gt.__back_end_javaspring.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
+<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.persistence.Column;
@@ -15,14 +17,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+=======
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.*;
+>>>>>>> 23145a3cc3b309ad220d0324b3ee59e613a97687
 
 @Table(name = "user")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+<<<<<<< HEAD
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
+=======
+@Data
+>>>>>>> 23145a3cc3b309ad220d0324b3ee59e613a97687
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
@@ -53,17 +64,18 @@ public class User {
 	private String avatar;
 
 	@Column(name = "userFollower")
-	String userFollower;
+	String userFollower; //?
 
 	@Column(name = "userLike")
-	String userLike;
+	String userLike; //?
 
 	@Column(name = "created_at")
-	private LocalDateTime createdAt;
+	protected LocalDateTime createdAt = LocalDateTime.now();
 
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
+<<<<<<< HEAD
 	public String getId() {
 		return id;
 	}
@@ -71,101 +83,33 @@ public class User {
 	public void setId(String id) {
 		this.id = id;
 	}
+=======
+    //mappedBy anh xa tu truong ben share qua
+    //List all blog user share
+    @JsonIgnore //Non-reply on Json
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Share> shares;
 
-	public String getName() {
-		return name;
-	}
+    @JsonIgnore
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
+    private List<Follower> followers;
+>>>>>>> 23145a3cc3b309ad220d0324b3ee59e613a97687
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @JsonIgnore
+    @OneToMany(mappedBy = "following",cascade = CascadeType.ALL)
+    private List<Follower> followings;
 
-	public String getFullName() {
-		return fullName;
-	}
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Blog> blogs;
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public LocalDate getDateOfBirth() {
-		return dateOfBirth;
-	}
-
-	public void setDateOfBirth(LocalDate dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
-
-	public String getUserFollower() {
-		return userFollower;
-	}
-
-	public void setUserFollower(String userFollower) {
-		this.userFollower = userFollower;
-	}
-
-	public String getUserLike() {
-		return userLike;
-	}
-
-	public void setUserLike(String userLike) {
-		this.userLike = userLike;
-	}
-
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

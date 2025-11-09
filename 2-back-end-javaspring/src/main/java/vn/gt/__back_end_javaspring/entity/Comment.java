@@ -1,13 +1,9 @@
 package vn.gt.__back_end_javaspring.entity;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -23,23 +19,29 @@ import lombok.Setter;
 @Setter
 public class Comment {
 	@Id
-	@Column(name = "commentID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int commentID;
+	@GeneratedValue(strategy = GenerationType.UUID)
+	String id;
 
-	@Column(name = "userID")
-	private String userID;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	private User user;
 
-	@Column(name = "blogID")
-	private String blogID;
+    @ManyToOne
+	@JoinColumn(name = "blog_id", referencedColumnName = "id")
+	private Blog blog;
 
-	@Column(name = "commentLike")
-	private int commentLike;
+	@Column(name = "comment_like", nullable = false, updatable = true)
+	private int commentLike = 0;
 
-	@Column(name = "commentContext")
+	@Column(name = "comment_context", columnDefinition = "TEXT")
 	private String commentContext;
 
-	@Column(name = "createAt")
-	Date createAt;
+	@Column(name = "created_at")
+    LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
 }
