@@ -23,9 +23,6 @@ public class Role {
 	@Column(name = "roleID")
 	String roleID;
 
-	@Column(name = "userID")
-	String userID;
-
 	@Column(name = "roleName")
 	String roleName;
 

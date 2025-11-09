@@ -1,7 +1,6 @@
 package vn.gt.__back_end_javaspring.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -21,15 +20,15 @@ public class UserService {
 		return userRepository.save(newUser);
 	}
 
-	public Optional<User> getUserById(Long id) {
-		return userRepository.findById(id);
+	public User getUserById(String id) {
+		return this.userRepository.findByid(id);
 	}
 
 	public List<User> getAllUsers() {
 		return this.userRepository.findAll();
 	}
 
-	public void deleteUserById(Long id) {
+	public void deleteUserById(String id) {
 		this.userRepository.deleteById(id);
 	}
 

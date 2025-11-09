@@ -36,7 +36,7 @@ public class SecurityUtil {
 	            .issuedAt(now)
 	            .expiresAt(validity)
 	            .subject(authentication.getName())
-	            .claim("gthinh17", authentication)
+	            .claim("email", authentication.getName())
 	            .build();
 	        
 	        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();

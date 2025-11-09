@@ -6,6 +6,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +18,8 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
+import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
@@ -42,16 +45,37 @@ public class SecurityConfiguration {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http,
 			CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
-		http.csrf(c -> c.disable())
-		// tắt 3 dấu chấm đầu để test api hoặc đăng ký để đăng nhập
-//				.authorizeHttpRequests(authz -> authz.requestMatchers("/", "api/login", "/users").permitAll()
-//						.anyRequest().authenticated())
-//				.oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
-//						.authenticationEntryPoint(customAuthenticationEntryPoint))
-//				.exceptionHandling(
-//						exceptions -> exceptions.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) // 401
-//								.accessDeniedHandler(new BearerTokenAccessDeniedHandler())) // 403
-				.formLogin(f -> f.disable())
+		http
+				// Tắt CSRF (thường dùng cho REST API)
+				.csrf(csrf -> csrf.disable())
+
+				// Cấu hình quyền truy cập cho các endpoint
+				.authorizeHttpRequests(authz -> authz.requestMatchers("/", "/api/login", "/users").permitAll() // Cho
+																												// phép
+																												// truy
+																												// cập
+																												// không
+																												// cần
+																												// token
+						.anyRequest().authenticated() // Các request khác cần xác thực
+				)
+
+				// Cấu hình OAuth2 Resource Server để xác thực JWT
+				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()) // Dùng JWT mặc định
+						.authenticationEntryPoint(customAuthenticationEntryPoint) // Xử lý khi chưa xác thực
+				)
+
+				// Xử lý lỗi xác thực và phân quyền (401 và 403)
+				.exceptionHandling(
+						exceptions -> exceptions.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) // 401
+																														// Unauthorized
+								.accessDeniedHandler(new BearerTokenAccessDeniedHandler()) // 403 Forbidden
+				)
+
+				// Vô hiệu hóa form login truyền thống
+				.formLogin(form -> form.disable())
+
+				// Cấu hình stateless session (REST API không giữ session)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 		return http.build();

@@ -1,13 +1,14 @@
 package vn.gt.__back_end_javaspring.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,8 +32,8 @@ public class UserController {
 	}
 
 	@GetMapping("/users/{id}")
-	public ResponseEntity<Optional<User>> getUser(@PathVariable("id") Long id) {
-		Optional<User> user = this.userService.getUserById(id);
+	public ResponseEntity<User> getUser(@PathVariable("id") String id) {
+		User user = this.userService.getUserById(id);
 		return ResponseEntity.ok().body(user);
 
 	}
@@ -48,4 +49,15 @@ public class UserController {
 		return ResponseEntity.ok().body(user);
 	}
 
+	@PutMapping("/users/{id}")
+	public ResponseEntity<User> updateUser(@RequestBody User updateUser, @PathVariable("id") String id) {
+		User user = userService.getUserById(id);
+		user.setAddress(updateUser.getAddress());
+		user.setDateOfBirth(updateUser.getDateOfBirth());
+		user.setFullName(updateUser.getFullName());
+		user.setName(updateUser.getName());
+		user.setUpdatedAt(LocalDateTime.now());
+		user = this.userService.createUser(user);
+		return ResponseEntity.ok().body(user);
+	}
 }

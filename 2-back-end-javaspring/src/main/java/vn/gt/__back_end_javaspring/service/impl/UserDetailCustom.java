@@ -24,7 +24,7 @@ public class UserDetailCustom implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		vn.gt.__back_end_javaspring.entity.User user = this.userService.handleGetUserByEmail(username);
 		return new User(user.getEmail(), user.getPassword(),
-				Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+				Collections.singletonList(new SimpleGrantedAuthority("User_role")));
 
 	}
 
