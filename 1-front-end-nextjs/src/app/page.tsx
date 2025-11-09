@@ -1,10 +1,13 @@
 import styles from "./page.module.scss";
+import { useState } from "react";
 import { Sidebar } from "@/components/side-bar/side-bar";
 import { OnlineAvt } from "@/components/online-avt/onlineAvt";
 import { Suggestions } from "@/components/suggestions/suggestions";
 import { PostList } from "@/components/PostCf/PostList";
 import { MsgModal } from "@/components/msgModal/msgModal";
+import { SignInButton } from "@/components/SingInBtn/SignInBtn";
 export default function Home() {
+  const [isSignIn, setIsSignIn] = useState(false);
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -13,16 +16,17 @@ export default function Home() {
         </div>
         <div className={styles.mainContainer}>
           <div className={styles.onlineCon}>
-            <OnlineAvt />
+            {!isSignIn && <OnlineAvt />}
+            {isSignIn && <SignInButton />}
           </div>
           <div className={styles.postCon}>
-            <PostList/>
+            <PostList />
           </div>
         </div>
         <div className={styles.rightContainer}>
-          <Suggestions/>
+          <Suggestions />
         </div>
-        <MsgModal/>
+        <MsgModal />
       </main>
       <footer></footer>
     </div>
