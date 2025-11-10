@@ -1,5 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./profileHeader.module.css";
+import Link from "next/link";
+import { useState } from "react";
 
 interface ProfileHeaderProps {
   username: string;
@@ -47,9 +51,11 @@ export function ProfileHeader({
           <button className={`${styles.btn} ${styles.followBtn}`}>
             {following ? "Following" : "Follow"}
           </button>
-          <button className={`${styles.btn} ${styles.messageBtn}`}>
-            Message
-          </button>
+          <Link href="/messages">
+            <button className={`${styles.btn} ${styles.messageBtn}`}>
+              Message
+            </button>
+          </Link>
           <button className={`${styles.btn} ${styles.moreBtn}`}>⋯</button>
         </div>
 

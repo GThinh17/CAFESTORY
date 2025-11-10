@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import "./SinInBtn.css"
 
 export function SignInButton() {
   return (
-    <Link href="/sign-in">
-      <Button variant="default" size="sm" className="flex items-center gap-2">
-        <User className="h-4 w-4" />
-        Sign In
-      </Button>
-    </Link>
+   
+      <Link href="/login">
+        <Button variant="default" className="button">
+          <User className="h-4 w-4 p-2" />
+          Log In
+        </Button>
+      </Link>
+   
   );
 }

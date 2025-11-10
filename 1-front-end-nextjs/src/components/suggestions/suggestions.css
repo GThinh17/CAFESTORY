@@ -44,8 +44,8 @@
 }
 
 .avatar-suggest {
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   object-fit: cover;
   border-radius: 50%;
 }
@@ -69,4 +69,9 @@
   font-weight: bold;
   cursor: pointer;
   transition: color 0.2s ease;
+}
+
+.notification-item {
+  padding: 10px;
+  min-width: 730px;
 }

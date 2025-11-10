@@ -1,5 +1,5 @@
 import React from "react";
-import {MessageItem} from "./msg";
+import { MessageItem } from "./msg";
 import styles from "./msg.module.scss";
 
 const messages = [
@@ -47,51 +47,50 @@ const messages = [
     id: 6,
     name: "Hai Danjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjg",
     avatar: "/testPost.jpg",
-    lastMessage: "Activvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvve 1h ago",
+    lastMessage:
+      "Activvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvve 1h ago",
     active: true,
   },
-    {
+  {
     id: 7,
     name: "Hai Dang",
     avatar: "/testPost.jpg",
     lastMessage: "Active 1h ago",
     active: true,
   },
-    {
+  {
     id: 8,
     name: "Hai Dang",
     avatar: "/testPost.jpg",
     lastMessage: "Active 1h ago",
     active: true,
   },
-    {
+  {
     id: 9,
     name: "Hai Dang",
     avatar: "/testPost.jpg",
     lastMessage: "Active 1h ago",
     active: true,
   },
-    {
+  {
     id: 10,
     name: "Hai Dang",
     avatar: "/testPost.jpg",
     lastMessage: "Active 1h ago",
     active: true,
   },
-    {
+  {
     id: 11,
-    name: "Hai Dang",
+    name: "241324123",
     avatar: "/testPost.jpg",
     lastMessage: "Active 1h ago",
     active: true,
   },
-
 ];
 
 export function MessageList() {
   return (
     <div className={styles.wrapper}>
-    
       <div className={styles.list}>
         {messages.map((msg, index) => (
           <MessageItem key={index} {...msg} />

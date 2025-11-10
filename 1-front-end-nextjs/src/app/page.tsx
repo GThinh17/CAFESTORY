@@ -1,3 +1,4 @@
+"use client";
 import styles from "./page.module.scss";
 import { useState } from "react";
 import { Sidebar } from "@/components/side-bar/side-bar";
@@ -7,7 +8,7 @@ import { PostList } from "@/components/PostCf/PostList";
 import { MsgModal } from "@/components/msgModal/msgModal";
 import { SignInButton } from "@/components/SingInBtn/SignInBtn";
 export default function Home() {
-  const [isSignIn, setIsSignIn] = useState(false);
+  const [isSignIn, setIsSignIn] = useState(true);
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -15,10 +16,16 @@ export default function Home() {
           <Sidebar />
         </div>
         <div className={styles.mainContainer}>
-          <div className={styles.onlineCon}>
-            {!isSignIn && <OnlineAvt />}
-            {isSignIn && <SignInButton />}
-          </div>
+          {!isSignIn && (
+            <div className={styles.buttonCon}>
+              <SignInButton />
+            </div>
+          )}
+          {isSignIn && (
+            <div className={styles.onlineCon}>
+              <OnlineAvt />
+            </div>
+          )}
           <div className={styles.postCon}>
             <PostList />
           </div>

@@ -16,12 +16,13 @@ import {
 } from "lucide-react";
 import { ModeToggle } from "@/components/dark-theme-btn";
 import { NotificationModal } from "../Notification/components/notification-modal";
+import { CreateModal } from "../createModal/createModal";
 import "./sidebar.scss";
 
 export function Sidebar() {
   const pathname = usePathname();
   const [isOpenNotice, setIsOpenNotice] = useState(false);
-
+  const [isOpenCreate, setIsOpenCreate] = useState(false);
   const menuItems = [
     { href: "/", icon: Home, label: "Home" },
     { href: "/search", icon: Search, label: "Search" },
@@ -31,7 +32,7 @@ export function Sidebar() {
     // ⚠️ Notifications sẽ handle click => modal
     { icon: Heart, label: "Notifications", modal: true },
 
-    { href: "/create", icon: PlusSquare, label: "Create" },
+    { icon: PlusSquare, label: "Create", modal: true },
     { href: "/profile", icon: User, label: "Profile" },
   ];
 
@@ -40,7 +41,9 @@ export function Sidebar() {
       {/* SIDEBAR */}
       <div className="sidebar">
         <div className="sidebar__top">
-          <h2 className="sidebar__logo">CafeBlog</h2>
+          <h2 className="sidebar__logo">
+            <Link href="/">CafeBlog</Link>
+          </h2>
           <span className="logoCon">
             <Coffee />
           </span>
@@ -54,7 +57,8 @@ export function Sidebar() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      setIsOpenNotice(true);
+                      if (label === "Notifications") setIsOpenNotice(true);
+                      if (label === "Create") setIsOpenCreate(true);
                     }}
                   >
                     <Icon size={22} />
@@ -93,6 +97,7 @@ export function Sidebar() {
         open={isOpenNotice}
         onClose={() => setIsOpenNotice(false)}
       />
+      <CreateModal open={isOpenCreate} onClose={() => setIsOpenCreate(false)} />
     </>
   );
 }

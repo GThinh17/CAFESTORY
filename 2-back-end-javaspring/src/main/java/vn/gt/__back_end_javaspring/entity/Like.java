@@ -1,15 +1,6 @@
 package vn.gt.__back_end_javaspring.entity;
 
 
-<<<<<<< HEAD
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Data;
-=======
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -18,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import vn.gt.__back_end_javaspring.enums.LikeTargetType;
->>>>>>> 23145a3cc3b309ad220d0324b3ee59e613a97687
 
 @Entity
 @Table(name = "likes",
