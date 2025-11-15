@@ -6,36 +6,31 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
-
-@Embeddable
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class DetailRoleId implements Serializable {
-    @Column(name = "role_id", nullable = false)
-    private Long roleId;
-
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
-}
+//
+//public class DetailRoleId implements Serializable {
+//    @Column(name = "role_id", nullable = false)
+//    private Long roleId;
+//
+//    @Column(name = "user_id", nullable = false)
+//    private Long userId;
+//}
 
 
 @Entity
 @Table(name = "detail_roles")
 @Data
 public class DetailRole{
-    @EmbeddedId
-    private DetailRoleId id;
+    @Id
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @MapsId("roleId")
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @MapsId("userId")
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

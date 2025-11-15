@@ -1,45 +1,58 @@
 package vn.gt.__back_end_javaspring.entity;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "comment")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class Comment {
-	@Id
-	@Column(name = "commentID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int commentID;
+        @Id
+        @GeneratedValue(strategy = GenerationType.UUID)
+        @Column(name = "comment_id")
+        private String id;
 
-	@Column(name = "userID")
-	private String userID;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "blog_id")
+        private Blog blog;
 
-	@Column(name = "blogID")
-	private String blogID;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "parent_commend_id")
+        private Comment commentParent;
 
-	@Column(name = "commentLike")
-	private int commentLike;
+        @OneToMany(mappedBy = "commentParent",  cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<Comment> replies = new ArrayList<>();
 
-	@Column(name = "commentContext")
-	private String commentContext;
+        @Column(name = "content", nullable = false, length = 500)
+        private String content;
 
-	@Column(name = "createAt")
-	Date createAt;
+        @Column(name = "likes_count")
+        private Long likesCount;
+
+        @Column(name = "reply_count")
+        private Long replyCount;
+
+        @Column(name = "is_edited")
+        private Boolean isEdited;
+
+        @Column(name = "is_deleted")
+        private Boolean isDeleted;
+
+        @Column(name = "cooldown_second")
+        private Long cooldownSecond;
+
+        @Column(name = "is_pin")
+        private Boolean isPin;
+
+        @Column(name = "created_at")
+        private LocalDateTime createdAt;
+
+
 
 }

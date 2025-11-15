@@ -21,7 +21,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
@@ -32,57 +31,39 @@ import vn.gt.__back_end_javaspring.service.impl.until.SecurityUtil;
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration {
+    @Value("${jwt.base64-secret}")
+    private String jwtKey;
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
-	@Bean
-	public MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
-		return new MvcRequestMatcher.Builder(introspector);
-	}
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http,
-			CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
-		http
-				// Tắt CSRF (thường dùng cho REST API)
-				.csrf(csrf -> csrf.disable())
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/", "/api/login", "/api/signup", "/users").permitAll()
+                        .anyRequest().authenticated()
+                )
+                // Đặt jwt + converter
+                .oauth2ResourceServer(oauth2 -> oauth2
+                                .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        // Nếu muốn dùng entry point custom, CHỈ đặt ở đây, bỏ cái ở exceptionHandling cho rõ ràng
+                        //.authenticationEntryPoint(customAuthenticationEntryPoint)
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
+                )
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-				// Cấu hình quyền truy cập cho các endpoint
-				.authorizeHttpRequests(authz -> authz.requestMatchers("/", "/api/login", "/users").permitAll() // Cho
-																												// phép
-																												// truy
-																												// cập
-																												// không
-																												// cần
-																												// token
-						.anyRequest().authenticated() // Các request khác cần xác thực
-				)
+        return http.build();
+    }
 
-				// Cấu hình OAuth2 Resource Server để xác thực JWT
-				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()) // Dùng JWT mặc định
-						.authenticationEntryPoint(customAuthenticationEntryPoint) // Xử lý khi chưa xác thực
-				)
 
-				// Xử lý lỗi xác thực và phân quyền (401 và 403)
-				.exceptionHandling(
-						exceptions -> exceptions.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) // 401
-																														// Unauthorized
-								.accessDeniedHandler(new BearerTokenAccessDeniedHandler()) // 403 Forbidden
-				)
-
-				// Vô hiệu hóa form login truyền thống
-				.formLogin(form -> form.disable())
-
-				// Cấu hình stateless session (REST API không giữ session)
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-		return http.build();
-	}
-
-	@Value("${jwt.base64-secret}")
-	private String jwtKey;
 
 	private SecretKey getSecretKey() {
 		byte[] keyBytes = Base64.from(jwtKey).decode();
@@ -108,15 +89,27 @@ public class SecurityConfiguration {
 		};
 	}
 
-	@Bean
-	public JwtAuthenticationConverter jwtAuthenticationConverter() {
-		JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-		grantedAuthoritiesConverter.setAuthorityPrefix("");
-		grantedAuthoritiesConverter.setAuthoritiesClaimName("gthinh17");
+//	@Bean
+//	public JwtAuthenticationConverter jwtAuthenticationConverter() {
+//		JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+//		grantedAuthoritiesConverter.setAuthorityPrefix("");
+//		grantedAuthoritiesConverter.setAuthoritiesClaimName("gthinh17");
+//
+//		JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+//		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+//		return jwtAuthenticationConverter;
+//	}
 
-		JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-		return jwtAuthenticationConverter;
-	}
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter conv = new JwtGrantedAuthoritiesConverter();
+        // Nếu SecurityUtil tạo claim "authorities": dùng "authorities"
+        conv.setAuthoritiesClaimName("authorities");
+        conv.setAuthorityPrefix(""); // hoặc "ROLE_" nếu bạn lưu role dạng "USER", "ADMIN"
+
+        JwtAuthenticationConverter jwtConv = new JwtAuthenticationConverter();
+        jwtConv.setJwtGrantedAuthoritiesConverter(conv);
+        return jwtConv;
+    }
 
 }

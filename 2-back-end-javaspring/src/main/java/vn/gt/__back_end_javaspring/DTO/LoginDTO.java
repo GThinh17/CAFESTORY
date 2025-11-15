@@ -1,4 +1,4 @@
-package vn.gt.__back_end_javaspring.entity.DTO;
+package vn.gt.__back_end_javaspring.DTO;
 
 import jakarta.validation.constraints.NotBlank;
 

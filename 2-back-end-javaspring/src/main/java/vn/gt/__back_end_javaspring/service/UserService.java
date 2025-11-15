@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import vn.gt.__back_end_javaspring.entity.User;
-import vn.gt.__back_end_javaspring.entity.DTO.SignupDTO;
+import vn.gt.__back_end_javaspring.DTO.SignupDTO;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 
 @Service

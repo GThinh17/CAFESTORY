@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import vn.gt.__back_end_javaspring.entity.User;
-import vn.gt.__back_end_javaspring.entity.DTO.LoginDTO;
-import vn.gt.__back_end_javaspring.entity.DTO.RestLoginDTO;
-import vn.gt.__back_end_javaspring.entity.DTO.SignupDTO;
+import vn.gt.__back_end_javaspring.DTO.LoginDTO;
+import vn.gt.__back_end_javaspring.DTO.RestLoginDTO;
+import vn.gt.__back_end_javaspring.DTO.SignupDTO;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.service.UserService;
 import vn.gt.__back_end_javaspring.service.impl.until.SecurityUtil;
@@ -48,6 +48,7 @@ public class AuthController {
 		// xác thực người dùng => cần viết hàm loadUserByUsername
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
+        System.out.println(authentication);
 		// create token
 		String access_token = securityUtil.createToken(authentication);
 		RestLoginDTO restLoginDTO = new RestLoginDTO(access_token);

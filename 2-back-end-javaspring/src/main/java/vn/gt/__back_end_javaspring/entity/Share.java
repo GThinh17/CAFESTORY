@@ -1,35 +1,66 @@
 package vn.gt.__back_end_javaspring.entity;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name = "share")
 @Entity
-@Data
+@Table(name = "shares")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Share {
-	@Id
-	@Column(name = "shareID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int shareID;
+    public String getId() {
+        return id;
+    }
 
-	@Column(name = "userID_1")
-	private String userID_1;
+    public String getVisibility() {
+        return visibility;
+    }
 
-	@Column(name = "userID_2")
-	private String userID_2;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
-	@Column(name = "createAt")
-	private Date createAt;
+    public List<ShareDetail> getShareDetails() {
+        return shareDetails;
+    }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
+    private String id;
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setShareDetails(List<ShareDetail> shareDetails) {
+        this.shareDetails = shareDetails;
+    }
+
+    @Column(name = "visibility", nullable = false, length = 20)
+    private String visibility;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "share", fetch = FetchType.LAZY)
+    private List<ShareDetail> shareDetails;
 }
