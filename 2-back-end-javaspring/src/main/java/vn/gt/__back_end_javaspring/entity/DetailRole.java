@@ -9,15 +9,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-//
-//public class DetailRoleId implements Serializable {
-//    @Column(name = "role_id", nullable = false)
-//    private Long roleId;
-//
-//    @Column(name = "user_id", nullable = false)
-//    private Long userId;
-//}
-
 
 @Entity
 @Table(name = "detail_roles")
