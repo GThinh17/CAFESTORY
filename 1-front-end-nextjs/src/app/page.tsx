@@ -8,7 +8,7 @@ import { PostList } from "@/components/PostCf/PostList";
 import { MsgModal } from "@/components/msgModal/msgModal";
 import { SignInButton } from "@/components/SingInBtn/SignInBtn";
 export default function Home() {
-  const [isSignIn, setIsSignIn] = useState(true);
+  const [isSignIn, setIsSignIn] = useState(false);
   return (
     <div className={styles.page}>
       <main className={styles.main}>

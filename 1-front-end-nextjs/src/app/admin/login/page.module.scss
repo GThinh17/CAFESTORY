@@ -1,0 +1,62 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--background);
+}
+
+.card {
+  width: 360px;
+  padding: 16px;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--foreground);
+  font-family: "Billabong", cursive;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field input {
+  padding: 10px 12px; /* 👈 thêm padding cho Input */
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.field label {
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+.footer {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.button {
+  width: 100%;
+  background-color: #0095f6;
+  color: var(--primary-foreground);
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  cursor: pointer;
+}

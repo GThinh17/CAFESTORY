@@ -17,12 +17,14 @@ import {
 import { ModeToggle } from "@/components/dark-theme-btn";
 import { NotificationModal } from "../Notification/components/notification-modal";
 import { CreateModal } from "../createModal/createModal";
+import { PricingPlans } from "../goProModal/goProModal";
 import "./sidebar.scss";
 
 export function Sidebar() {
   const pathname = usePathname();
   const [isOpenNotice, setIsOpenNotice] = useState(false);
   const [isOpenCreate, setIsOpenCreate] = useState(false);
+  const [isOpenPricing, setIsOpenPricing] = useState(false);
   const menuItems = [
     { href: "/", icon: Home, label: "Home" },
     { href: "/search", icon: Search, label: "Search" },
@@ -86,8 +88,9 @@ export function Sidebar() {
           <li>
             <Menu size={22} /> <span className="sidebarComp">More</span>
           </li>
-          <li>
-            <Crown size={22} /> <span className="sidebarComp">Go pro</span>
+          <li  onClick={() => setIsOpenPricing(true)}>
+            <Crown size={22} />{" "}
+            <span className="sidebarComp">Go pro</span>
           </li>
         </div>
       </div>
@@ -97,7 +100,13 @@ export function Sidebar() {
         open={isOpenNotice}
         onClose={() => setIsOpenNotice(false)}
       />
+
       <CreateModal open={isOpenCreate} onClose={() => setIsOpenCreate(false)} />
+
+      <PricingPlans
+        open = {isOpenPricing}
+        onClose={() => setIsOpenPricing(false)}
+      />
     </>
   );
 }
