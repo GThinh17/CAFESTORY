@@ -17,7 +17,7 @@ import vn.gt.__back_end_javaspring.DTO.RestLoginDTO;
 import vn.gt.__back_end_javaspring.DTO.SignupDTO;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.service.UserService;
-import vn.gt.__back_end_javaspring.service.impl.until.SecurityUtil;
+import vn.gt.__back_end_javaspring.util.SecurityUtil;
 
 @RestController
 public class AuthController {

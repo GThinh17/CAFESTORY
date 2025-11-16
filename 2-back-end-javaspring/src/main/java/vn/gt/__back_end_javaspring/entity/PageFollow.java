@@ -6,28 +6,32 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "like")
+@Table(name = "follower")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Like { //cHECK
+@AllArgsConstructor
+@Getter
+@Setter
+public class PageFollow {
 	@Id
-	@Column(name = "like_id")
+	@Column(name = "follower_id")
 	@GeneratedValue(strategy = GenerationType.UUID)
 	String id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "page_id")
+    private Page page;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "blog_id")
-    private Blog blog;
-    
-	@Column(name = "create_at")
-	private LocalDateTime createAt;
+	@Column(name = "created_at")
+    LocalDateTime createdAt;
 
 }

@@ -18,49 +18,19 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Share {
-    public String getId() {
-        return id;
-    }
-
-    public String getVisibility() {
-        return visibility;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public List<ShareDetail> getShareDetails() {
-        return shareDetails;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
+    @Column(name = "share_id")
     private String id;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public void setVisibility(String visibility) {
-        this.visibility = visibility;
-    }
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "blog_id")
+    private Blog blog;
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setShareDetails(List<ShareDetail> shareDetails) {
-        this.shareDetails = shareDetails;
-    }
-
-    @Column(name = "visibility", nullable = false, length = 20)
-    private String visibility;
-
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @OneToMany(mappedBy = "share", fetch = FetchType.LAZY)
-    private List<ShareDetail> shareDetails;
+    @Column(name = "create_at")
+    private LocalDateTime createAt;
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "location")
-public class Location {
+public class Location { //Check
 
     @Id
     @Column(name = "location_id")

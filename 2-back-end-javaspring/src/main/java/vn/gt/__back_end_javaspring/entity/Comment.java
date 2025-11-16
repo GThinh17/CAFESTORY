@@ -12,7 +12,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment {
+public class Comment {//Check
         @Id
         @GeneratedValue(strategy = GenerationType.UUID)
         @Column(name = "comment_id")

@@ -5,12 +5,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,14 +17,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class User {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User { //Check
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 
-	@Column(name = "name", nullable = false, length = 100)
-	private String name;
+	@Column(name = "user_name", nullable = false, length = 100)
+	private String userName;
 
 	@Column(name = "full_name", length = 100)
 	private String fullName;
@@ -73,11 +68,11 @@ public class User {
 	}
 
 	public String getName() {
-		return name;
+		return userName;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.userName = name;
 	}
 
 	public String getFullName() {

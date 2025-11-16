@@ -13,7 +13,7 @@ import vn.gt.__back_end_javaspring.enums.Visibility;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Blog {
+public class Blog { //Check
         @Id
         @Column(name = "blog_id")
         @GeneratedValue(strategy = GenerationType.UUID)
@@ -66,4 +66,26 @@ public class Blog {
         @JoinColumn(name = "location_id")
         private Location location;
 
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        private User user;
+
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "page_id")
+        private Page page;
+
+
+        @PrePersist
+        protected void onCreate() {
+            this.createdAt = LocalDateTime.now();
+            this.likesCount = 0L;
+            this.sharesCount = 0L;
+            this.commentsCount = 0L;
+        }
+
+        @PreUpdate
+        protected void onUpdate() {
+            this.updatedAt = LocalDateTime.now();
+        }
 }

@@ -7,7 +7,7 @@ import vn.gt.__back_end_javaspring.enums.MediaType;
 @Data
 @Entity
 @Table(name = "media")
-public class Media {
+public class Media { //Check
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")

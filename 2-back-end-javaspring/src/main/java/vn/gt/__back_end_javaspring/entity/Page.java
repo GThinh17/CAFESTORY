@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "page")
 @Data
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor @AllArgsConstructor //Check
 public class Page {
         @Id
         @GeneratedValue(strategy = GenerationType.UUID)
