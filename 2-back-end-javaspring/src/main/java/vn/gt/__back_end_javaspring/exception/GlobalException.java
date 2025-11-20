@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import vn.gt.__back_end_javaspring.DTO.LikeResponse;
 import vn.gt.__back_end_javaspring.entity.RestResponse;
+import vn.gt.__back_end_javaspring.service.LikeService;
 
 @RestControllerAdvice
 @ControllerAdvice
@@ -54,14 +56,43 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
 
-//    @ExceptionHandler(CommentNotFoundException.class)
-//    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(CommentNotFoundException ex) {
-//        RestResponse<Object> res = new RestResponse<>();
-//        res.setStatusCode(HttpStatus.NOT_FOUND.value());
-//        res.setMessage(ex.getMessage());
-//        res.setErrors("Comment not found");
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
-//    }
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(CommentNotFoundException ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Comment not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
+    @ExceptionHandler(LikeExist.class)
+    public ResponseEntity<RestResponse<Object>> handleLikeExist(LikeExist ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.CONFLICT.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Like already exist");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(UserNotFoundException ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("User not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(LikeNotFoundException ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Like not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
 
 
 

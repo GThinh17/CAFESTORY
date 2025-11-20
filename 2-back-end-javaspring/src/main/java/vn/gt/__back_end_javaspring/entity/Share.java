@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "shares")
+@Table(name = "blog_share")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,7 +20,7 @@ import lombok.Setter;
 public class Share {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "share_id")
+    @Column(name = "blog_share_id")
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

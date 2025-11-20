@@ -1,9 +1,8 @@
 package vn.gt.__back_end_javaspring.service;
 
-import vn.gt.__back_end_javaspring.DTO.BlogCreateDTO;
-import vn.gt.__back_end_javaspring.DTO.BlogResponse;
-import vn.gt.__back_end_javaspring.DTO.BlogUpdateDTO;
-import vn.gt.__back_end_javaspring.DTO.CursorPage;
+import vn.gt.__back_end_javaspring.DTO.*;
+
+import java.util.List;
 
 
 public interface BlogService {
@@ -14,4 +13,16 @@ public interface BlogService {
      BlogResponse getBlogById(String id);
      BlogResponse updateBlog(String id, BlogUpdateDTO blogUpdateDTO);
 
+    interface LikeService {
+
+        LikeResponse like(LikeCreateDTO request);
+
+        void unlike(LikeCreateDTO request);
+
+        boolean isLiked(String userId, String blogId);
+
+        long countLikes(String blogId);
+
+        List<LikeResponse> getLikesByBlog(String blogId);
+    }
 }

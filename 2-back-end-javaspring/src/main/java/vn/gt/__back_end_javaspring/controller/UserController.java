@@ -55,7 +55,7 @@ public class UserController {
 		user.setAddress(updateUser.getAddress());
 		user.setDateOfBirth(updateUser.getDateOfBirth());
 		user.setFullName(updateUser.getFullName());
-		user.setName(updateUser.getName());
+		user.setFullName(updateUser.getFullName());
 		user.setUpdatedAt(LocalDateTime.now());
 		user = this.userService.createUser(user);
 		return ResponseEntity.ok().body(user);

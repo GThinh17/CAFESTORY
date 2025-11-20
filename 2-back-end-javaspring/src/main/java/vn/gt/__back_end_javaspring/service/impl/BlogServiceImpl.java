@@ -66,10 +66,12 @@ public class BlogServiceImpl implements BlogService {
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
 
         // MapStruct: ignore field null
+        // GOi ham de the cac thay the cac field khac null,
         blogMapper.updateEntity(blog, blogUpdateDTO);
 
         // TODO: xử lý mediaUrls, locationId nếu cần (update mediaList, location)
 
+        //Hibernate se check neu co id thi update ngc lai thi inseret
         Blog saved = blogRepository.save(blog);
         return blogMapper.toResponse(saved);
     }

@@ -44,7 +44,7 @@ public class UserService {
 		String phone = signupUser.getPhone();
 		String name = signupUser.getName();
 		newUser.setEmail(email);
-		newUser.setName(name);
+		newUser.setFullName(name);
 		newUser.setFullName(fullname);
 		newUser.setPassword(password);
 		newUser.setPhone(phone);

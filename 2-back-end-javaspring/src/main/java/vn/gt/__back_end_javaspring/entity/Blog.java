@@ -72,6 +72,11 @@ public class Blog { //Check
 
 
         @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "like_id")
+        private Like like;
+
+
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "page_id")
         private Page page;
 

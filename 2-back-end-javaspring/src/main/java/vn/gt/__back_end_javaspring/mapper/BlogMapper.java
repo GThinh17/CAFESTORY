@@ -46,4 +46,6 @@ public interface BlogMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntity(@MappingTarget Blog entity, BlogUpdateDTO dto);
+    //ham nay check xem thang nao khac null thi thay doi trong blog
+    //tuc la thang fied nao cua update null thi giu nguyen trong entity
 }

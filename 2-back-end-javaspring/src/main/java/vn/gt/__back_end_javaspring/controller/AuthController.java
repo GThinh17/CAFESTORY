@@ -66,7 +66,7 @@ public class AuthController {
 		newUser.setEmail(signUp.getEmail());
 		newUser.setFullName(signUp.getFullname());
 		newUser.setPhone(signUp.getPhone());
-		newUser.setName(signUp.getName());
+		newUser.setFullName(signUp.getName());
 
 		// hashpassword
 		String hashPassword = this.passwordEncoder.encode(signUp.getPassword());
