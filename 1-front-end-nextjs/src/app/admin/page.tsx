@@ -1,5 +1,6 @@
 import Stats from "@/components/admin/Stats";
-import UsersTable from "@/components/admin/UsersTable";
+import { MyBarChart } from "@/components/admin/barChart";
+import {ChartAreaStacked} from "../../components/admin/Chart"
 
 export default function DashboardPage() {
   return (
@@ -8,10 +9,11 @@ export default function DashboardPage() {
       <p className="text-sm text-muted-foreground mb-6">
         Overview & management
       </p>
-
+      
       <Stats total={4} active={2} editors={2} pending={1} />
 
-      <UsersTable />
+      <ChartAreaStacked/>
+      <MyBarChart/>
     </div>
   );
 }

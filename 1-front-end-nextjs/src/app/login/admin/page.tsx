@@ -11,9 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import styles from "./page.module.scss";
-import React from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   return (
     <div className={styles.container}>
       <Card className={styles.card}>
@@ -37,7 +38,12 @@ export default function LoginPage() {
           </div>
         </CardContent>
         <CardFooter className={styles.footer}>
-          <Button className={styles.button}>Log in</Button>
+          <Button
+            onClick={() => router.push("/admin")}
+            className={styles.button}
+          >
+            Log in
+          </Button>
         </CardFooter>
       </Card>
     </div>

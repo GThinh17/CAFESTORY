@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
+import styles from "./UsersTable.module.css";
+
 // sample data
 const sampleUsers = [
   {
@@ -60,7 +62,7 @@ const sampleUsers = [
 export default function UsersTable() {
   const [query, setQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
-  const [users, setUsers] = useState(sampleUsers);
+  const [users] = useState(sampleUsers);
 
   const roles = useMemo(
     () => ["All", ...Array.from(new Set(users.map((u) => u.role)))],
@@ -79,21 +81,22 @@ export default function UsersTable() {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className={styles.Header}>
         <CardTitle>Users</CardTitle>
       </CardHeader>
+
       <CardContent>
-        <div className="mb-4 flex items-center gap-3">
+        <div className={styles.toolbar}>
           <Input
             placeholder="Search users..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-64"
+            className={styles.searchInput}
           />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className={styles.filterBtn}>
                 Filter
               </Button>
             </DropdownMenuTrigger>
@@ -110,30 +113,35 @@ export default function UsersTable() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Profile</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead className={styles.colProfile}>Profile</TableHead>
+              <TableHead className={styles.colName}>Name</TableHead>
+              <TableHead className={styles.colEmail}>Email</TableHead>
+              <TableHead className={styles.colRole}>Role</TableHead>
+              <TableHead className={styles.colStatus}>Status</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
             {filtered.map((u) => (
-              <TableRow key={u.id}>
-                <TableCell>
+              <TableRow key={u.id} className={styles.tableBodyRow}>
+                <TableCell className={styles.avatarCell}>
                   <Avatar>
                     <AvatarImage src={u.avatar} />
                     <AvatarFallback>{u.name[0]}</AvatarFallback>
                   </Avatar>
                 </TableCell>
-                <TableCell className="font-medium">{u.name}</TableCell>
+
+                <TableCell className={styles.nameCell}>{u.name}</TableCell>
                 <TableCell>{u.email}</TableCell>
+
                 <TableCell>
-                  <Badge variant="secondary">{u.role}</Badge>
+                  <Badge variant="secondary" className={styles.badgeRole}>
+                    {u.role}
+                  </Badge>
                 </TableCell>
+
                 <TableCell>
-                  <Badge>{u.status}</Badge>
+                  <Badge className={styles.badgeStatus}>{u.status}</Badge>
                 </TableCell>
               </TableRow>
             ))}

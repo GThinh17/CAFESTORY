@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import styles from "./Stats.module.css";
 
 type Props = {
   total: number;
@@ -19,7 +20,7 @@ export default function Stats({ total, active, editors, pending }: Props) {
   ];
 
   return (
-    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <section className={styles.section}>
       {items.map((s, i) => (
         <motion.div
           key={i}
@@ -28,9 +29,9 @@ export default function Stats({ total, active, editors, pending }: Props) {
           transition={{ delay: s.delay }}
         >
           <Card>
-            <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">{s.label}</p>
-              <p className="text-2xl font-semibold">{s.value}</p>
+            <CardContent className={styles.cardContent}>
+              <p className={styles.label}>{s.label}</p>
+              <p className={styles.value}>{s.value}</p>
             </CardContent>
           </Card>
         </motion.div>

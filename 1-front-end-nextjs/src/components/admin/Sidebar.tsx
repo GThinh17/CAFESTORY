@@ -3,48 +3,71 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import styles from "./Sidebar.module.css";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
+  const router = useRouter();
+
   return (
-    <div className="space-y-4">
-      <Card className="p-4">
+    <div className={styles.wrapper}>
+      <Card className={styles.card}>
         <CardHeader>
           <CardTitle className="text-lg">Admin</CardTitle>
         </CardHeader>
+
         <CardContent className="space-y-3">
-          <div className="flex items-center gap-3">
+          <div className={styles.userInfo}>
             <Avatar>
               <AvatarImage src="https://i.pravatar.cc/40?img=12" />
               <AvatarFallback>AD</AvatarFallback>
             </Avatar>
+
             <div>
-              <p className="font-medium">Pham Thanh Vu</p>
-              <p className="text-sm text-muted-foreground">Super Admin</p>
+              <p className={styles.userName}>Pham Thanh Vu</p>
+              <p className={styles.userRole}>Super Admin</p>
             </div>
           </div>
 
-          <nav className="flex flex-col pt-2">
-            <Button variant="ghost" className="justify-start w-full">
+          <nav className={styles.nav}>
+            <Button
+              onClick={() => router.push("/admin")}
+              variant="ghost"
+              className={styles.navBtn}
+            >
               Dashboard
             </Button>
-            <Button variant="ghost" className="justify-start w-full">
+            <Button
+              onClick={() => router.push("/admin/users")}
+              variant="ghost"
+              className={styles.navBtn}
+            >
               Users
             </Button>
-            <Button variant="ghost" className="justify-start w-full">
+            <Button
+              onClick={() => router.push("/admin")}
+              variant="ghost"
+              className={styles.navBtn}
+            >
               Settings
             </Button>
-            <Button variant="ghost" className="justify-start w-full">
-              Logs
+            <Button
+              onClick={() => router.push("/login/admin")}
+              variant="ghost"
+              className={styles.navBtn}
+            >
+              Log out
             </Button>
           </nav>
         </CardContent>
       </Card>
 
-      <Card className="p-4">
+      <Card className={styles.quickActions}>
         <CardHeader>
           <CardTitle className="text-sm">Quick Actions</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col gap-2">
+
+        <CardContent className={styles.quickList}>
           <Button>Create user</Button>
           <Button variant="outline">Export CSV</Button>
         </CardContent>
