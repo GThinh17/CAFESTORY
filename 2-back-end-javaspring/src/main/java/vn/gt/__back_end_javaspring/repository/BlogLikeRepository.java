@@ -4,24 +4,24 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import vn.gt.__back_end_javaspring.entity.Like;
+import vn.gt.__back_end_javaspring.entity.BlogLike;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface LikeRepository extends JpaRepository<Like, String> {
+public interface BlogLikeRepository extends JpaRepository<BlogLike, String> {
 
     boolean existsByUser_IdAndBlog_id(String userId, String blogId);
 
-    Optional<Like> findByUser_IdAndBlog_Id(String userId, String blogId);
+    Optional<BlogLike> findByUser_IdAndBlog_Id(String userId, String blogId);
 
     long countByBlog_Id(String blogId);
 
-    List<Like> findByBlog_Id(String blogId);
+    List<BlogLike> findByBlog_Id(String blogId);
 
     @Modifying
     @Transactional
-    @Query("delete from Like l where l.user.id = :userId and l.blog.id = :blogId")
+    @Query("delete from BlogLike l where l.user.id = :userId and l.blog.id = :blogId")
     int deleteByUserAndBlog(String userId, String blogId);
 }
 

@@ -73,7 +73,7 @@ public class Blog { //Check
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "like_id")
-        private Like like;
+        private BlogLike bloglikeid;
 
 
         @ManyToOne(fetch = FetchType.LAZY)

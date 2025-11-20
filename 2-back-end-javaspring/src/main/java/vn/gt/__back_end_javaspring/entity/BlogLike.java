@@ -9,20 +9,20 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "blog_like"
-, indexes = {
-        @Index(
-                name = "idx_blog_like_user_blog",
-                columnList = "user_id, blog_id"
-        ), //tao index
-        @Index(
-                name = "idx_blog_like_blog",
-                columnList = "blog_id"
-        )
-})
+    , indexes = {
+            @Index(
+                    name = "idx_blog_like_user_blog",
+                    columnList = "user_id, blog_id"
+            ), //tao index
+            @Index(
+                    name = "idx_blog_like_blog",
+                    columnList = "blog_id"
+            )
+    })
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Like { //cHECK
+public class BlogLike { //cHECK
 	@Id
 	@Column(name = "blog_like_id")
 	@GeneratedValue(strategy = GenerationType.UUID)

@@ -60,7 +60,6 @@ public class User { //Check
 	private LocalDateTime updatedAt;
 
 
-
     public String getId() {
         return id;
     }

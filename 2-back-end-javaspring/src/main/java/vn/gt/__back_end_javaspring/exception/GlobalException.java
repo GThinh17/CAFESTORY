@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import vn.gt.__back_end_javaspring.DTO.LikeResponse;
 import vn.gt.__back_end_javaspring.entity.RestResponse;
-import vn.gt.__back_end_javaspring.service.LikeService;
 
 @RestControllerAdvice
 @ControllerAdvice

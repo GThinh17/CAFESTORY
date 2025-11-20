@@ -3,39 +3,39 @@ package vn.gt.__back_end_javaspring.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import vn.gt.__back_end_javaspring.DTO.LikeCreateDTO;
-import vn.gt.__back_end_javaspring.DTO.LikeResponse;
+import vn.gt.__back_end_javaspring.DTO.BlogLikeCreateDTO;
+import vn.gt.__back_end_javaspring.DTO.BlogLikeResponse;
 import vn.gt.__back_end_javaspring.entity.Blog;
-import vn.gt.__back_end_javaspring.entity.Like;
+import vn.gt.__back_end_javaspring.entity.BlogLike;
 import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.exception.BlogNotFoundException;
 import vn.gt.__back_end_javaspring.exception.LikeExist;
 import vn.gt.__back_end_javaspring.exception.LikeNotFoundException;
 import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
-import vn.gt.__back_end_javaspring.mapper.LikeMapper;
+import vn.gt.__back_end_javaspring.mapper.BlogLikeMapper;
 import vn.gt.__back_end_javaspring.repository.BlogRepository;
-import vn.gt.__back_end_javaspring.repository.LikeRepository;
+import vn.gt.__back_end_javaspring.repository.BlogLikeRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
-import vn.gt.__back_end_javaspring.service.LikeService;
+import vn.gt.__back_end_javaspring.service.BlogLikeService;
 
 import java.util.List;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class LikeServiceImpl implements LikeService {
-    private final LikeRepository likeRepository;
+public class BlogLikeServiceImpl implements BlogLikeService {
+    private final BlogLikeRepository blogLikeRepository;
     private final UserRepository userRepository;
     private final BlogRepository blogRepository;
-    private final LikeMapper likeMapper;
+    private final BlogLikeMapper blogLikeMapper;
 
 
     @Override
-    public LikeResponse like(LikeCreateDTO request) {
+    public BlogLikeResponse like(BlogLikeCreateDTO request) {
         String userId = request.getUserId();
         String blogId = request.getBlogId();
 
-        if(likeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
+        if(blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
             throw new LikeExist("Like already exists");
         }
 
@@ -45,24 +45,32 @@ public class LikeServiceImpl implements LikeService {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
 
-        Like like = likeMapper.toModel(request);
-        Like saved =  likeRepository.save(like);
+        blog.setLikesCount(blog.getLikesCount() + 1);
+        BlogLike bloglike = blogLikeMapper.toModel(request);
+        BlogLike saved =  blogLikeRepository.save(bloglike);
 
-        return likeMapper.toResponse(saved);
+        return blogLikeMapper.toResponse(saved);
 
     }
 
     @Override
     public void unlike(String blogId, String userId) {
-        if(!likeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
+
+        Blog blog = blogRepository.findById(blogId)
+                .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
+
+        blog.setLikesCount(blog.getLikesCount() - 1);
+
+        if(!blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
             throw new LikeNotFoundException("Like not exists");
         }
-        likeRepository.deleteByUserAndBlog(userId, blogId);
+
+        blogLikeRepository.deleteByUserAndBlog(userId, blogId);
     }
 
     @Override
     public boolean isLiked(String userId, String blogId) {
-        return likeRepository.existsByUser_IdAndBlog_id(userId, blogId);
+        return blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId);
     }
 
     @Override
@@ -70,14 +78,14 @@ public class LikeServiceImpl implements LikeService {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
 
-        return likeRepository.countByBlog_Id(blogId);
+        return blogLikeRepository.countByBlog_Id(blogId);
     }
 
     @Override
-    public List<LikeResponse> getLikesByBlog(String blogId) {
+    public List<BlogLikeResponse> getLikesByBlog(String blogId) {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
 
-        return likeMapper.toResponseList(likeRepository.findByBlog_Id(blogId));
+        return blogLikeMapper.toResponseList(blogLikeRepository.findByBlog_Id(blogId));
     }
 }
