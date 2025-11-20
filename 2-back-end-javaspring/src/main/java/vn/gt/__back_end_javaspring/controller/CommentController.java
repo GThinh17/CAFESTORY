@@ -60,6 +60,8 @@ public class CommentController {
         RestResponse<CommentResponse> restResponse = new RestResponse<>();
         CommentResponse commentResponse = commentService.addComment(commentCreateDTO);
 
+        //Thieu adding 1 for reply count
+
         restResponse.setData(commentResponse);
         restResponse.setMessage("Success");
         restResponse.setStatusCode(HttpStatus.CREATED.value());

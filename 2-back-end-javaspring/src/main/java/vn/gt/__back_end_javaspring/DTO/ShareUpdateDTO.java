@@ -16,6 +16,4 @@ public class ShareUpdateDTO {
     private String locationId;
 
     private String caption;
-
-    private Boolean isDeleted;
 }

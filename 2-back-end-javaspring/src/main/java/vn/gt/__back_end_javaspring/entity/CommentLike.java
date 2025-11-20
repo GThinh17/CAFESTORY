@@ -3,7 +3,6 @@ package vn.gt.__back_end_javaspring.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.checkerframework.checker.units.qual.A;
 
@@ -13,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "comment_like")
-@Data
 public class CommentLike {
     @Id
     @Column(name = "comment_like_id")

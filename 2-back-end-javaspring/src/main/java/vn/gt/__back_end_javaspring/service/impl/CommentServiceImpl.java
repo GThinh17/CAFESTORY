@@ -70,12 +70,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentResponse addComment(CommentCreateDTO dto) {
 
-        System.out.println(">>> Blog ID nhận được: " + dto.getBlogId());
-
         Blog blog = blogRepository.findById(dto.getBlogId())
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
 
-        System.out.println(">>> Blog tìm thấy trong DB: " + blog.getId());
+        blog.setCommentsCount(blog.getCommentsCount() + 1);
         Comment comment = commentMapper.toModel(dto);
         comment = commentRepository.save(comment);
         return commentMapper.toResponse(comment);
@@ -103,6 +101,9 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponse deleteComment(String commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+        Blog blog = blogRepository.findById(comment.getBlog().getId())
+                        .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
+        blog.setCommentsCount(blog.getCommentsCount() - 1);
         comment.setIsDeleted(true);
         commentRepository.save(comment);
         return commentMapper.toResponse(commentRepository.save(comment));

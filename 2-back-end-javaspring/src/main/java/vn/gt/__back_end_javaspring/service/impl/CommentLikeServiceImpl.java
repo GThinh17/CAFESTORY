@@ -33,22 +33,19 @@ public class CommentLikeServiceImpl implements CommentLikeService {
 
     @Override
     public CommentLikeResponse likeComment(CommentLikeCreateDTO dto) {
-        CommentLike commentLike = commentLikeMapper.toModel(dto);
-        boolean exists = commentLikeRepository.existsByUser_IdAndComment_Id(dto.getUserId(),dto.getCommentId());
-        if (exists) {
+        boolean exists = commentLikeRepository.existsById(dto.getCommentId());
+        if (!exists) {
             throw new LikeExist("Like exists alreadyy");
         }
-
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found!"));
-        commentLike.setUser(user);
-
         Comment comment = commentRepository.findById(dto.getCommentId())
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found!"));
-        commentLike.setComment(comment);
 
         comment.setLikesCount(comment.getLikesCount() + 1);
 
+
+        CommentLike commentLike = commentLikeMapper.toModel(dto);
         CommentLike saved =  commentLikeRepository.save(commentLike);
         return commentLikeMapper.toResponse(saved);
     }
@@ -67,7 +64,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
             throw new LikeNotFoundException("Like not exists alreadyy");
         }
 
-        commentLikeRepository.deleteByUserIdAndCommentId(userId, commentId);
+        commentLikeRepository.deleteByUserAndComment(userId, commentId);
 
     }
 

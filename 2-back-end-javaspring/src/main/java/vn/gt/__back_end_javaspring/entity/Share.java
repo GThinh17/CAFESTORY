@@ -20,7 +20,7 @@ import lombok.Setter;
 public class Share {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "blog_share_id")
+    @Column(name = "share_id")
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -31,6 +31,23 @@ public class Share {
     @JoinColumn(name = "blog_id")
     private Blog blog;
 
-    @Column(name = "create_at")
-    private LocalDateTime createAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Location location;
+
+    @Column(name = "caption")
+    private String caption;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
+    @PrePersist
+    public void onCreate() {
+        this.isDeleted = false;
+        this.createdAt = LocalDateTime.now();
+    }
 }

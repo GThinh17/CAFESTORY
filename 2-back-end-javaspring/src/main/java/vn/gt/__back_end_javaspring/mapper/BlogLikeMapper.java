@@ -10,8 +10,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface BlogLikeMapper {
 
-    @Mapping(source = "blogId", target = "blog.id")
-    @Mapping(source = "userId", target = "user.id")
     BlogLike toModel(BlogLikeCreateDTO blogLikeCreateDTO);
 
     @Mapping(target = "userId", source = "user.id")
