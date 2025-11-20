@@ -5,19 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentUpdateDTO {
-
-    private String content;
-
-    private Boolean isDeleted;
-
-    private Boolean isPin;
-
-    private LocalDateTime deletedAt;
+public class LikeResponse {
+    String id;
+    String userId;
+    String userFullName;
+    String userAvatar;
+    String blogId;
+    LocalDateTime createdAt;
 }

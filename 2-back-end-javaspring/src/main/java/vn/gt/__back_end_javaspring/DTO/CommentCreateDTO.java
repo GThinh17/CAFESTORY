@@ -16,8 +16,6 @@ public class CommentCreateDTO {
     @NotBlank(message = "Blog is required")
     private String blogId;
 
-    @NotBlank(message = "User is required")
-    private String userId;
     private String commentParentId;
 
     @NotBlank(message = "Content must not be empty")

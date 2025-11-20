@@ -11,17 +11,11 @@ import vn.gt.__back_end_javaspring.DTO.CommentUpdateDTO;
 import vn.gt.__back_end_javaspring.DTO.CursorPage;
 import vn.gt.__back_end_javaspring.entity.Blog;
 import vn.gt.__back_end_javaspring.entity.Comment;
-import vn.gt.__back_end_javaspring.entity.CommentImage;
-import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.exception.BlogNotFoundException;
-import vn.gt.__back_end_javaspring.exception.CommentImageNotFoundException;
 import vn.gt.__back_end_javaspring.exception.CommentNotFoundException;
-import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.CommentMapper;
 import vn.gt.__back_end_javaspring.repository.BlogRepository;
 import vn.gt.__back_end_javaspring.repository.CommentRepository;
-import vn.gt.__back_end_javaspring.repository.UserRepository;
-import vn.gt.__back_end_javaspring.repository.commentImageRepository;
 import vn.gt.__back_end_javaspring.service.CommentService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
@@ -35,8 +29,6 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final BlogRepository blogRepository;
     private final CommentMapper commentMapper;
-    private final UserRepository userRepository;
-    private final commentImageRepository commentImageRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -76,52 +68,24 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    @Transactional
     public CommentResponse addComment(CommentCreateDTO dto) {
-        Comment comment = commentMapper.toModel(dto);
+
+        System.out.println(">>> Blog ID nhận được: " + dto.getBlogId());
 
         Blog blog = blogRepository.findById(dto.getBlogId())
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
-        comment.setBlog(blog);
 
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        comment.setUser(user);
-
-        Comment parent = null;
-        if (dto.getCommentParentId() != null && !dto.getCommentParentId().isBlank()) {
-            parent = commentRepository.findById(dto.getCommentParentId())
-                    .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
-            comment.setParentComment(parent);
-        }
-
-        CommentImage commentImage = null;
-        if (dto.getCommentImageId() != null && !dto.getCommentImageId().isBlank()) {
-            commentImage = commentImageRepository.findById(dto.getCommentImageId())
-                    .orElseThrow(() -> new CommentImageNotFoundException("Comment image not found"));
-            comment.setCommentImage(commentImage);
-        }
-
-        if (blog.getCommentsCount() == null) blog.setCommentsCount(0L);
-        blog.setCommentsCount(blog.getCommentsCount() + 1);
-
-        if (parent != null) {
-            if (parent.getReplyCount() == null) parent.setReplyCount(0L);
-            parent.setReplyCount(parent.getReplyCount() + 1);
-        }
-
-        Comment saved = commentRepository.save(comment);
-
-        return commentMapper.toResponse(saved);
+        System.out.println(">>> Blog tìm thấy trong DB: " + blog.getId());
+        Comment comment = commentMapper.toModel(dto);
+        comment = commentRepository.save(comment);
+        return commentMapper.toResponse(comment);
     }
-
 
     @Override
     public CommentResponse updateComment(String commentId, CommentUpdateDTO commentUpdateDTO) {
         Comment comment =  commentRepository.findById(commentId).
                 orElseThrow(() -> new CommentNotFoundException("Comment not found"));
         commentMapper.updateEntity(comment, commentUpdateDTO);
-        comment.setIsEdited(true);
         Comment saved = commentRepository.save(comment);
         return commentMapper.toResponse(saved);
     }
@@ -139,9 +103,6 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponse deleteComment(String commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
-        Blog blog = blogRepository.findById(comment.getBlog().getId())
-                        .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
-        blog.setCommentsCount(blog.getCommentsCount() - 1);
         comment.setIsDeleted(true);
         commentRepository.save(comment);
         return commentMapper.toResponse(commentRepository.save(comment));

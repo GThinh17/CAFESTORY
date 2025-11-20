@@ -28,7 +28,8 @@ public class CommentController {
     public RestResponse<CommentResponse> getCommentById(@PathVariable String id) {
         CommentResponse commentResponse = commentService.getCommentById(id);
 
-        RestResponse<CommentResponse> restResponse = new RestResponse<>();
+        RestResponse restResponse = new RestResponse();
+
         restResponse.setData(commentResponse);
         restResponse.setStatusCode(200);
         restResponse.setMessage("Success");
@@ -36,11 +37,10 @@ public class CommentController {
         return restResponse;
     }
 
-
     @GetMapping("")
     public RestResponse<CursorPage<CommentResponse>> getNewestCommentsByBlogId(
             @RequestParam String blogId,
-            @RequestParam(required = false) String cursor,
+            @RequestParam String cursor,
             @RequestParam (defaultValue = "20" ) @Min(1) @Max(100) int size
     ) {
         RestResponse<CursorPage<CommentResponse>> restResponse = new RestResponse<>();
@@ -59,8 +59,6 @@ public class CommentController {
             @RequestBody @Validated CommentCreateDTO commentCreateDTO){
         RestResponse<CommentResponse> restResponse = new RestResponse<>();
         CommentResponse commentResponse = commentService.addComment(commentCreateDTO);
-
-        //Thieu adding 1 for reply count
 
         restResponse.setData(commentResponse);
         restResponse.setMessage("Success");

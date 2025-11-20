@@ -12,4 +12,17 @@ public interface BlogService {
      void deleteBlog(String id);
      BlogResponse getBlogById(String id);
      BlogResponse updateBlog(String id, BlogUpdateDTO blogUpdateDTO);
+
+    interface LikeService {
+
+        LikeResponse like(LikeCreateDTO request);
+
+        void unlike(LikeCreateDTO request);
+
+        boolean isLiked(String userId, String blogId);
+
+        long countLikes(String blogId);
+
+        List<LikeResponse> getLikesByBlog(String blogId);
+    }
 }

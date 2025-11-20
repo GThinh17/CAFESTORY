@@ -55,6 +55,9 @@ public class Comment {//Check
         @Column(name = "deleted_at")
         private LocalDateTime deletedAt;
 
+        @Column(name = "cooldown_second")
+        private Long cooldownSecond;
+
         @Column(name = "is_pin")
         private Boolean isPin;
 
@@ -77,7 +80,7 @@ public class Comment {//Check
         }
 
 
-         @PreUpdate
+    @PreUpdate
         public void onUpdate() {
             this.updatedAt = LocalDateTime.now();
         }
