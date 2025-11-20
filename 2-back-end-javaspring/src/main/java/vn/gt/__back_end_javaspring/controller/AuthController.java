@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import vn.gt.__back_end_javaspring.entity.User;
+import vn.gt.__back_end_javaspring.entity.UserRole;
 import vn.gt.__back_end_javaspring.DTO.LoginDTO;
 import vn.gt.__back_end_javaspring.DTO.RestLoginDTO;
 import vn.gt.__back_end_javaspring.DTO.SignupDTO;
@@ -48,7 +49,7 @@ public class AuthController {
 		// xác thực người dùng => cần viết hàm loadUserByUsername
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        System.out.println(authentication);
+		System.out.println(authentication);
 		// create token
 		String access_token = securityUtil.createToken(authentication);
 		RestLoginDTO restLoginDTO = new RestLoginDTO(access_token);
@@ -60,19 +61,12 @@ public class AuthController {
 	}
 
 	@PostMapping("api/signup")
-	public ResponseEntity<User> signup(@Valid @RequestBody SignupDTO signUp) {
-		User newUser = new User();
-
-		newUser.setEmail(signUp.getEmail());
-		newUser.setFullName(signUp.getFullname());
-		newUser.setPhone(signUp.getPhone());
-		newUser.setName(signUp.getName());
-
+	public ResponseEntity<SignupDTO> signup(@Valid @RequestBody SignupDTO signUp) {
 		// hashpassword
 		String hashPassword = this.passwordEncoder.encode(signUp.getPassword());
 		signUp.setPassword(hashPassword);
-		this.userService.handleSignup(signUp);
-
-		return ResponseEntity.ok().body(newUser);
+		User user = this.userService.handleSignup(signUp);
+		this.userService.handleUpdateRoleUser(user.getId());
+		return ResponseEntity.ok().body(signUp);
 	}
 }

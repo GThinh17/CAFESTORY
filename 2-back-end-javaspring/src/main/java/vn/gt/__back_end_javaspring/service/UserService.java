@@ -1,19 +1,33 @@
 package vn.gt.__back_end_javaspring.service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.Embedded;
+import vn.gt.__back_end_javaspring.entity.Role;
 import vn.gt.__back_end_javaspring.entity.User;
+import vn.gt.__back_end_javaspring.entity.UserRole;
+import vn.gt.__back_end_javaspring.entity.UserRoleId;
+import vn.gt.__back_end_javaspring.enums.RoleType;
 import vn.gt.__back_end_javaspring.DTO.SignupDTO;
+import vn.gt.__back_end_javaspring.repository.RoleRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
+import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
 
 @Service
 public class UserService {
 	private final UserRepository userRepository;
+	private final UserRoleRepository userRoleRepository;
+	private final RoleRepository roleRepository;
 
-	public UserService(UserRepository userRepository) {
+	public UserService(UserRepository userRepository, UserRoleRepository userRoleRepository,
+			RoleRepository roleRepository) {
 		this.userRepository = userRepository;
+		this.userRoleRepository = userRoleRepository;
+		this.roleRepository = roleRepository;
 	}
 
 	public User createUser(User newUser) {
@@ -36,6 +50,39 @@ public class UserService {
 		return this.userRepository.findByemail(username);
 	}
 
+	public User updateUserById(String id, User user) {
+		User updateUser = this.userRepository.findByemail(id);
+		updateUser = user;
+		this.userRepository.save(updateUser);
+		return updateUser;
+	}
+
+	public UserRole handleUpdateRoleUser(String userId) {
+
+		// 1. Lấy User
+		User user = this.userRepository.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		// 2. Lấy Role USER
+		Role role = this.roleRepository.findByroleName(RoleType.USER);
+		if (role == null) {
+			throw new RuntimeException("Role USER not found in database");
+		}
+
+		// 3. Tạo composite key
+		UserRoleId id = new UserRoleId(userId, role.getId());
+
+		// 4. Tạo entity UserRole
+		UserRole userRole = new UserRole();
+		userRole.setId(id);
+		userRole.setRole(role);
+		userRole.setUser(user);
+		userRole.setCreatedAt(LocalDateTime.now());
+
+		// 5. Lưu
+		return this.userRoleRepository.save(userRole);
+	}
+
 	public User handleSignup(SignupDTO signupUser) {
 		User newUser = new User();
 		String email = signupUser.getEmail();
@@ -51,4 +98,16 @@ public class UserService {
 		return this.userRepository.save(newUser);
 	}
 
+	public List<RoleType> getUserRole(String userId) {
+
+		List<UserRole> userRoles = userRoleRepository.findByUser_Id(userId);
+
+		List<RoleType> list = new ArrayList<>();
+
+		for (UserRole ur : userRoles) {
+			list.add(ur.getRole().getRoleName());
+		}
+
+		return list;
+	}
 }
