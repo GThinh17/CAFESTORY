@@ -3,7 +3,6 @@ package vn.gt.__back_end_javaspring.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
