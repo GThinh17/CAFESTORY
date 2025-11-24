@@ -45,7 +45,10 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
 
+        System.out.println("DTO: " + request.toString());
         blog.setLikesCount(blog.getLikesCount() + 1);
+        blogRepository.save(blog);
+
         BlogLike bloglike = blogLikeMapper.toModel(request);
         BlogLike saved =  blogLikeRepository.save(bloglike);
 
@@ -60,6 +63,8 @@ public class BlogLikeServiceImpl implements BlogLikeService {
                 .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
 
         blog.setLikesCount(blog.getLikesCount() - 1);
+
+        System.out.println("blogId: " + blogId + ", userId: " + userId);
 
         if(!blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
             throw new LikeNotFoundException("Like not exists");

@@ -19,5 +19,4 @@ public class CommentUpdateDTO {
 
     private Boolean isPin;
 
-    private LocalDateTime deletedAt;
 }

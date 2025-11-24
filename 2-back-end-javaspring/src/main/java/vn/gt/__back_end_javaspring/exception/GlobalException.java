@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import vn.gt.__back_end_javaspring.entity.RestResponse;
+import vn.gt.__back_end_javaspring.entity.Share;
 
 @RestControllerAdvice
 @ControllerAdvice
@@ -82,12 +83,21 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(LikeNotFoundException.class)
     public ResponseEntity<RestResponse<Object>> handleCommentNotFound(LikeNotFoundException ex) {
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.NOT_FOUND.value());
         res.setMessage(ex.getMessage());
         res.setErrors("Like not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
+    @ExceptionHandler(ShareNotFoundException.class)
+    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(ShareNotFoundException ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Share not found");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
 

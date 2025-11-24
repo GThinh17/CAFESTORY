@@ -43,7 +43,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found!"));
 
         comment.setLikesCount(comment.getLikesCount() + 1);
-
+        commentRepository.save(comment);
 
         CommentLike commentLike = commentLikeMapper.toModel(dto);
         CommentLike saved =  commentLikeRepository.save(commentLike);

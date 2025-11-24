@@ -11,11 +11,16 @@ import vn.gt.__back_end_javaspring.DTO.CommentUpdateDTO;
 import vn.gt.__back_end_javaspring.DTO.CursorPage;
 import vn.gt.__back_end_javaspring.entity.Blog;
 import vn.gt.__back_end_javaspring.entity.Comment;
+import vn.gt.__back_end_javaspring.entity.CommentImage;
+import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.exception.BlogNotFoundException;
 import vn.gt.__back_end_javaspring.exception.CommentNotFoundException;
+import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.CommentMapper;
 import vn.gt.__back_end_javaspring.repository.BlogRepository;
 import vn.gt.__back_end_javaspring.repository.CommentRepository;
+import vn.gt.__back_end_javaspring.repository.UserRepository;
+import vn.gt.__back_end_javaspring.repository.commentImageRepository;
 import vn.gt.__back_end_javaspring.service.CommentService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
@@ -29,6 +34,8 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final BlogRepository blogRepository;
     private final CommentMapper commentMapper;
+    private final UserRepository userRepository;
+    private final commentImageRepository commentImageRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -69,14 +76,38 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentResponse addComment(CommentCreateDTO dto) {
-
         Blog blog = blogRepository.findById(dto.getBlogId())
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
 
+        User user = userRepository.findById(dto.getUserId())
+                        .orElseThrow(()-> new UserNotFoundException("User not found "));
+
+        Comment parent = null;
+        if (dto.getCommentParentId() != null && !dto.getCommentParentId().isBlank()) {
+            parent = commentRepository.findById(dto.getCommentParentId())
+                    .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
+        }
+
+        CommentImage commentImage = null;
+        if (dto.getCommentImageId() != null && !dto.getCommentImageId().isBlank()) {
+            commentImage = commentImageRepository.findById(dto.getCommentImageId())
+                    .orElseThrow(() -> new CommentNotFoundException("Comment image not found"));
+        }
+
+
         blog.setCommentsCount(blog.getCommentsCount() + 1);
-        Comment comment = commentMapper.toModel(dto);
-        comment = commentRepository.save(comment);
-        return commentMapper.toResponse(comment);
+        System.out.println(blog.getCommentsCount());
+        System.out.println("DTO " + dto.toString());
+
+        if (parent != null) {
+            if (parent.getReplyCount() == null) parent.setReplyCount(0L);
+            parent.setReplyCount(parent.getReplyCount() + 1);
+        }
+
+        Comment saved = commentRepository.save(commentMapper.toModel(dto));
+
+        // 8. Return
+        return commentMapper.toResponse(saved);
     }
 
     @Override
@@ -84,6 +115,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment =  commentRepository.findById(commentId).
                 orElseThrow(() -> new CommentNotFoundException("Comment not found"));
         commentMapper.updateEntity(comment, commentUpdateDTO);
+        comment.setIsEdited(true);
         Comment saved = commentRepository.save(comment);
         return commentMapper.toResponse(saved);
     }

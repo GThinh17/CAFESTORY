@@ -28,7 +28,6 @@ public interface BlogMapper {
     @Mapping(source = "location.name",   target = "locationName")
 
     @Mapping(source = "user.id",         target = "userId")
-    @Mapping(source = "user.userName",   target = "userName")
     @Mapping(source = "user.fullName",   target = "userFullName")
     @Mapping(source = "user.avatar",     target = "userAvatar")
 

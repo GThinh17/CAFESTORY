@@ -20,10 +20,14 @@ public interface CommentMapper {
     @Mapping(target = "userFullName", source = "user.fullName")
     @Mapping(target = "userAvatar", source = "user.avatar")
     @Mapping(target = "commentImageId", source = "commentImage.id")
+    @Mapping(target = "commentImageUrl", source = "commentImage.imageUrl")
     CommentResponse toResponse(Comment comment);
 
     List<CommentResponse>  toResponseList(List<Comment> comments);
 
+    @Mapping(source = "blogId", target = "blog.id")
+    @Mapping(source = "userId", target = "user.id")
+    @Mapping(source = "commentImageId", target = "commentImage.id")
     Comment toModel(CommentCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
