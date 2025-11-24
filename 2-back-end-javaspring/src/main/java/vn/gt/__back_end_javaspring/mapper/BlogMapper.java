@@ -26,20 +26,16 @@ public interface BlogMapper {
 
     @Mapping(source = "location.id",     target = "locationId")
     @Mapping(source = "location.name",   target = "locationName")
-
     @Mapping(source = "user.id",         target = "userId")
     @Mapping(source = "user.fullName",   target = "userFullName")
     @Mapping(source = "user.avatar",     target = "userAvatar")
-
     @Mapping(source = "page.id",         target = "pageId")
-
     @Mapping(source = "commentsCount",   target = "commentCount")
     @Mapping(source = "likesCount",      target = "likeCount")
     @Mapping(source = "sharesCount",     target = "shareCount")
     BlogResponse toResponse(Blog blog);
 
     List<BlogResponse> toResponseList(List<Blog> blogs);
-
 
     Blog toModel(BlogCreateDTO dto);
 
