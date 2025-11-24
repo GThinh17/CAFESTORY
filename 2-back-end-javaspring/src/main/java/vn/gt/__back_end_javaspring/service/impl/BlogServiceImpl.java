@@ -10,9 +10,13 @@ import vn.gt.__back_end_javaspring.DTO.BlogResponse;
 import vn.gt.__back_end_javaspring.DTO.BlogUpdateDTO;
 import vn.gt.__back_end_javaspring.DTO.CursorPage;
 import vn.gt.__back_end_javaspring.entity.Blog;
+import vn.gt.__back_end_javaspring.entity.Media;
 import vn.gt.__back_end_javaspring.exception.BlogNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.BlogMapper;
 import vn.gt.__back_end_javaspring.repository.BlogRepository;
+import vn.gt.__back_end_javaspring.repository.PageRepository;
+import vn.gt.__back_end_javaspring.repository.UserRepository;
+import vn.gt.__back_end_javaspring.repository.locationRepository;
 import vn.gt.__back_end_javaspring.service.BlogService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
@@ -25,12 +29,44 @@ public class BlogServiceImpl implements BlogService {
 
     private final BlogRepository blogRepository;
     private final BlogMapper blogMapper;
+    private final UserRepository userRepository;
+    private final PageRepository pageRepository;
+    private final locationRepository locationRepository;
 
     @Override
-    public BlogResponse createBlog(BlogCreateDTO blogCreateDTO) {
-        Blog blog = blogMapper.toModel(blogCreateDTO);
+    public BlogResponse createBlog(BlogCreateDTO dto) {
+        Blog blog = blogMapper.toModel(dto);
+
+        var user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getUserId()));
+        blog.setUser(user);
+
+        if (dto.getPageId() != null) {
+            var page = pageRepository.findById(dto.getPageId())
+                    .orElseThrow(() -> new RuntimeException("Page not found with id: " + dto.getPageId()));
+            blog.setPage(page);
+        }
+
+        if (dto.getLocationId() != null) {
+            var location = locationRepository.findById(dto.getLocationId())
+                    .orElseThrow(() -> new RuntimeException("Location not found with id: " + dto.getLocationId()));
+            blog.setLocation(location);
+        }
+
+        if (dto.getMediaUrls() != null && !dto.getMediaUrls().isEmpty()) {
+            List<Media> mediaList = dto.getMediaUrls().stream()
+                    .map(url -> {
+                        Media m = new Media();
+                        m.setMediaUrl(url);   // hoặc m.setUrl(url); tuỳ entity của bạn
+                        m.setBlog(blog);
+                        return m;
+                    })
+                    .toList();
+            blog.setMediaList(mediaList);
+        }
 
         Blog saved = blogRepository.save(blog);
+
         return blogMapper.toResponse(saved);
     }
 
@@ -91,11 +127,16 @@ public class BlogServiceImpl implements BlogService {
 
         var items = blogMapper.toResponseList(blogs);
 
+        System.out.println("Blog size: " + blogs.size());
+        System.out.println("size: " + size);
         String nextCursor = null;
         if (blogs.size() == size) {
             var last = blogs.get(blogs.size() - 1);
             nextCursor = CursorUtil.encode(last.getCreatedAt(), last.getId());
+            System.out.println("nextCursor: " + nextCursor);
         }
+
+
 
         return CursorPage.<BlogResponse>builder()
                 .data(items)

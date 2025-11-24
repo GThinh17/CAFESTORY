@@ -26,10 +26,6 @@ public class BlogCreateDTO {
     @NotNull(message = "Visibility is required")
     private Visibility visibility;
 
-    private Boolean allowComment = true;
-
-    private Boolean isPin = false;
-
     private String locationId;
 
     private String pageId;

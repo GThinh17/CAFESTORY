@@ -47,8 +47,6 @@ public class Blog { //Check
         @Column(name = "visibility")
         private Visibility visibility;
 
-        @Column(name = "cooldown_second")
-        private Long cooldownSecond;
 
         @Column(name = "is_deleted")
         private Boolean isDeleted;
@@ -84,6 +82,9 @@ public class Blog { //Check
             this.likesCount = 0L;
             this.sharesCount = 0L;
             this.commentsCount = 0L;
+            this.isDeleted = false;
+            this.allowComment = true;
+            this.isPin = false;
         }
 
         @PreUpdate

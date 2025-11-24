@@ -33,6 +33,9 @@ public class BlogResponse {
 
     private String locationId;
     private String locationName;
+    private String addressline;
+    private String longitude;
+    private String latitude;
 
     private String userId;
     private String userFullName;

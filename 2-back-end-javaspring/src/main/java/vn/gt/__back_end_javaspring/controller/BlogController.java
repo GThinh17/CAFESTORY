@@ -31,6 +31,7 @@ public class BlogController {
 
         if(userId == null){
             RestResponse<CursorPage<BlogResponse>> restResponse = new RestResponse<>();
+
             CursorPage<BlogResponse> data = blogService.findNewestBlog(cursor, size);
             restResponse.setStatusCode(200);
             restResponse.setData(data);
