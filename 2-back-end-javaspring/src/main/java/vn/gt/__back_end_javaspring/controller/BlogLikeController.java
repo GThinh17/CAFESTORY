@@ -20,7 +20,8 @@ public class BlogLikeController {
 
 
     @PostMapping("")
-    public RestResponse<BlogLikeResponse> likeBlog(@Valid @RequestBody BlogLikeCreateDTO request) {
+    public RestResponse<BlogLikeResponse> likeBlog(
+            @Valid @RequestBody BlogLikeCreateDTO request) {
         BlogLikeResponse response = blogLikeService.like(request);
 
         RestResponse<BlogLikeResponse> res = new RestResponse<>();

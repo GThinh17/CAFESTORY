@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import vn.gt.__back_end_javaspring.entity.CommentLike;
 
 import java.util.List;
@@ -19,6 +20,9 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, String
 
     List<CommentLike> findByComment_Id(String commentId);
 
-    @Query("delete from CommentLike l where l.user.id = :userId and l.comment.id = :commentId")
-    int deleteByUserAndComment(String userId, String commentId);
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM CommentLike l WHERE l.user.id = :userId AND l.comment.id = :commentId")
+    int deleteByUserIdAndCommentId(@Param("userId") String userId,
+                                   @Param("commentId") String commentId);
 }
