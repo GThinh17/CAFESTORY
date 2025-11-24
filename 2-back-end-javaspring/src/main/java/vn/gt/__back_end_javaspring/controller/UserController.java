@@ -3,6 +3,7 @@ package vn.gt.__back_end_javaspring.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -47,7 +48,7 @@ public class UserController {
 	@GetMapping("/users/{id}")
 	public ResponseEntity<?> getUser(@PathVariable("id") String id) {
 
-		User user = this.userService.getUserById(id);
+		Optional<User> user = this.userService.getUserById(id);
 		return ResponseEntity.ok().body(user);
 
 	}

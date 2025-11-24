@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vn.gt.__back_end_javaspring.entity.Embedded.UserRoleId;
 
 import java.time.LocalDateTime;
 

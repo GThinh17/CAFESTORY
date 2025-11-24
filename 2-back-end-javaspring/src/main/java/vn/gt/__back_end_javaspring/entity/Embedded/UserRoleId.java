@@ -1,4 +1,4 @@
-package vn.gt.__back_end_javaspring.entity;
+package vn.gt.__back_end_javaspring.entity.Embedded;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+
+import org.checkerframework.common.aliasing.qual.Unique;
 
 @Embeddable
 @Getter
@@ -19,5 +21,6 @@ public class UserRoleId implements Serializable {
     private String userId;
 
     @Column(name = "role_id")
+    @Unique
     private String roleId;
 }
