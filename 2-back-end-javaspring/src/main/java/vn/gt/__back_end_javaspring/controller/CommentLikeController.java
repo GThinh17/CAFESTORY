@@ -62,9 +62,6 @@ public class CommentLikeController {
         return res;
     }
 
-    /**
-     * Check user đã like comment chưa
-     */
     @GetMapping("/is-liked")
     public RestResponse<Boolean> isLiked(
             @RequestParam String userId,

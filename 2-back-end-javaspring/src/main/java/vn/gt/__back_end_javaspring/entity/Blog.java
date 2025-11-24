@@ -70,16 +70,13 @@ public class Blog { //Check
         @JoinColumn(name = "user_id")
         private User user;
 
-
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "like_id")
         private BlogLike bloglikeid;
 
-
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "page_id")
         private Page page;
-
 
         @PrePersist
         protected void onCreate() {

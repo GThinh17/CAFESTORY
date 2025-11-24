@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "location")
 public class Location { //Check
-
     @Id
     @Column(name = "location_id")
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -23,9 +23,6 @@ public class User { //Check
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 
-	@Column(name = "user_name", nullable = false, length = 100)
-	private String userName;
-
 	@Column(name = "full_name", length = 100)
 	private String fullName;
 
@@ -66,14 +63,6 @@ public class User { //Check
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getFullName() {

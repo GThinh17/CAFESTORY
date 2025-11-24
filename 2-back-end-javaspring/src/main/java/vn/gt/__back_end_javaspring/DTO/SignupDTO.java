@@ -4,21 +4,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class SignupDTO {
-	@NotBlank(message = "name is not blank")
-	private String name;
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	@NotBlank(message = "fullname is not blank")
 	private String fullname;
@@ -34,6 +27,13 @@ public class SignupDTO {
 	@Email
 	@NotBlank(message = "email is not blank")
 	private String email;
+
+    private String avatar;
+
+    private String address;
+
+    private String dateOfBirth;
+
 
 	public String getFullname() {
 		return fullname;

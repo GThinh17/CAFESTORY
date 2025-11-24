@@ -28,8 +28,7 @@ public class CommentController {
     public RestResponse<CommentResponse> getCommentById(@PathVariable String id) {
         CommentResponse commentResponse = commentService.getCommentById(id);
 
-        RestResponse restResponse = new RestResponse();
-
+        RestResponse<CommentResponse> restResponse = new RestResponse<>();
         restResponse.setData(commentResponse);
         restResponse.setStatusCode(200);
         restResponse.setMessage("Success");
@@ -37,10 +36,11 @@ public class CommentController {
         return restResponse;
     }
 
+
     @GetMapping("")
     public RestResponse<CursorPage<CommentResponse>> getNewestCommentsByBlogId(
             @RequestParam String blogId,
-            @RequestParam String cursor,
+            @RequestParam(required = false) String cursor,
             @RequestParam (defaultValue = "20" ) @Min(1) @Max(100) int size
     ) {
         RestResponse<CursorPage<CommentResponse>> restResponse = new RestResponse<>();

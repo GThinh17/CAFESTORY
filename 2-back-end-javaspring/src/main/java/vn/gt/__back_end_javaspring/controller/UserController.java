@@ -40,7 +40,6 @@ public class UserController {
 
 	@PostMapping("/users")
 	public ResponseEntity<User> createUser(@RequestBody User newUser) {
-		// hash Password by Password Encoder
 		String hashPassword = this.passwordEncoder.encode(newUser.getPassword());
 		newUser.setPassword(hashPassword);
 
@@ -54,7 +53,6 @@ public class UserController {
 		User user = userService.getUserById(id);
 		user.setAddress(updateUser.getAddress());
 		user.setDateOfBirth(updateUser.getDateOfBirth());
-		user.setFullName(updateUser.getFullName());
 		user.setFullName(updateUser.getFullName());
 		user.setUpdatedAt(LocalDateTime.now());
 		user = this.userService.createUser(user);

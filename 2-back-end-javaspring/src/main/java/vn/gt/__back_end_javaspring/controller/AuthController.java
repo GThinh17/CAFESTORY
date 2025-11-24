@@ -43,7 +43,7 @@ public class AuthController {
 
 		// Nạp input gồm username/password vào Security
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-				loginDTO.getUsername(), loginDTO.getPassword());
+				loginDTO.getEmail(), loginDTO.getPassword());
 
 		// xác thực người dùng => cần viết hàm loadUserByUsername
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -66,7 +66,6 @@ public class AuthController {
 		newUser.setEmail(signUp.getEmail());
 		newUser.setFullName(signUp.getFullname());
 		newUser.setPhone(signUp.getPhone());
-		newUser.setFullName(signUp.getName());
 
 		// hashpassword
 		String hashPassword = this.passwordEncoder.encode(signUp.getPassword());

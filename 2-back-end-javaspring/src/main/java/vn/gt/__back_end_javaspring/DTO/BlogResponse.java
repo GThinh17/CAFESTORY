@@ -35,7 +35,6 @@ public class BlogResponse {
     private String locationName;
 
     private String userId;
-    private String userName;
     private String userFullName;
     private String userAvatar;
 

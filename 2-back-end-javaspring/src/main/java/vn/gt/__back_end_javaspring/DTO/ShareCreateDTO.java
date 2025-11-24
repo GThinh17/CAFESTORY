@@ -26,8 +26,7 @@ public class ShareCreateDTO {
     @NotBlank(message = "Blog is required")
     private String blogId;
 
-
-    private Location location;
+    private String locationId;
 
     private String caption;
 
