@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "blog_share")
+@Table(name = "share")
 @Getter
 @Setter
 @NoArgsConstructor

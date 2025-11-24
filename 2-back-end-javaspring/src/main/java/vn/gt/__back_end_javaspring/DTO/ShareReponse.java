@@ -22,37 +22,24 @@ public class ShareReponse {
     private String shareId;
 
     private String userId;
-
     private String userFullName;
-
     private String userAvatarUrl;
 
     private String blogId;
-
     private String blogCaption;
-
     private LocalDateTime blogCreatedAt;
-
-
     private Boolean blogIsDeleted;
 
     private String locationId;
-
     private String locationName;
-
     private String addressLine;
-
     private String ward;
-
     private String province;
-
     private String longitude;
-
     private String latitude;
 
     private String caption;
-
     private LocalDateTime createdAt;
-
     private Boolean isDeleted;
+
 }

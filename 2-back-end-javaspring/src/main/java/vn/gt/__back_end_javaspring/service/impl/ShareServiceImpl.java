@@ -30,16 +30,20 @@ public class ShareServiceImpl implements ShareService {
     private final BlogRepository blogRepository;
     @Override
     public ShareReponse createShare(ShareCreateDTO dto) {
+        Share share = shareMapper.toEntity(dto);
+
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
+        share.setUser(user);
+
         Blog blog = blogRepository.findById(dto.getBlogId())
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
+        share.setBlog(blog);
 
         blog.setSharesCount(blog.getSharesCount() + 1);
         blogRepository.save(blog);
 
-        Share share = shareMapper.toEntity(dto);
         Share saved = shareRepository.save(share);
         return shareMapper.toResponse(saved);
     }
