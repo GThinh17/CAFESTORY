@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Like { // cHECK
+public class Like { // CHECK
     @Id
     @Column(name = "like_id")
     @GeneratedValue(strategy = GenerationType.UUID)

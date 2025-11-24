@@ -3,7 +3,6 @@ package vn.gt.__back_end_javaspring.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,9 +16,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User { //Check
+public class User { // Check
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
+	@Column(name = "id", length = 36)
 	private String id;
 
 	@Column(name = "user_name", nullable = false, length = 100)

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import vn.gt.__back_end_javaspring.entity.User;
-import vn.gt.__back_end_javaspring.entity.UserRole;
 import vn.gt.__back_end_javaspring.DTO.LoginDTO;
 import vn.gt.__back_end_javaspring.DTO.RestLoginDTO;
 import vn.gt.__back_end_javaspring.DTO.SignupDTO;
@@ -61,12 +60,12 @@ public class AuthController {
 	}
 
 	@PostMapping("api/signup")
-	public ResponseEntity<SignupDTO> signup(@Valid @RequestBody SignupDTO signUp) {
+	public ResponseEntity<?> signup(@Valid @RequestBody SignupDTO signUp) {
 		// hashpassword
 		String hashPassword = this.passwordEncoder.encode(signUp.getPassword());
 		signUp.setPassword(hashPassword);
 		User user = this.userService.handleSignup(signUp);
-		this.userService.handleUpdateRoleUser(user.getId());
-		return ResponseEntity.ok().body(signUp);
+		this.userService.handleUpdateRoleUser(user.getEmail());
+		return ResponseEntity.ok().body(user);
 	}
 }
