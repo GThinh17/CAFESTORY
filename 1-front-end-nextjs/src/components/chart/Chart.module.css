@@ -1,0 +1,43 @@
+.container {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  
+}
+.cardFooterContent {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 0.5rem; /* khoảng cách giữa các phần */
+  font-size: 0.875rem; /* text-sm */
+  padding: 0.5rem;
+  padding-top: 0;
+}
+
+/* Grid container trong footer */
+.cardFooterGrid {
+  display: grid;
+  gap: 0.5rem;
+}
+
+/* Text with icon */
+.cardFooterTrend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500; /* font-medium */
+  line-height: 1;
+}
+
+/* Muted text */
+.cardFooterMuted {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1;
+  color: var(--muted-foreground); /* tương ứng text-muted-foreground */
+}
+
+.header {
+  padding: 0.5rem;
+}

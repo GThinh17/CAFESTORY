@@ -1,17 +1,19 @@
 "use client";
+
 import Image from "next/image";
 import { useState } from "react";
 import { Heart, MessageCircle, Send, MoreHorizontal } from "lucide-react";
 import { Input } from "../ui/input";
 import "./post.css";
 
-interface PostProps {
+export interface PostProps {
   username: string;
   avatar: string;
   image: string;
   likes: number;
   caption: string;
   time: string;
+  onOpenPost: () => void;  // 👈 thêm vào
 }
 
 export function Post({
@@ -21,10 +23,9 @@ export function Post({
   likes,
   caption,
   time,
+  onOpenPost,
 }: PostProps) {
   const [expanded, setExpanded] = useState(false);
-
-  const toggleCaption = () => setExpanded(!expanded);
 
   return (
     <div className="post">
@@ -60,7 +61,11 @@ export function Post({
       <div className="post-actions">
         <div className="left-actions">
           <Heart size={24} className="icon" />
-          <MessageCircle size={24} className="icon" />
+          <MessageCircle
+            size={24}
+            className="icon"
+            onClick={onOpenPost}     // 👈 mở modal khi bấm comment
+          />
           <Send size={24} className="icon" />
         </div>
       </div>
@@ -87,7 +92,12 @@ export function Post({
       </div>
 
       {/* Add Comment */}
-      <div className="add-comment"><Input placeholder="Add a comment"/></div>
+      <div className="add-comment">
+        <Input
+          placeholder="Add a comment"
+          onClick={onOpenPost}        // 👈 click input cũng mở modal
+        />
+      </div>
     </div>
   );
 }
