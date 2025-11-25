@@ -5,37 +5,26 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Data
 @Entity
 @AllArgsConstructor
-@Data
 @NoArgsConstructor
-@Table(name = "earning_event")
-public class EarningEvent {
+@Table(name = "reviewer_follow")
+public class ReviewerFollow {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "earning_event_id")
+    @Column(name = "reviewer_follow_id")
     private String id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewer_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "reviewer_id")
     private Reviewer reviewer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pricing_rule_id")
-    private PricingRule pricingRule;
-
-    @Column(name = "score")
-    private Long score;
-
-    @Column(name = "revenue_amount")
-    private BigDecimal revenueAmount;
-
-    @Column(name = "amount")
-    private BigDecimal amount;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -44,5 +33,4 @@ public class EarningEvent {
     public void prePersist() {
         createdAt = LocalDateTime.now();
     }
-
 }

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-@PrimaryKeyJoinColumn(name = "user_id") //check
+@PrimaryKeyJoinColumn(name = "user_id")
 public class Reviewer extends User{
 
 	@Column(name = "bio", length = 500)
