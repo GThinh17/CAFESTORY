@@ -59,6 +59,7 @@ public class UserController {
 		if (!hasRole(jwt, "ROLE_ADMIN")) {
 			return ResponseEntity.status(403).body("Access denied: You are not ADMIN");
 		}
+
 		String hashPassword = this.passwordEncoder.encode(newUser.getPassword());
 		newUser.setPassword(hashPassword);
 
@@ -74,6 +75,7 @@ public class UserController {
 			return ResponseEntity.status(403).body("Access denied: You are not ADMIN");
 		}
 		User user = this.userService.updateUserById(id, updateUser);
+
 		return ResponseEntity.ok().body(user);
 	}
 }
