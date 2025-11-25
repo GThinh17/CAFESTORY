@@ -89,9 +89,7 @@ public class UserService {
 		String password = signupUser.getPassword();
 		String fullname = signupUser.getFullname();
 		String phone = signupUser.getPhone();
-		String name = signupUser.getName();
 		newUser.setEmail(email);
-		newUser.setName(name);
 		newUser.setFullName(fullname);
 		newUser.setPassword(password);
 		newUser.setPhone(phone);

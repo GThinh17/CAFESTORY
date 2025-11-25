@@ -22,9 +22,6 @@ public class User { // Check
 	@Column(name = "id", length = 36)
 	private String id;
 
-	@Column(name = "user_name", nullable = false, length = 100)
-	private String userName;
-
 	@Column(name = "full_name", length = 100)
 	private String fullName;
 
@@ -46,11 +43,11 @@ public class User { // Check
 	@Column(name = "avatar", length = 255)
 	private String avatar;
 
-	@Column(name = "userFollower")
-	String userFollower;
+	@Column(name = "follower_count")
+	Integer followerCount;
 
-	@Column(name = "userLike")
-	String userLike;
+    @Column(name = "following_count")
+    Integer followingCount;
 
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
@@ -58,108 +55,112 @@ public class User { // Check
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
-	public String getId() {
-		return id;
-	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getName() {
-		return userName;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.userName = name;
-	}
+    public String getFullName() {
+        return fullName;
+    }
 
-	public String getFullName() {
-		return fullName;
-	}
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
+    public String getPhone() {
+        return phone;
+    }
 
-	public String getPhone() {
-		return phone;
-	}
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
 
-	public LocalDate getDateOfBirth() {
-		return dateOfBirth;
-	}
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
 
-	public void setDateOfBirth(LocalDate dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public String getAvatar() {
+        return avatar;
+    }
 
-	public String getAvatar() {
-		return avatar;
-	}
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
+    public Integer getFollowerCount() {
+        return followerCount;
+    }
 
-	public String getUserFollower() {
-		return userFollower;
-	}
+    public void setFollowerCount(Integer followerCount) {
+        this.followerCount = followerCount;
+    }
 
-	public void setUserFollower(String userFollower) {
-		this.userFollower = userFollower;
-	}
+    public Integer getFollowingCount() {
+        return followingCount;
+    }
 
-	public String getUserLike() {
-		return userLike;
-	}
+    public void setFollowingCount(Integer followingCount) {
+        this.followingCount = followingCount;
+    }
 
-	public void setUserLike(String userLike) {
-		this.userLike = userLike;
-	}
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.followerCount = 0;
+        this.followingCount = 0;
+    }
+    @PreUpdate
+    public void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
 }

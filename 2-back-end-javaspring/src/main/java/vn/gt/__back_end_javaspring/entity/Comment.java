@@ -23,14 +23,22 @@ public class Comment {//Check
         private Blog blog;
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "parent_commend_id")
-        private Comment commentParent;
+        @JoinColumn(name = "user_id")
+        private User user;
 
-        @OneToMany(mappedBy = "commentParent",  cascade = CascadeType.ALL, orphanRemoval = true)
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "parent_comment_id")
+        private Comment parentComment;
+
+        @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
         private List<Comment> replies = new ArrayList<>();
 
         @Column(name = "content", nullable = false, length = 500)
         private String content;
+
+        @OneToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "comment_image_id")
+        private CommentImage commentImage;
 
         @Column(name = "likes_count")
         private Long likesCount;
@@ -42,10 +50,10 @@ public class Comment {//Check
         private Boolean isEdited;
 
         @Column(name = "is_deleted")
-        private Boolean isDeleted;
+        private Boolean isDeleted; //Khong xoa dc deleted
 
-        @Column(name = "cooldown_second")
-        private Long cooldownSecond;
+        @Column(name = "deleted_at")
+        private LocalDateTime deletedAt;
 
         @Column(name = "is_pin")
         private Boolean isPin;
@@ -53,6 +61,24 @@ public class Comment {//Check
         @Column(name = "created_at")
         private LocalDateTime createdAt;
 
+        @Column(name = "updated_at")
+        private LocalDateTime updatedAt;
 
 
+
+        @PrePersist
+        public void onCreate() {
+            if (this.createdAt == null) this.createdAt = LocalDateTime.now();
+            if (this.likesCount == null) this.likesCount = 0L;
+            if (this.replyCount == null) this.replyCount = 0L;
+            if (this.isDeleted == null) this.isDeleted = Boolean.FALSE;
+            if (this.isEdited == null) this.isEdited = Boolean.FALSE;
+            if (this.isPin == null) this.isPin = Boolean.FALSE;
+        }
+
+
+         @PreUpdate
+        public void onUpdate() {
+            this.updatedAt = LocalDateTime.now();
+        }
 }

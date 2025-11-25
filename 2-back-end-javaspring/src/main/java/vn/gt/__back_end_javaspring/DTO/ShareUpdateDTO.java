@@ -5,19 +5,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
+import vn.gt.__back_end_javaspring.entity.Location;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LoginDTO {
-	@NotBlank(message = "email is not blank")
-	private String email;
+public class ShareUpdateDTO {
 
-	@NotBlank(message = "password is not blank")
-	private String password;
+    private String locationId;
 
+    private String caption;
 
-
+    private Boolean isDeleted;
 }

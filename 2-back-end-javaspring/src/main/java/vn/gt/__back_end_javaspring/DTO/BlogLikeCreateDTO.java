@@ -5,19 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class LoginDTO {
-	@NotBlank(message = "email is not blank")
-	private String email;
+public class BlogLikeCreateDTO {
+    @NotBlank(message = "User is required")
+    private String userId;
 
-	@NotBlank(message = "password is not blank")
-	private String password;
-
-
-
+    @NotBlank(message = "Blog is required")
+    private String blogId;
 }
