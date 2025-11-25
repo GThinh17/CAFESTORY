@@ -1,0 +1,84 @@
+.modalContainer {
+  width: 85vw;
+  max-width: 1100px;
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+}
+
+.modalHeader {
+  padding: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modalBody {
+  display: flex;
+  height: 100%;
+}
+
+.createLeft {
+  flex: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.previewImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-bottom-left-radius: 10px;
+}
+
+.createRight {
+  flex: 2;
+  border-left: 1px solid var(--border);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.userRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.captionInput {
+  width: 100%;
+  min-height: 140px;
+  border: none;
+  resize: none;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.captionInput:focus,
+.captionInput:focus-visible,
+.captionInput:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.optionRow {
+  padding: 12px 0;
+  cursor: pointer;
+  font-size: 14px;
+   color: var(--muted-foreground);
+}
+
+.btnShare {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  cursor: pointer;
+}

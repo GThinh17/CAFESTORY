@@ -1,0 +1,97 @@
+@import "../../app/layout.scss";
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 250px;
+  height: 100vh;
+  border-right: 1px solid var(--border);
+  background-color: var(--background);
+  padding: 20px 10px;
+  position: fixed;
+  @include medium {
+    width: 60px;
+    padding: 5px;
+  }
+}
+
+.sidebar__logo {
+  font-family: "Billabong", cursive;
+  font-size: 32px;
+  margin-bottom: 25px;
+  margin-left: 10px;
+  color: var(--foreground);
+  @include medium {
+    display: none;
+  }
+}
+
+.logoCon {
+  display: none;
+  @include medium {
+    display: flex;
+    margin-left: 15px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+  }
+}
+
+.sidebar__menu,
+.sidebar__bottom {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar__menu li,
+.sidebar__bottom li {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 10px;
+  color: var(--foreground);
+  transition: background-color 0.25s, color 0.25s;
+}
+
+/* 🌙 Hover màu nổi bật, tự đổi theo dark/light */
+.sidebar__menu li:hover,
+.sidebar__bottom li:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+  transform: translateX(4px);
+  transition: all 0.25s ease-in-out;
+}
+
+.sidebar__menu li span,
+.sidebar__bottom li span {
+  font-size: 15px;
+}
+
+.sidebarComp {
+  @include medium {
+    display: none;
+  }
+}
+
+.sidebar__menu li.active {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+  transform: translateX(4px);
+}
+
+.sidebar__menu li.active:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: inherit;
+  text-decoration: none;
+  width: 100%;
+}

@@ -48,7 +48,7 @@ public class AuthController {
 		// xác thực người dùng => cần viết hàm loadUserByUsername
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        System.out.println(authentication);
+		System.out.println(authentication);
 		// create token
 		String access_token = securityUtil.createToken(authentication);
 		RestLoginDTO restLoginDTO = new RestLoginDTO(access_token);
@@ -60,18 +60,13 @@ public class AuthController {
 	}
 
 	@PostMapping("api/signup")
-	public ResponseEntity<User> signup(@Valid @RequestBody SignupDTO signUp) {
-		User newUser = new User();
-
-		newUser.setEmail(signUp.getEmail());
-		newUser.setFullName(signUp.getFullname());
-		newUser.setPhone(signUp.getPhone());
+	public ResponseEntity<?> signup(@Valid @RequestBody SignupDTO signUp) {
 
 		// hashpassword
 		String hashPassword = this.passwordEncoder.encode(signUp.getPassword());
 		signUp.setPassword(hashPassword);
-		this.userService.handleSignup(signUp);
-
-		return ResponseEntity.ok().body(newUser);
+		User user = this.userService.handleSignup(signUp);
+		this.userService.handleUpdateRoleUser(user.getEmail());
+		return ResponseEntity.ok().body(user);
 	}
 }
