@@ -1,0 +1,79 @@
+/* Nền danh sách tin nhắn */
+.cs-message-list {
+  background-color: var(--background) !important;
+}
+
+/* Bong bóng tin nhắn của chính mình */
+.cs-message--outgoing .cs-message__content {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+/* Bong bóng tin nhắn của người khác */
+.cs-message--incoming .cs-message__content {
+  background-color: var(--secondary) !important;
+  color: var(--secondary-foreground) !important;
+  border-radius: var(--radius-lg) !important;
+
+}
+
+/* Header hoặc container chung */
+.cs-chat-container {
+  background-color: var(--background) !important;
+}
+
+.cs-message-input {
+  background-color: var(--background) !important;
+  border-top: 1px solid var(--border) !important;
+  padding: 12px !important;
+}
+
+.cs-message-input__tools button {
+  background-color: var(--button) !important;
+  color: var(--foreground) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 6px 12px !important;
+  transition: opacity 0.2s ease;
+}
+
+/* Thời gian gửi tin nhắn (hiện giữa khung chat) */
+.cs-message-separator {
+  text-align: center !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--muted-foreground) !important;
+  background: transparent !important;
+  margin: 16px 0 !important;
+}
+
+.cs-message-input__content-editor {
+  background-color: var(--background) !important; /* Màu nền theo global */
+  color: var(--foreground) !important;
+}
+
+.cs-message-input__content-editor-wrapper {
+  background-color: var(--background) !important;
+  border: 2px solid var(--border);
+  box-shadow: none !important;
+  border-radius: 20px !important;
+}
+
+/* Ghi đè màu placeholder của ChatScope */
+.cs-message-input__content-editor[contenteditable="true"]:empty:before {
+  color: var(--muted-foreground) !important; /* đổi sang màu bạn muốn */
+  opacity: 0.7; /* tùy chỉnh độ mờ */
+}
+.Con {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.messageCon {
+  height: 550px;
+}
+
+.inputCon {
+  height: 200px;
+}

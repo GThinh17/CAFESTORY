@@ -1,0 +1,33 @@
+/* BarChart.module.css */
+
+/* Card bao quanh chart */
+.cardContainer {
+  width: 100%;
+  height: 600px; /* chiều cao cố định, có thể chỉnh */
+  padding: 1rem;
+  box-shadow: 0 2px 2px var(--border);
+  border-radius: 1rem;
+}
+
+/* Header của card */
+.cardHeader {
+  padding-bottom: 0.5rem;
+}
+
+/* Title của card */
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary); /* màu chữ tối */
+}
+
+/* Phần chứa chart */
+.cardContent {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center; /* căn giữa theo ngang */
+  align-items: center; /* căn giữa theo dọc */
+}
+
+

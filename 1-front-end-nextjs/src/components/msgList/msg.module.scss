@@ -1,0 +1,88 @@
+@import "../../app/layout.scss";
+
+.wrapper {
+  width: 100%;
+  font-family: system-ui, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  max-height: 80vh;
+  overflow-y: scroll;
+}
+
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  @include small {
+    gap: 8px;
+  }
+}
+
+.item:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  @include small {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.name {
+  width: 180px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--foreground);
+  text-overflow: ellipsis;
+   overflow: hidden;
+   white-space: nowrap;
+   @include small {
+   width: 110px;
+  }
+}
+
+.time {
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+
+.preview {
+  font-size: 11px;
+  width: 180px;
+  color: var(--muted-foreground);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @include small {
+   width: 110px;
+  }
+}

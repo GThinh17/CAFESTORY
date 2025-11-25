@@ -1,0 +1,11 @@
+.ModalCon {
+  padding: 20px;
+  height: 80vh;
+  max-width: 800px;
+}
+
+.NoteCon {
+  max-height: 95%;
+  overflow-y: scroll;
+  align-items: flex-start;
+}

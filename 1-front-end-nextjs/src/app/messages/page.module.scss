@@ -1,0 +1,81 @@
+@import "../layout.scss";
+.page {
+  display: flex;
+  justify-content: center; /* Căn giữa nội dung */
+  align-items: center;
+  max-height: 100vh; /* Toàn màn hình */
+  position: fixed;
+}
+
+.main {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+}
+
+.leftContainer {
+  flex: 1;
+  @include medium {
+    flex: 0.5;
+  }
+  @include exsmall {
+    display: none;
+  }
+}
+
+.mainContainer {
+  flex: 5;
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .mainRight {
+    display: flex;
+    flex: 1;
+    max-height: 100vh;
+    border-left: 1px solid var(--border);
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    .chatHeader {
+      display: flex;
+      min-height: 20vh;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .chatMain {
+      display: flex;
+      flex: 1;
+      justify-content: center;
+     width: 100%;
+      height: 100%;
+    }
+  }
+  .mainLeft {
+    display: flex;
+    flex: 2;
+    height: 100vh;
+    flex-direction: column;
+
+    .chatHeader {
+      display: flex;
+      min-height: fit-content;
+      align-items: center;
+      justify-content: center;
+      min-width: 100%;
+      border-bottom: 1px solid var(--border);
+    }
+    .chatMain {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      min-width: 100%;
+    }
+  }
+}
