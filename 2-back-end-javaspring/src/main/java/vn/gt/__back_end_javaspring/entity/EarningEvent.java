@@ -19,5 +19,9 @@ public class EarningEvent {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pricing_rule_id")
+    private PricingRule pricingRule;
+
 
 }

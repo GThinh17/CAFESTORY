@@ -24,6 +24,7 @@ public class BlogLikeController {
         BlogLikeResponse response = blogLikeService.like(request);
 
         RestResponse<BlogLikeResponse> res = new RestResponse<>();
+
         res.setStatusCode(HttpStatus.CREATED.value());
         res.setMessage("Liked blog successfully");
         res.setData(response);
