@@ -29,11 +29,9 @@
   padding: 3px;
   background: linear-gradient(
     45deg,
-    #a8e063,
-    #56ab2f,
-    #2ebf91,
-    #00b09b,
-    #38ef7d
+    var(--chart-4),
+    var(--chart-1),
+    var(--chart-5)
   );
 }
 

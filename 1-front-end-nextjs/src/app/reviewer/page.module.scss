@@ -1,0 +1,44 @@
+@import "../layout.scss";
+.page {
+  display: flex;
+  justify-content: center; /* Căn giữa nội dung */
+  align-items: center;
+  min-height: 100vh; /* Toàn màn hình */
+}
+
+.main {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  width: 100vw;
+  min-height: 100vh;
+}
+
+.leftContainer {
+  flex: 1;
+  @include medium {
+    flex: 0.5;
+  }
+  @include exsmall {
+    display: none;
+  }
+}
+
+.rightContainer {
+  flex: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ 
+
+  @include medium {
+    flex: 4;
+  }
+  .chartCon {
+    width: 70%;
+    margin-top: 1.5rem;
+    @include medium {
+      width: 90%;
+    }
+  }
+}
