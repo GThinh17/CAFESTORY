@@ -16,7 +16,6 @@ import java.util.List;
 @Data
 @Table(name = "badge")
 public class Badge {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "badge_id")

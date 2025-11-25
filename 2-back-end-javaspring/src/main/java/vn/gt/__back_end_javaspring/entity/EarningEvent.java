@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class EarningEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "earning_event_id")
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)

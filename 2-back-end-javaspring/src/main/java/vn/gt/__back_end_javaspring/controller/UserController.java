@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.gt.__back_end_javaspring.entity.User;
+import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.service.UserService;
 
 @RestController
@@ -33,7 +34,7 @@ public class UserController {
 
 	@GetMapping("/users/{id}")
 	public ResponseEntity<User> getUser(@PathVariable("id") String id) {
-		User user = this.userService.getUserById(id);
+		User user = this.userService.getUserById(id).orElseThrow(()-> new UserNotFoundException("User not found"));
 		return ResponseEntity.ok().body(user);
 
 	}
@@ -50,7 +51,8 @@ public class UserController {
 
 	@PutMapping("/users/{id}")
 	public ResponseEntity<User> updateUser(@RequestBody User updateUser, @PathVariable("id") String id) {
-		User user = userService.getUserById(id);
+		User user = userService.getUserById(id).orElseThrow(()-> new UserNotFoundException("User not found"));
+
 		user.setAddress(updateUser.getAddress());
 		user.setDateOfBirth(updateUser.getDateOfBirth());
 		user.setFullName(updateUser.getFullName());

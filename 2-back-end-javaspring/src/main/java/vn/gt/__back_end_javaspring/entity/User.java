@@ -19,7 +19,7 @@ import lombok.Setter;
 public class User { // Check
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	@Column(name = "id", length = 36)
+	@Column(name = "user_id")
 	private String id;
 
 	@Column(name = "full_name", length = 100)

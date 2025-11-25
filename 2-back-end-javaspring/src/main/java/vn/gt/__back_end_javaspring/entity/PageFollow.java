@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 public class PageFollow {
 	@Id
-	@Column(name = "follower_id")
+	@Column(name = "follow_id")
 	@GeneratedValue(strategy = GenerationType.UUID)
 	String id;
 

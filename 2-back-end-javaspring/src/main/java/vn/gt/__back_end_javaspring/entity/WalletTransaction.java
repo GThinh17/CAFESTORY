@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 @Table(name = "wallet_transaction")
 public class WalletTransaction {
     @Id
+    @Column(name = "wallet_transaction_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
