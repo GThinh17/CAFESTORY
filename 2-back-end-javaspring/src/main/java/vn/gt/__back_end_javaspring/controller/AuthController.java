@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import vn.gt.__back_end_javaspring.entity.User;
-import vn.gt.__back_end_javaspring.entity.DTO.LoginDTO;
-import vn.gt.__back_end_javaspring.entity.DTO.RestLoginDTO;
-import vn.gt.__back_end_javaspring.entity.DTO.SignupDTO;
+import vn.gt.__back_end_javaspring.DTO.LoginDTO;
+import vn.gt.__back_end_javaspring.DTO.RestLoginDTO;
+import vn.gt.__back_end_javaspring.DTO.SignupDTO;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.service.UserService;
-import vn.gt.__back_end_javaspring.service.impl.until.SecurityUtil;
+import vn.gt.__back_end_javaspring.util.SecurityUtil;
 
 @RestController
 public class AuthController {
@@ -43,11 +43,12 @@ public class AuthController {
 
 		// Nạp input gồm username/password vào Security
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-				loginDTO.getUsername(), loginDTO.getPassword());
+				loginDTO.getEmail(), loginDTO.getPassword());
 
 		// xác thực người dùng => cần viết hàm loadUserByUsername
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
+		System.out.println(authentication);
 		// create token
 		String access_token = securityUtil.createToken(authentication);
 		RestLoginDTO restLoginDTO = new RestLoginDTO(access_token);
@@ -59,19 +60,13 @@ public class AuthController {
 	}
 
 	@PostMapping("api/signup")
-	public ResponseEntity<User> signup(@Valid @RequestBody SignupDTO signUp) {
-		User newUser = new User();
-
-		newUser.setEmail(signUp.getEmail());
-		newUser.setFullName(signUp.getFullname());
-		newUser.setPhone(signUp.getPhone());
-		newUser.setName(signUp.getName());
+	public ResponseEntity<?> signup(@Valid @RequestBody SignupDTO signUp) {
 
 		// hashpassword
 		String hashPassword = this.passwordEncoder.encode(signUp.getPassword());
 		signUp.setPassword(hashPassword);
-		this.userService.handleSignup(signUp);
-
-		return ResponseEntity.ok().body(newUser);
+		User user = this.userService.handleSignup(signUp);
+		this.userService.handleUpdateRoleUser(user.getEmail());
+		return ResponseEntity.ok().body(user);
 	}
 }

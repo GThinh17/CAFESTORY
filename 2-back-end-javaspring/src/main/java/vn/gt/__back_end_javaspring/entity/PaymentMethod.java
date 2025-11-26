@@ -1,7 +1,6 @@
 package vn.gt.__back_end_javaspring.entity;
 
 import java.sql.Date;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,33 +9,23 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Table(name = "paymentMethodID")
 @Data
+@Table(name = "paymentMethod")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class PaymentMethod {
-	@Id
-	@Column(name = "payemntMethodID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long notifocationID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "paymentMethodId", length = 36)
+    private String paymentMethodId;
 
-	@Column(name = "userID")
-	private String userID;
+    @Column(name = "paymentMethodName")
+    private String paymentMethodName;
 
-	@Column(name = "payemntMethodName")
-	private int payemntMethodName;
-
-	@Column(name = "status")
-	private boolean status;
-
-	@Column(name = "createAt")
-	private Date createAt;
+    @Column(name = "createAt")
+    private Date createAt;
 
 }

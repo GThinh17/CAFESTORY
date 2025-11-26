@@ -6,6 +6,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,82 +18,97 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
+import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
 
-import vn.gt.__back_end_javaspring.service.impl.until.SecurityUtil;
+import vn.gt.__back_end_javaspring.util.SecurityUtil;
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration {
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Value("${jwt.base64-secret}")
+    private String jwtKey;
 
-	@Bean
-	public MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
-		return new MvcRequestMatcher.Builder(introspector);
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http,
-			CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
-		http.csrf(c -> c.disable())
-		// tắt 3 dấu chấm đầu để test api hoặc đăng ký để đăng nhập
-//				.authorizeHttpRequests(authz -> authz.requestMatchers("/", "api/login", "/users").permitAll()
-//						.anyRequest().authenticated())
-//				.oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
-//						.authenticationEntryPoint(customAuthenticationEntryPoint))
-//				.exceptionHandling(
-//						exceptions -> exceptions.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) // 401
-//								.accessDeniedHandler(new BearerTokenAccessDeniedHandler())) // 403
-				.formLogin(f -> f.disable())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http,
+            CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
 
-		return http.build();
-	}
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/", "/api/login", "/api/signup").permitAll()
+                        .anyRequest().authenticated())
 
-	@Value("${jwt.base64-secret}")
-	private String jwtKey;
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(Customizer.withDefaults())
+                        .authenticationEntryPoint(customAuthenticationEntryPoint))
 
-	private SecretKey getSecretKey() {
-		byte[] keyBytes = Base64.from(jwtKey).decode();
-		return new SecretKeySpec(keyBytes, 0, keyBytes.length, SecurityUtil.JWT_ALGORITHM.getName());
-	}
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(customAuthenticationEntryPoint) // dùng bản của bạn
+                )
 
-	@Bean
-	public JwtEncoder jwtEncoder() {
-		return new NimbusJwtEncoder(new ImmutableSecret<>(getSecretKey()));
-	}
+                .formLogin(form -> form.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-	@Bean
-	public JwtDecoder jwtDecoder() {
-		NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(getSecretKey())
-				.macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
-		return token -> {
-			try {
-				return jwtDecoder.decode(token);
-			} catch (Exception e) {
-				System.out.println(">>> JWT error: " + e.getMessage());
-				throw e;
-			}
-		};
-	}
+        return http.build();
+    }
 
-	@Bean
-	public JwtAuthenticationConverter jwtAuthenticationConverter() {
-		JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-		grantedAuthoritiesConverter.setAuthorityPrefix("");
-		grantedAuthoritiesConverter.setAuthoritiesClaimName("gthinh17");
+    private SecretKey getSecretKey() {
+        byte[] keyBytes = Base64.from(jwtKey).decode();
+        return new SecretKeySpec(keyBytes, 0, keyBytes.length, SecurityUtil.JWT_ALGORITHM.getName());
+    }
 
-		JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-		return jwtAuthenticationConverter;
-	}
+    @Bean
+    public JwtEncoder jwtEncoder() {
+        return new NimbusJwtEncoder(new ImmutableSecret<>(getSecretKey()));
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(getSecretKey())
+                .macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
+        return token -> {
+            try {
+                return jwtDecoder.decode(token);
+            } catch (Exception e) {
+                System.out.println(">>> JWT error: " + e.getMessage());
+                throw e;
+            }
+        };
+    }
+
+    // @Bean
+    // public JwtAuthenticationConverter jwtAuthenticationConverter() {
+    // JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new
+    // JwtGrantedAuthoritiesConverter();
+    // grantedAuthoritiesConverter.setAuthorityPrefix("");
+    // grantedAuthoritiesConverter.setAuthoritiesClaimName("gthinh17");
+
+    // JwtAuthenticationConverter jwtAuthenticationConverter = new
+    // JwtAuthenticationConverter();
+    // jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+    // return jwtAuthenticationConverter;
+    // }
+
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter conv = new JwtGrantedAuthoritiesConverter();
+        // Nếu SecurityUtil tạo claim "authorities": dùng "authorities"
+        conv.setAuthoritiesClaimName("authorities");
+        conv.setAuthorityPrefix(""); // hoặc "ROLE_" nếu bạn lưu role dạng "USER", "ADMIN"
+
+        JwtAuthenticationConverter jwtConv = new JwtAuthenticationConverter();
+        jwtConv.setJwtGrantedAuthoritiesConverter(conv);
+        return jwtConv;
+    }
 
 }

@@ -10,35 +10,34 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+@Data
 @Entity
 @Table(name = "payment")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class Payment {
-	@Id
-	@Column(name = "paymentID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long paymentID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "paymentId", length = 36)
+    private String paymentId;
 
-	@Column(name = "extraFeeID")
-	Long extraFeeID;
+    @Column(name = "productionName")
+    private String name;
 
-	@Column(name = "userID")
-	Long userID;
+    @Column(name = "amount")
+    private Long amount;
 
-	@Column(name = "createAt")
-	Date createAt;
+    @Column(name = "paymentStatus")
+    private Boolean paymentStatus;
 
-	@Column(name = "amount")
-	Long amount;
+    @Column(name = "status")
+    private Boolean status;
 
-	@Column(name = "expired")
-	Date expired;
+    @Column(name = "createAt")
+    private Date createAt;
+
+    @Column(name = "updateAt")
+    private Date updateAt;
 }

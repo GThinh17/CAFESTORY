@@ -2,39 +2,25 @@ package vn.gt.__back_end_javaspring.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.*;
 
-@Table(name = "user")
+@Table(name = "users")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@Data
-public class User {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User { // Check
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
+	@Column(name = "id", length = 36)
 	private String id;
-
-	@Column(name = "name", nullable = false, length = 100)
-	private String name;
 
 	@Column(name = "full_name", length = 100)
 	private String fullName;
@@ -57,50 +43,124 @@ public class User {
 	@Column(name = "avatar", length = 255)
 	private String avatar;
 
-	@Column(name = "userFollower")
-	String userFollower; //?
+	@Column(name = "follower_count")
+	Integer followerCount;
 
-	@Column(name = "userLike")
-	String userLike; //?
+    @Column(name = "following_count")
+    Integer followingCount;
 
 	@Column(name = "created_at")
-	protected LocalDateTime createdAt = LocalDateTime.now();
+	private LocalDateTime createdAt;
 
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
-	public String getId() {
-		return id;
-	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-    //mappedBy anh xa tu truong ben share qua
-    //List all blog user share
-    @JsonIgnore //Non-reply on Json
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Share> shares;
+    public String getId() {
+        return id;
+    }
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
-    private List<Follower> followers;
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "following",cascade = CascadeType.ALL)
-    private List<Follower> followings;
+    public String getFullName() {
+        return fullName;
+    }
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    private List<Blog> blogs;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Integer getFollowerCount() {
+        return followerCount;
+    }
+
+    public void setFollowerCount(Integer followerCount) {
+        this.followerCount = followerCount;
+    }
+
+    public Integer getFollowingCount() {
+        return followingCount;
+    }
+
+    public void setFollowingCount(Integer followingCount) {
+        this.followingCount = followingCount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.followerCount = 0;
+        this.followingCount = 0;
+    }
+    @PreUpdate
+    public void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
 }

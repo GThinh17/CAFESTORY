@@ -1,0 +1,41 @@
+package vn.gt.__back_end_javaspring.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import vn.gt.__back_end_javaspring.enums.Visibility;
+
+@Entity
+@Data
+@Table(name = "page_album")
+@AllArgsConstructor
+@NoArgsConstructor
+public class PageAlbum {
+
+    @Id
+    @Column(name = "page_album_id")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "page_id")
+    private Page page;
+
+    @Column(name = "title")
+    private String title;
+
+
+    @Column(name = "visibility")
+    private Visibility visibility;
+
+    @Column(name = "cover_photo_id")
+    private String coverPhotoId;
+
+
+    @Column(name = "total_photo")
+    private Integer totalPhoto;
+
+
+
+}

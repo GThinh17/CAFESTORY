@@ -1,68 +1,94 @@
 package vn.gt.__back_end_javaspring.entity;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import vn.gt.__back_end_javaspring.enums.Visibility;
 
 @Entity
-@Table(name = "Blog")
+@Table(name = "blog")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Blog {
-	@Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-	private String id;
+public class Blog { //Check
+        @Id
+        @Column(name = "blog_id")
+        @GeneratedValue(strategy = GenerationType.UUID)
+        private String id;
 
-	@Column(name = "content", nullable = false,  length = 1000,updatable = true)
-	private String content;
+        @Column(name = "caption")
+        private String caption;
 
-	@Column(name = "image_url")
-	private String imageUrl;
+        @Column(name = "likes_count")
+        private Long likesCount;
 
-	@Column(name = "likes_count", updatable = true)
-	private int likeCount ;
+        @Column(name = "shares_count")
+        private Long sharesCount;
 
-	@Column(name = "shares_count")
-	private int shareCount;
+        @Column(name = "comments_count")
+        private Long commentsCount;
 
+        @Column(name = "is_pin")
+        private Boolean isPin;
 
-    @Column(name = "comments_count")
-    private int commentCount;
+        @Column(name = "moderation_status")
+        private String moderationStatus;
 
-	@Column(name = "status",  nullable = false,  updatable = true)
-	private boolean status;
+        @Column(name = "moderation_reason")
+        private String moderationReason;
 
-	@Column(name = "created_at")
-	private LocalDateTime createdAt;
+        @Column(name = "allow_comment")
+        private Boolean allowComment;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-
-    //No se noi la Blog khong so huu khoa ngoai, khoa ngoai nam o ben Commet va trong blog
-    @OneToMany(mappedBy = "blog")
-    private List<Comment> comments;
-
-
-    @OneToMany(mappedBy = "blog")
-    private List<Share> shares;
+        @Enumerated(EnumType.STRING)
+        @Column(name = "visibility")
+        private Visibility visibility;
 
 
-    @PrePersist
-    protected void onCreate()
-    {
-        createdAt = LocalDateTime.now();
-        likeCount = 0;
-        commentCount = 0;
-        shareCount = 0;
-    }
+        @Column(name = "is_deleted")
+        private Boolean isDeleted;
 
+        @Column(name = "created_at")
+        private LocalDateTime createdAt;
+
+        @Column(name = "updated_at")
+        private LocalDateTime updatedAt;
+
+        @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<Media> mediaList = new ArrayList<>();
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "location_id")
+        private Location location;
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        private User user;
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "like_id")
+        private BlogLike bloglikeid;
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "page_id")
+        private Page page;
+
+        @PrePersist
+        protected void onCreate() {
+            this.createdAt = LocalDateTime.now();
+            this.likesCount = 0L;
+            this.sharesCount = 0L;
+            this.commentsCount = 0L;
+            this.isDeleted = false;
+            this.allowComment = true;
+            this.isPin = false;
+        }
+
+        @PreUpdate
+        protected void onUpdate() {
+            this.updatedAt = LocalDateTime.now();
+        }
 }

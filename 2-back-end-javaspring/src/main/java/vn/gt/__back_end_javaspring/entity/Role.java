@@ -1,32 +1,29 @@
 package vn.gt.__back_end_javaspring.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.gt.__back_end_javaspring.enums.RoleType;
 
 @Entity
-@Table(name = "Role")
+@Table(name = "roles")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
+public class Role { //Check
 	@Id
-	
-	@Column(name = "roleID")
-	String roleID;
+	@GeneratedValue(strategy = GenerationType.UUID)
+	@Column(name = "role_id")
+	String id;
 
-	@Column(name = "userID")
-	String userID;
+    @Enumerated(EnumType.STRING)
+	@Column(name = "role_name")
+	private RoleType roleName;
 
-	@Column(name = "roleName")
-	String roleName;
+    @Column(name = "description")
+    String description;
 
 }
