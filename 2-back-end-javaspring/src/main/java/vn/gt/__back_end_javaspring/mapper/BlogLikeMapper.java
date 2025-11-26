@@ -22,8 +22,3 @@ public interface BlogLikeMapper {
 
     List<BlogLikeResponse> toResponseList(List<BlogLike> bloglikeids);
 }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> origin/develop

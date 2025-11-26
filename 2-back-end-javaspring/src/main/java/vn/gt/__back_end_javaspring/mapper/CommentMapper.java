@@ -25,18 +25,10 @@ public interface CommentMapper {
 
     List<CommentResponse>  toResponseList(List<Comment> comments);
 
-<<<<<<< HEAD
-    @Mapping(source = "blogId", target = "blog.id")
-    @Mapping(source = "userId", target = "user.id")
-    @Mapping(source = "commentImageId", target = "commentImage.id")
-=======
->>>>>>> origin/develop
+
     Comment toModel(CommentCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntity(@MappingTarget Comment entity, CommentUpdateDTO dto);
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/develop
 }

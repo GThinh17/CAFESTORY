@@ -20,18 +20,7 @@ public interface BlogMapper {
                         ".map(m -> m.getMediaUrl())" +
                         ".collect(java.util.stream.Collectors.toList()))")
 
-<<<<<<< HEAD
-    @Mapping(source = "location.id",     target = "locationId")
-    @Mapping(source = "location.name",   target = "locationName")
-    @Mapping(source = "user.id",         target = "userId")
-    @Mapping(source = "user.fullName",   target = "userFullName")
-    @Mapping(source = "user.avatar",     target = "userAvatar")
-    @Mapping(source = "page.id",         target = "pageId")
-    @Mapping(source = "commentsCount",   target = "commentCount")
-    @Mapping(source = "likesCount",      target = "likeCount")
-    @Mapping(source = "sharesCount",     target = "shareCount")
-    BlogResponse toResponse(Blog blog);
-=======
+
         @Mapping(source = "location.id", target = "locationId")
         @Mapping(source = "location.name", target = "locationName")
 
@@ -45,22 +34,14 @@ public interface BlogMapper {
         @Mapping(source = "likesCount", target = "likeCount")
         @Mapping(source = "sharesCount", target = "shareCount")
         BlogResponse toResponse(Blog blog);
->>>>>>> origin/develop
 
         List<BlogResponse> toResponseList(List<Blog> blogs);
 
-<<<<<<< HEAD
     Blog toModel(BlogCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntity(@MappingTarget Blog entity, BlogUpdateDTO dto);
     //ham nay check xem thang nao khac null thi thay doi trong blog
     //tuc la thang fied nao cua update null thi giu nguyen trong entity
-=======
-        Blog toModel(BlogCreateDTO dto);
 
-        @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-        void updateEntity(@MappingTarget Blog entity, BlogUpdateDTO dto);
-
->>>>>>> origin/develop
 }

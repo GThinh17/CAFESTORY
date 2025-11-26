@@ -23,6 +23,13 @@ public class Reviewer extends User{
 	@Column(name = "bio", length = 500)
 	String bio;
 
+    @Column(name = "follower_count")
+    Long followerCount;
+
+    @Column(name = "following_count")
+    Long followingCount;
+
+
 	@Column(name = "total_score")
 	Integer totalScore;
 

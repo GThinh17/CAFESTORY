@@ -1,40 +1,53 @@
 package vn.gt.__back_end_javaspring.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Table(name = "earning_summary")
 @Entity
-@Data
-@AllArgsConstructor
+@Table(
+        name = "earning_summary",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_reviewer_period",
+                columnNames = {"reviewer_id", "period_id"}
+        )
+)
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class EarningSummary {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "earning_summary_id")
+    @Column(name = "summary_id")
     private String id;
 
-    @Column(name = "total_like_count")
-    private Long totalLikeCount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewer_id", nullable = false)
+    private Reviewer reviewer;
 
-    @Column(name = "total_share_count")
-    private Long totalShareCount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "period_id", nullable = false)
+    private EarningPeriod earningPeriod;
 
-    @Column(name = "total_comment_count")
-    private Long totalCommentCount;
+    @Column(name = "total_likes_count")
+    private Long totalLikesCount;
 
-    @Column(name = "total_score")
-    private Long totalScore;
+    @Column(name = "total_comments_count")
+    private Long totalCommentsCount;
 
-    @Column(name = "total_revenue_amount")
-    private Long totalRevenueAmount; //So tien kiem duoc
+    @Column(name = "total_shares_count")
+    private Long totalSharesCount;
 
-    @Column(name = "amount")
-    private Long amount; //So tien nhan duoc
+    @Column(name = "total_earning_amount")
+    private BigDecimal totalEarningAmount;
+
+    @Column(name = "status", length = 50)
+    private String status; // OPEN / CLOSED / PAID...
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

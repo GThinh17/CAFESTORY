@@ -1,43 +1,53 @@
-//package vn.gt.__back_end_javaspring.entity;
-//
-//import java.sql.Date;
-//
-//import jakarta.persistence.Column;
-//import jakarta.persistence.Entity;
-//import jakarta.persistence.GeneratedValue;
-//import jakarta.persistence.GenerationType;
-//import jakarta.persistence.Id;
-//import jakarta.persistence.Table;
-//import lombok.AllArgsConstructor;
-//import lombok.Data;
-//import lombok.NoArgsConstructor;
-//
-//@Data
-//@Entity
-//@Table(name = "payment")
-//@NoArgsConstructor
-//@AllArgsConstructor
-//public class Payment {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.UUID)
-//    @Column(name = "paymentId", length = 36)
-//    private String paymentId;
-//
-//    @Column(name = "productionName")
-//    private String name;
-//
-//    @Column(name = "amount")
-//    private Long amount;
-//
-//    @Column(name = "paymentStatus")
-//    private Boolean paymentStatus;
-//
-//    @Column(name = "status")
-//    private Boolean status;
-//
-//    @Column(name = "createAt")
-//    private Date createAt;
-//
-//    @Column(name = "updateAt")
-//    private Date updateAt;
-//}
+package vn.gt.__back_end_javaspring.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import vn.gt.__back_end_javaspring.enums.PaymentStatus;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "payment")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Payment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "payment_id")
+    private String id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_method_id")
+    private PaymentMethod paymentMethod;
+
+    @Column(nullable = false)
+    private BigDecimal amount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 50)
+    private PaymentStatus status; // PENDING / SUCCESS / FAILED ...
+
+    @Column(name = "processed_at")
+    private LocalDateTime processedAt;
+
+    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
+    private Payout payout;
+
+    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
+    private ReviewerMembership reviewerMembership;
+
+    @PrePersist
+    public void prePersist() {
+        processedAt = LocalDateTime.now();
+        status = PaymentStatus.PENDING;
+    }
+}

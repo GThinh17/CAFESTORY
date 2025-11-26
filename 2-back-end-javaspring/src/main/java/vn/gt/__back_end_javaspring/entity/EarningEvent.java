@@ -1,48 +1,48 @@
 package vn.gt.__back_end_javaspring.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@AllArgsConstructor
-@Data
-@NoArgsConstructor
 @Table(name = "earning_event")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class EarningEvent {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "earning_event_id")
+    @Column(name = "event_id")
     private String id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewer_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "reviewer_id", nullable = false)
     private Reviewer reviewer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pricing_rule_id")
+    @JoinColumn(name = "pricing_rule_id", nullable = false)
     private PricingRule pricingRule;
 
-    @Column(name = "score")
-    private Long score;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "blog_id")
+    private Blog blog;
 
-    @Column(name = "revenue_amount")
-    private BigDecimal revenueAmount;
-
-    @Column(name = "amount")
+    @Column(nullable = false)
     private BigDecimal amount;
+
+    @Column(name = "source_type", length = 50)
+    private String sourceType; // BLOG / LIKE / COMMENT / SHARE...
+
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
     }
-
 }

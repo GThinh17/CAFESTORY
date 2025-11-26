@@ -7,10 +7,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<< HEAD
-@JsonInclude(JsonInclude.Include.NON_NULL) //ai null, khong co liet ke
-=======
->>>>>>> origin/develop
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,11 +33,6 @@ public class CommentResponse {
     private Boolean isDeleted;
     private Boolean isPin;
 
-<<<<<<< HEAD
-    private Long cooldownSecond;
-
-=======
->>>>>>> origin/develop
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;

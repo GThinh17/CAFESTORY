@@ -71,7 +71,6 @@ public class GlobalException {
         res.setErrors("Comment not found");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
-<<<<<<< HEAD
 
     @ExceptionHandler(LikeExist.class)
     public ResponseEntity<RestResponse<Object>> handleLikeExist(LikeExist ex) {
@@ -81,7 +80,6 @@ public class GlobalException {
         res.setErrors("Like already exist");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
-
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<RestResponse<Object>> handleCommentNotFound(UserNotFoundException ex) {
@@ -110,38 +108,8 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
 
-=======
->>>>>>> origin/develop
-
-    @ExceptionHandler(LikeExist.class)
-    public ResponseEntity<RestResponse<Object>> handleLikeExist(LikeExist ex) {
-        RestResponse<Object> res = new RestResponse<>();
-        res.setStatusCode(HttpStatus.CONFLICT.value());
-        res.setMessage(ex.getMessage());
-        res.setErrors("Like already exist");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(UserNotFoundException ex) {
-        RestResponse<Object> res = new RestResponse<>();
-        res.setStatusCode(HttpStatus.NOT_FOUND.value());
-        res.setMessage(ex.getMessage());
-        res.setErrors("User not found");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
-    }
-
-    @ExceptionHandler(LikeNotFoundException.class)
-    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(LikeNotFoundException ex) {
-        RestResponse<Object> res = new RestResponse<>();
-        res.setStatusCode(HttpStatus.NOT_FOUND.value());
-        res.setMessage(ex.getMessage());
-        res.setErrors("Like not found");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
-    }
-
-    @ExceptionHandler(ShareNotFoundException.class)
-    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(ShareNotFoundException ex) {
+    @ExceptionHandler(PageNotFoundException.class)
+    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(PageNotFoundException ex) {
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.NOT_FOUND.value());
         res.setMessage(ex.getMessage());

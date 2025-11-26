@@ -10,20 +10,9 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ShareMapper {
-
-<<<<<<< HEAD
-
-    @Mapping(target = "user.id", source = "userId")
-    @Mapping(target = "blog.id", source = "blogId")
-    @Mapping(target = "location.id", source = "locationId")
+    
     Share toEntity(ShareCreateDTO dto);
 
-
-
-=======
-    Share toEntity(ShareCreateDTO dto);
-
->>>>>>> origin/develop
     @Mapping(target = "shareId", source = "id")
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "userFullName", source = "user.fullName")
