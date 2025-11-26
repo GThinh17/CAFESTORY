@@ -14,11 +14,13 @@ import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useState } from "react";
+import { useAuth, User } from "@/context/AuthContext";
 
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { loading, login } = useAuth();
   const handleLogin = async () => {
     try {
       const res = await axios.post("http://localhost:8080/api/login", {
@@ -27,8 +29,27 @@ export default function LoginPage() {
       });
       // console.log(res.data);
       const token = res.data.data.accessToken;
-      if (token) {
+      const id = res.data.data.userId;
+      const username = res.data.data.fullname;
+      const avatar = res.data.data.imagePath
+      const user: User = {
+        id: id,
+        username: username,
+        avatar: avatar
+      }
+      if (token && user) {
+        const safeUser = {
+          ...user,
+          avatar:
+            user.avatar && user.avatar !== "null" && user.avatar.trim() !== ""
+              ? user.avatar
+              : "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
+        };
+
         localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(safeUser));
+
+        login(token, safeUser); // Đưa vào AuthContext
         router.push("/");
       }
       console.log("token", token);

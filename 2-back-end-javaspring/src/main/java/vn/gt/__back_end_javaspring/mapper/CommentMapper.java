@@ -23,7 +23,7 @@ public interface CommentMapper {
     @Mapping(target = "commentImageUrl", source = "commentImage.imageUrl")
     CommentResponse toResponse(Comment comment);
 
-    List<CommentResponse>  toResponseList(List<Comment> comments);
+    List<CommentResponse> toResponseList(List<Comment> comments);
 
     Comment toModel(CommentCreateDTO dto);
 

@@ -5,7 +5,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 export interface User {
     id: string;
     username: string;
-    email: string;
     avatar?: string;
 }
 
@@ -28,21 +27,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const savedUser = localStorage.getItem("user");
         const savedToken = localStorage.getItem("token");
-
-        if (savedUser && savedToken) {
+        if (savedToken && savedUser) {
             setUser(JSON.parse(savedUser));
             setToken(savedToken);
         }
 
         setLoading(false);
-    }, []);
+    }, [token]);
 
-    const login = (newToken: string, newUser: User) => {
-        localStorage.setItem("token", newToken);
-        localStorage.setItem("user", JSON.stringify(newUser));
+    const login = (savedToken: string, savedUser: User) => {
 
-        setToken(newToken);
-        setUser(newUser);
+        localStorage.setItem("token", savedToken);
+        localStorage.setItem("user", JSON.stringify(savedUser));
+
+        setToken(savedToken);
+        setUser(savedUser);
+
     };
 
     const logout = () => {

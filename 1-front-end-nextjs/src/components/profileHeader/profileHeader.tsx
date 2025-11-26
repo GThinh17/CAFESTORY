@@ -34,6 +34,10 @@ export function ProfileHeader({
 }: ProfileHeaderProps) {
   const router = useRouter();
   const [isProfile, setIsProfile] = useState(false);
+
+
+
+
   return (
     <>
       <div className={styles.profileHeader}>
@@ -44,8 +48,8 @@ export function ProfileHeader({
             alt={username}
             width={150}
             height={150}
-            className={styles.avatarImg}
           />
+
         </div>
 
         {/* Info */}

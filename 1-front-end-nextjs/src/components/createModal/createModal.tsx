@@ -9,6 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 import "./createModal.css";
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export function CreateModal({
   open,
@@ -17,7 +20,40 @@ export function CreateModal({
   open: boolean;
   onClose: () => void;
 }) {
+
   const [isImg, setIsImg] = useState(false);
+  const [caption, setcaption] = useState("");
+  const [mediaUrls, setmediaUrls] = useState("");
+  const [visibility, setvisibility] = useState("");
+  const [isPin, setisPin] = useState("");
+  const [locationId, setlocationId] = useState("");
+
+
+  const { user, loading } = useAuth();
+  const username = user?.username;
+  const avatar = user?.avatar;
+  const userId = user?.id;
+
+  const handlehandleCreateBlog = async () => {
+    try {
+      const res = await axios.post("http://localhost:8080/api/blogs", {
+        caption: caption,
+        mediaUrls: mediaUrls,
+        visibility: visibility,
+        isPin: isPin,
+        locationId: locationId,
+        userId: userId,
+
+      });
+      router.push("/");
+    }
+
+    catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.message || "Vui lòng nhập đủ trường");
+    }
+  };
+  const router = useRouter();
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="modalContainer">
@@ -41,8 +77,8 @@ export function CreateModal({
           <div className="createRight">
             {/* Avatar + tên */}
             <div className="userRow">
-              <img src="/testPost.jpg" alt="avatar" className="userAvatar" />
-              <span className="username">thnhvu_2</span>
+              <img src={avatar} alt="avatar" className="userAvatar" />
+              <span className="username">{username}</span>
             </div>
 
             {/* Caption */}
@@ -50,6 +86,8 @@ export function CreateModal({
               placeholder="Write a caption..."
               className="captionInput"
               maxLength={2200}
+              value={caption}
+              onChange={(e) => setcaption(e.target.value)}
             ></textarea>
 
             {/* Add Location */}

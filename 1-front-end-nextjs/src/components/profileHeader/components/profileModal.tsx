@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import "./profileModal.css";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 interface ProfileModalProps {
   open: boolean;
@@ -16,6 +17,7 @@ interface ProfileModalProps {
 
 export function ProfileModal({ open, onClose }: ProfileModalProps) {
   const router = useRouter();
+  const { logout, loading } = useAuth();
 
   const options: string[] = [
     "Apps and websites",
@@ -33,8 +35,15 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
       return;
     }
 
+    if (item === "Log Out") {
+      logout();
+      router.push("/");
+      return;
+    }
+
     onClose();
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
