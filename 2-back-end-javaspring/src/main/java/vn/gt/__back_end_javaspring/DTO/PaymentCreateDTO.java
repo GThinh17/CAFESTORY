@@ -15,9 +15,13 @@ import java.math.BigDecimal;
 public class PaymentCreateDTO {
     @NotBlank(message = "UserId is required")
     private String userId;
+
     @NotBlank(message = "paymentMethodId is required")
     private String paymentMethodId;
-    @NotBlank(message = "payout is required")
-    private String payoutId;
-    private BigDecimal amount;
+
+    @NotBlank(message = "productionId is required")
+    private String productionId;
+    // @NotBlank(message = "payout is required")
+    // private String payoutId;
+    private Integer amount;
 }

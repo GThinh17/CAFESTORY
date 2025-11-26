@@ -12,6 +12,6 @@ public interface PaymentService {
 
     public Payment CreatePayment(Payment payment);
 
-    public Payment UpdatePayment(String paymentId);
+    public Payment UpdatePaymentSUCCESS(String paymentId);
 
 }

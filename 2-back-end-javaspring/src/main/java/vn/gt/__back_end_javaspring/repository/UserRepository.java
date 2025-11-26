@@ -7,6 +7,6 @@ import vn.gt.__back_end_javaspring.entity.User;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, String> {
-	User findByEmail(String email);
+	public User findByEmail(String email);
 
 }

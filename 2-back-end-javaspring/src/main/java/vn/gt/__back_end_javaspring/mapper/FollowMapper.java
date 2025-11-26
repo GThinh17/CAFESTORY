@@ -16,7 +16,7 @@ public interface FollowMapper {
     @Mapping(source = "follower.fullName", target = "followerFullName")
     @Mapping(source = "follower.avatar", target = "followerAvatar")
     @Mapping(source = "followedUser.id", target = "userFollowedId")
-    @Mapping(source = "followedUser.fullname", target = "userFollowedFullName")
+    @Mapping(source = "followedUser.fullName", target = "userFollowedFullName")
     @Mapping(source = "followedUser.avatar", target = "userFollowedAvatar")
     @Mapping(source = "followedPage.id", target = "pageFollowedId")
     @Mapping(source = "followedPage.pageName", target = "pageFollowedName")
@@ -26,4 +26,3 @@ public interface FollowMapper {
 
     List<FollowResponse> toResponse(List<Follow> follows);
 }
-

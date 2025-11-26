@@ -28,6 +28,7 @@ public class ShareServiceImpl implements ShareService {
     private final ShareMapper shareMapper;
     private final UserRepository userRepository;
     private final BlogRepository blogRepository;
+
     @Override
     public ShareReponse createShare(ShareCreateDTO dto) {
         User user = userRepository.findById(dto.getUserId())
@@ -61,7 +62,7 @@ public class ShareServiceImpl implements ShareService {
 
     @Override
     public List<ShareReponse> getSharesByUser(String userId) {
-        User user =  userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         List<Share> shares = shareRepository.findByUser_IdAndIsDeletedFalseOrderByCreatedAtDesc(userId);
@@ -72,7 +73,7 @@ public class ShareServiceImpl implements ShareService {
     public void softDeleteShare(String shareId, String userId) {
         Share share = shareRepository.findByIdAndIsDeletedFalse(shareId)
                 .orElseThrow(() -> new ShareNotFoundException("Share not found"));
-        if(!share.getUser().getId().equals(userId)) {
+        if (!share.getUser().getId().equals(userId)) {
             throw new UserNotFoundException("You are not allowed to delete this share");
         }
         share.setIsDeleted(true);

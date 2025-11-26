@@ -2,6 +2,7 @@ package vn.gt.__back_end_javaspring.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,33 +16,28 @@ import java.time.LocalDateTime;
 @Table(name = "reviewer")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@PrimaryKeyJoinColumn(name = "user_id")
-public class Reviewer extends User{
+@Data
 
-	@Column(name = "bio", length = 500)
-	String bio;
+@PrimaryKeyJoinColumn(name = "user_id")
+public class Reviewer extends User {
+
+    @Column(name = "bio", length = 500)
+    private String bio;
 
     @Column(name = "follower_count")
-    Long followerCount;
+    private Integer followerCount;
 
-    @Column(name = "following_count")
-    Long followingCount;
-
-
-	@Column(name = "total_score")
-	Integer totalScore;
+    @Column(name = "total_score")
+    private Integer totalScore;
 
     @Column(name = "income", precision = 15, scale = 2)
     private BigDecimal income;
 
     @Column(name = "join_at")
-    LocalDateTime joinAt;
+    private LocalDateTime joinAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    ReviewerStatus status;
-
+    private ReviewerStatus status;
 
 }

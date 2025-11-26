@@ -18,7 +18,7 @@ public class PaymentMethod {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "payment_method_id")
-    private String id;
+    private String paymentMethodId;
 
     @Column(name = "provider", length = 50)
     private String provider; // BANK, MOMO, PAYPAL...

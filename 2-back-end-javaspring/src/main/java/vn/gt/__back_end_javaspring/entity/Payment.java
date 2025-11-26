@@ -19,7 +19,7 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "payment_id")
-    private String id;
+    private String paymentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -29,8 +29,12 @@ public class Payment {
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "production_id")
+    private Production production;
+
     @Column(nullable = false)
-    private BigDecimal amount;
+    private Integer amount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
@@ -41,9 +45,6 @@ public class Payment {
 
     @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
     private Payout payout;
-
-    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
-    private ReviewerMembership reviewerMembership;
 
     @PrePersist
     public void prePersist() {

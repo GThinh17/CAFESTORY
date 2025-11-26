@@ -17,140 +17,43 @@ import lombok.Setter;
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User { // Check
-	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	@Column(name = "user_id")
-	private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_id")
+    private String id;
 
-	@Column(name = "full_name", length = 100)
-	private String fullName;
+    @Column(name = "full_name", length = 100)
+    private String fullName;
 
-	@Column(name = "phone", length = 15)
-	private String phone;
+    @Column(name = "phone", length = 15)
+    private String phone;
 
-	@Column(name = "email", unique = true, nullable = false, length = 100)
-	private String email;
+    @Column(name = "email", unique = true, nullable = false, length = 100)
+    private String email;
 
-	@Column(name = "password", nullable = false, length = 100)
-	private String password;
+    @Column(name = "password", nullable = false, length = 100)
+    private String password;
 
-	@Column(name = "date_of_birth")
-	private LocalDate dateOfBirth;
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
-	@Column(name = "address", length = 255)
-	private String address;
+    @Column(name = "address", length = 255)
+    private String address;
 
-	@Column(name = "avatar", length = 255)
-	private String avatar;
+    @Column(name = "avatar", length = 255)
+    private String avatar;
 
-	@Column(name = "follower_count")
-	Integer followerCount;
+    @Column(name = "follower_count")
+    Integer followerCount;
 
     @Column(name = "following_count")
     Integer followingCount;
 
-	@Column(name = "created_at")
-	private LocalDateTime createdAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-	@Column(name = "updated_at")
-	private LocalDateTime updatedAt;
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public Integer getFollowerCount() {
-        return followerCount;
-    }
-
-    public void setFollowerCount(Integer followerCount) {
-        this.followerCount = followerCount;
-    }
-
-    public Integer getFollowingCount() {
-        return followingCount;
-    }
-
-    public void setFollowingCount(Integer followingCount) {
-        this.followingCount = followingCount;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @PrePersist
     public void onCreate() {
@@ -158,6 +61,7 @@ public class User { // Check
         this.followerCount = 0;
         this.followingCount = 0;
     }
+
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
