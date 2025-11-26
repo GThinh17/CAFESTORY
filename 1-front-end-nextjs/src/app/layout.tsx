@@ -1,7 +1,7 @@
 import "./globals.css";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import { ThemeProvider } from "@/components/theme-provider";
-
+import { AuthProvider } from "@/context/AuthContext";
 type RootLayoutProps = {
   children: React.ReactNode;
 };
@@ -17,7 +17,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
