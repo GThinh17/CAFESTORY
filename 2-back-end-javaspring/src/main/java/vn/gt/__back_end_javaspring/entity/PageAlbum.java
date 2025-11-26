@@ -6,13 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import vn.gt.__back_end_javaspring.enums.Visibility;
 
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "page_album")
 @AllArgsConstructor
 @NoArgsConstructor
 public class PageAlbum {
-
     @Id
     @Column(name = "page_album_id")
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,17 +26,13 @@ public class PageAlbum {
     @Column(name = "title")
     private String title;
 
-
     @Column(name = "visibility")
     private Visibility visibility;
 
     @Column(name = "cover_photo_id")
     private String coverPhotoId;
 
-
     @Column(name = "total_photo")
     private Integer totalPhoto;
-
-
 
 }
