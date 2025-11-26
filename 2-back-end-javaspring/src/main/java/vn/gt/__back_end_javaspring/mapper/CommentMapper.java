@@ -25,8 +25,10 @@ public interface CommentMapper {
 
     List<CommentResponse> toResponseList(List<Comment> comments);
 
+
     Comment toModel(CommentCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntity(@MappingTarget Comment entity, CommentUpdateDTO dto);
+
 }

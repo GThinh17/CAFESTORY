@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "wallet_id")
     private String id;
 
     @OneToOne

@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 @Table(name = "wallet_transaction")
 public class WalletTransaction {
     @Id
+    @Column(name = "wallet_transaction_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
@@ -31,14 +32,12 @@ public class WalletTransaction {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    private TransactionType type;
+    private TransactionType type; //EARNING//PAYOUT/ ADJUSTMENT
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private TransactionStatus status;
 
-    @Column(name = "description")
-    private String description;
 
     @Column(name = "balance_after")
     private BigDecimal balanceAfter;

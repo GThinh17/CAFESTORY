@@ -20,6 +20,7 @@ public interface BlogMapper {
                         ".map(m -> m.getMediaUrl())" +
                         ".collect(java.util.stream.Collectors.toList()))")
 
+
         @Mapping(source = "location.id", target = "locationId")
         @Mapping(source = "location.name", target = "locationName")
 
@@ -36,9 +37,11 @@ public interface BlogMapper {
 
         List<BlogResponse> toResponseList(List<Blog> blogs);
 
-        Blog toModel(BlogCreateDTO dto);
+    Blog toModel(BlogCreateDTO dto);
 
-        @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-        void updateEntity(@MappingTarget Blog entity, BlogUpdateDTO dto);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntity(@MappingTarget Blog entity, BlogUpdateDTO dto);
+    //ham nay check xem thang nao khac null thi thay doi trong blog
+    //tuc la thang fied nao cua update null thi giu nguyen trong entity
 
 }

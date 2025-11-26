@@ -1,43 +1,53 @@
 package vn.gt.__back_end_javaspring.entity;
 
-import java.sql.Date;
+import jakarta.persistence.*;
+import lombok.*;
+import vn.gt.__back_end_javaspring.enums.PaymentStatus;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "payment")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Payment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "paymentId", length = 36)
-    private String paymentId;
+    @Column(name = "payment_id")
+    private String id;
 
-    @Column(name = "productionName")
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "amount")
-    private Long amount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_method_id")
+    private PaymentMethod paymentMethod;
 
-    @Column(name = "paymentStatus")
-    private Boolean paymentStatus;
+    @Column(nullable = false)
+    private BigDecimal amount;
 
-    @Column(name = "status")
-    private Boolean status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 50)
+    private PaymentStatus status; // PENDING / SUCCESS / FAILED ...
 
-    @Column(name = "createAt")
-    private Date createAt;
+    @Column(name = "processed_at")
+    private LocalDateTime processedAt;
 
-    @Column(name = "updateAt")
-    private Date updateAt;
+    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
+    private Payout payout;
+
+    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
+    private ReviewerMembership reviewerMembership;
+
+    @PrePersist
+    public void prePersist() {
+        processedAt = LocalDateTime.now();
+        status = PaymentStatus.PENDING;
+    }
 }

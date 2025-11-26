@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class PricingRule {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "pricing_rule_id")
     private String id;
 
     @Column(name = "name")

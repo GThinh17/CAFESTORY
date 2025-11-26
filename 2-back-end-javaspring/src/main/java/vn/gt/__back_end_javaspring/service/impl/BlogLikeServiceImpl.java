@@ -32,8 +32,6 @@ public class BlogLikeServiceImpl implements BlogLikeService {
 
     @Override
     public BlogLikeResponse like(BlogLikeCreateDTO request) {
-        BlogLike blogLike = blogLikeMapper.toModel(request);
-
         String userId = request.getUserId();
         String blogId = request.getBlogId();
 
@@ -43,16 +41,19 @@ public class BlogLikeServiceImpl implements BlogLikeService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found!"));
-        blogLike.setUser(user);
+
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
-        blogLike.setBlog(blog);
 
+        System.out.println("DTO: " + request.toString());
         blog.setLikesCount(blog.getLikesCount() + 1);
+        blogRepository.save(blog);
 
-        BlogLike saved =  blogLikeRepository.save(blogLike);
+        BlogLike bloglike = blogLikeMapper.toModel(request);
+        BlogLike saved =  blogLikeRepository.save(bloglike);
 
         return blogLikeMapper.toResponse(saved);
+
     }
 
     @Override

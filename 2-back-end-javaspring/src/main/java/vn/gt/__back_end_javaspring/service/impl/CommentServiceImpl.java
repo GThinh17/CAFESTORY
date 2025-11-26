@@ -14,7 +14,6 @@ import vn.gt.__back_end_javaspring.entity.Comment;
 import vn.gt.__back_end_javaspring.entity.CommentImage;
 import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.exception.BlogNotFoundException;
-import vn.gt.__back_end_javaspring.exception.CommentImageNotFoundException;
 import vn.gt.__back_end_javaspring.exception.CommentNotFoundException;
 import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.CommentMapper;
@@ -76,45 +75,40 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    @Transactional
     public CommentResponse addComment(CommentCreateDTO dto) {
-        Comment comment = commentMapper.toModel(dto);
-
         Blog blog = blogRepository.findById(dto.getBlogId())
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
-        comment.setBlog(blog);
 
         User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        comment.setUser(user);
+                        .orElseThrow(()-> new UserNotFoundException("User not found "));
 
         Comment parent = null;
         if (dto.getCommentParentId() != null && !dto.getCommentParentId().isBlank()) {
             parent = commentRepository.findById(dto.getCommentParentId())
                     .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
-            comment.setParentComment(parent);
         }
 
         CommentImage commentImage = null;
         if (dto.getCommentImageId() != null && !dto.getCommentImageId().isBlank()) {
             commentImage = commentImageRepository.findById(dto.getCommentImageId())
-                    .orElseThrow(() -> new CommentImageNotFoundException("Comment image not found"));
-            comment.setCommentImage(commentImage);
+                    .orElseThrow(() -> new CommentNotFoundException("Comment image not found"));
         }
 
-        if (blog.getCommentsCount() == null) blog.setCommentsCount(0L);
+
         blog.setCommentsCount(blog.getCommentsCount() + 1);
+        System.out.println(blog.getCommentsCount());
+        System.out.println("DTO " + dto.toString());
 
         if (parent != null) {
             if (parent.getReplyCount() == null) parent.setReplyCount(0L);
             parent.setReplyCount(parent.getReplyCount() + 1);
         }
 
-        Comment saved = commentRepository.save(comment);
+        Comment saved = commentRepository.save(commentMapper.toModel(dto));
 
+        // 8. Return
         return commentMapper.toResponse(saved);
     }
-
 
     @Override
     public CommentResponse updateComment(String commentId, CommentUpdateDTO commentUpdateDTO) {

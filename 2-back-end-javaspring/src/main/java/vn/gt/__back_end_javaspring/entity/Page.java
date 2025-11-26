@@ -22,8 +22,11 @@ public class Page {
         @Column(name = "post_count", nullable = false)
         private Long postCount = 0L;
 
-        @Column(name = "followers_count", nullable = false)
+        @Column(name = "follower_count", nullable = false)
         private Long followersCount = 0L;
+
+        @Column(name = "following_count")
+        private Long followingCount = 0L;
 
         @NotBlank
         @Column(name = "slug", nullable = false, length = 160)

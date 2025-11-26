@@ -1,31 +1,37 @@
 package vn.gt.__back_end_javaspring.entity;
 
-import java.sql.Date;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
-@Data
-@Table(name = "paymentMethod")
+@Table(name = "payment_method")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PaymentMethod {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "paymentMethodId", length = 36)
-    private String paymentMethodId;
+    @Column(name = "payment_method_id")
+    private String id;
 
-    @Column(name = "paymentMethodName")
-    private String paymentMethodName;
+    @Column(name = "provider", length = 50)
+    private String provider; // BANK, MOMO, PAYPAL...
 
-    @Column(name = "createAt")
-    private Date createAt;
+    @Column(name = "account_name", length = 150)
+    private String accountName;
 
+    @Column(name = "account_number", length = 100)
+    private String accountNumber;
+
+    @Column(name = "is_default")
+    private Boolean defaultMethod;
+
+    @Column(name = "is_verified")
+    private Boolean verified;
 }
