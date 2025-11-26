@@ -117,4 +117,13 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
 
+    @ExceptionHandler(ExistFollow.class)
+    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(ExistFollow ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Share not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
 }

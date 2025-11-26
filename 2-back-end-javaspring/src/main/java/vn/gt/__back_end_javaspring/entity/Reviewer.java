@@ -1,10 +1,7 @@
 package vn.gt.__back_end_javaspring.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 import vn.gt.__back_end_javaspring.enums.ReviewerStatus;
 
@@ -15,19 +12,12 @@ import java.time.LocalDateTime;
 @Table(name = "reviewer")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @PrimaryKeyJoinColumn(name = "user_id")
 public class Reviewer extends User{
 
 	@Column(name = "bio", length = 500)
 	String bio;
-
-    @Column(name = "follower_count")
-    Long followerCount;
-
-    @Column(name = "following_count")
-    Long followingCount;
 
 
 	@Column(name = "total_score")
