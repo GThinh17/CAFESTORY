@@ -1,0 +1,109 @@
+.post {
+  width: 470px;
+  background-color: var(--background);
+  margin: 20px auto;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  border-radius: 50%;
+}
+
+.username-post {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.time {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.dot {
+  color: var(--muted-foreground);
+}
+
+.more-icon {
+  cursor: pointer;
+}
+
+.post-image {
+  width: 100%;
+  height: auto;
+}
+
+.main-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.left-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.icon {
+  cursor: pointer;
+}
+
+.likes {
+  padding: 0px;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.caption-container {
+  padding: 4px 0px 10px;
+  font-size: 14px;
+  position: relative;
+}
+
+.caption.clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.more,
+.less {
+  display: inline-block;
+  margin-top: 4px;
+  color: var(--muted-foreground);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0;
+}
+
+.add-comment input {
+  background-color: var(--background);
+  border: none;
+  padding: 10px 0px;
+  font-size: 14px;
+  color: var(--muted-foreground);
+}

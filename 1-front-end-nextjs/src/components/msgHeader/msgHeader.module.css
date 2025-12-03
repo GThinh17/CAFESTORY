@@ -1,0 +1,76 @@
+.container {
+  padding: 10px;
+  padding-top: 25px;
+  width: 95%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.username {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--foreground);
+}
+
+.iconDown {
+  width: 16px;
+  height: 16px;
+  color: var(--muted-foreground);
+}
+
+.editBtn {
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+.editBtn:hover {
+  background-color: var(--muted);
+}
+
+.editIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--foreground);
+}
+
+/* Search input */
+.searchWrapper {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--muted-foreground);
+}
+
+.searchInput {
+  padding-left: 36px !important;
+  background-color: var(--muted);
+  color: var(--foreground);
+  border: none;
+}
+
+.searchInput:focus,
+.searchInput:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}

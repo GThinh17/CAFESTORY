@@ -1,0 +1,49 @@
+.PModalCon {
+  width: 360px;
+  padding: 0;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* Header */
+.HeaderCon {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.TitleText {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* List container */
+.ProfileList {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Each item */
+.ProfileItem {
+  padding: 16px 0;
+  width: 100%;
+  font-size: 16px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+ 
+}
+
+.ProfileItem:hover {
+  transform: translateX(4px);
+  transition: all 0.25s ease-in-out;
+}
+
+/* Last item (Cancel) */
+.CancelItem {
+  font-weight: 600;
+  border-bottom: none;
+  margin-top: 4px;
+  color: var(--color-chart-5);
+}

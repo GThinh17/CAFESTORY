@@ -1,44 +1,77 @@
-.container {
+.onlineAvtWrapper {
+  position: relative;
   display: flex;
-  gap: 20px;
-  padding: 10px;
-  overflow-x: auto;
-  scrollbar-width: none; /* Firefox */
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
-.container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+.container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: nowrap;
+  padding: 10px 0;
+  transition: all 0.3s ease-in-out;
 }
 
 .story {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 12px;
-  width: 60px;
+  min-width: 80px;
 }
 
 .avatarWrapper {
-  width: 55px;
-  height: 55px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
-  padding: 2px;
-  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+  padding: 3px;
+  background: linear-gradient(
+    45deg,
+    var(--chart-4),
+    var(--chart-1),
+    var(--chart-5)
+  );
 }
 
 .avatar {
   border-radius: 50%;
-  object-fit: cover;
+  border: 2px solid var(--color-background);
 }
 
 .username {
+  font-size: 12px;
   margin-top: 5px;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  color: var(--foreground);
+}
+
+/* Nút điều hướng */
+.scrollBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 9999px !important;
+  padding: 8px !important;
+  background-color: var(--muted) !important;
+  color: var(--foreground) !important;
+  z-index: 10;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scrollBtn:hover {
+  background-color: var(--accent) !important;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.scrollBtn.left {
+  left: 0.1rem;
+}
+
+.scrollBtn.right {
+  right: 0.1rem;
 }

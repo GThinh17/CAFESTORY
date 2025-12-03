@@ -1,13 +1,18 @@
 /* Mixin cho media query */
+@mixin exsmall {
+  @media (max-width: 758px) {
+    @content;
+  }
+}
 
 @mixin small {
-  @media (max-width: 1200px) {
+  @media (max-width: 1024px) {
     @content;
   }
 }
 
 @mixin medium {
-  @media (max-width: 1500px) {
+  @media (max-width: 1400px) {
     @content;
   }
 }

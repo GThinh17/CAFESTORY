@@ -1,0 +1,118 @@
+.pricingModal {
+  background-color: var(--background);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  max-width: 60rem;
+  transition: all 0.3s ease;
+  padding: 1.5rem;
+
+  .pricingModal__title {
+    text-align: center;
+    color: var(--primary);
+    font-size: 1.75rem;
+    font-weight: 600;
+  }
+
+  .pricingModal__subtitle {
+    text-align: center;
+    color: var(--muted-foreground);
+    font-size: 0.9rem;
+  }
+
+  .pricingModal__cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .pricingCard {
+    background-color: var(--popover);
+
+    border-radius: var(--radius-lg);
+    box-shadow: 0 2px 4px oklch(0.704 0.04 256.788/ 0.28);
+    transition: all 0.3s ease;
+    padding: 1rem;
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+
+    &__name {
+      color: var(--chart-5);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    &__desc {
+      color: var(--muted-foreground);
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+
+    &__price {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-top: 1rem;
+      color: var(--foreground);
+
+      .pricingCard__usd {
+        font-size: 0.9rem;
+        color: var(--muted-foreground);
+        margin-left: 0.25rem;
+      }
+    }
+
+    &__per {
+      color: var(--muted-foreground);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    &__btn {
+      width: 100%;
+      background-color: var(--chart-4);
+      color: var(--color-primary-foreground);
+      margin-bottom: 1rem;
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: var(--chart-5);
+        color: var(--primary);
+      }
+    }
+
+    &__section {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--color-foreground);
+    }
+
+    &__features {
+      list-style: none;
+      padding-left: 0;
+
+      .pricingCard__feature {
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+        gap: 0.25rem;
+
+        &.active {
+          color: var(--color-foreground);
+        }
+
+        &.inactive {
+          color: var(--color-muted-foreground);
+        }
+      }
+    }
+  }
+}
