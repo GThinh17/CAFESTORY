@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,18 +31,18 @@ public class UserController {
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	public static boolean hasRole(Jwt jwt, String role) {
-		List<Map<String, Object>> roles = jwt.getClaim("roles");
-		if (roles == null)
-			return false;
+	// public static boolean hasRole(Jwt jwt, String role) {
+	// List<Map<String, Object>> roles = jwt.getClaim("roles");
+	// if (roles == null)
+	// return false;
 
-		return roles.stream()
-				.anyMatch(r -> role.equals(r.get("role")));
-	}
+	// return roles.stream()
+	// .anyMatch(r -> role.equals(r.get("role")));
+	// }
 
 	@GetMapping("/users")
-	public ResponseEntity<?> getAllUsers() {
 
+	public ResponseEntity<?> getAllUsers() {
 		return ResponseEntity.ok().body(this.userService.getAllUsers());
 	}
 
@@ -54,11 +55,9 @@ public class UserController {
 	}
 
 	@PostMapping("/users")
+	@PreAuthorize("@auth.hasRole('ADMIN')")
 	public ResponseEntity<?> createUser(@RequestBody User newUser, @AuthenticationPrincipal Jwt jwt) {
 		// hash Password by Password Encoder
-		if (!hasRole(jwt, "ROLE_ADMIN")) {
-			return ResponseEntity.status(403).body("Access denied: You are not ADMIN");
-		}
 
 		String hashPassword = this.passwordEncoder.encode(newUser.getPassword());
 		newUser.setPassword(hashPassword);
@@ -69,11 +68,9 @@ public class UserController {
 	}
 
 	@PutMapping("/users/{id}")
+	@PreAuthorize("@auth.hasRole('ADMIN')")
 	public ResponseEntity<?> updateUser(@RequestBody User updateUser, @PathVariable("id") String id,
 			@AuthenticationPrincipal Jwt jwt) {
-		if (!hasRole(jwt, "ROLE_ADMIN")) {
-			return ResponseEntity.status(403).body("Access denied: You are not ADMIN");
-		}
 		User user = this.userService.updateUserById(id, updateUser);
 
 		return ResponseEntity.ok().body(user);
