@@ -5,25 +5,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.gt.__back_end_javaspring.DTO.CommentCreateDTO;
-import vn.gt.__back_end_javaspring.DTO.CommentResponse;
-import vn.gt.__back_end_javaspring.DTO.CommentUpdateDTO;
-import vn.gt.__back_end_javaspring.DTO.CursorPage;
-import vn.gt.__back_end_javaspring.entity.Blog;
-import vn.gt.__back_end_javaspring.entity.Comment;
-import vn.gt.__back_end_javaspring.entity.CommentImage;
-import vn.gt.__back_end_javaspring.entity.User;
-import vn.gt.__back_end_javaspring.exception.BlogNotFoundException;
-import vn.gt.__back_end_javaspring.exception.CommentNotFoundException;
-import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
+import vn.gt.__back_end_javaspring.DTO.*;
+import vn.gt.__back_end_javaspring.entity.*;
+import vn.gt.__back_end_javaspring.exception.*;
 import vn.gt.__back_end_javaspring.mapper.CommentMapper;
-import vn.gt.__back_end_javaspring.repository.BlogRepository;
-import vn.gt.__back_end_javaspring.repository.CommentRepository;
-import vn.gt.__back_end_javaspring.repository.UserRepository;
-import vn.gt.__back_end_javaspring.repository.commentImageRepository;
+import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.CommentService;
+import vn.gt.__back_end_javaspring.service.EarningEventService;
+import vn.gt.__back_end_javaspring.service.ReviewerService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -36,6 +28,10 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
     private final UserRepository userRepository;
     private final commentImageRepository commentImageRepository;
+    private final ReviewerService reviewerService;
+    private final ReviewerRepository reviewerRepository;
+    private final PricingRuleRepository pricingRuleRepository;
+    private final EarningEventService earningEventService;
 
     @Override
     @Transactional(readOnly = true)
@@ -82,6 +78,7 @@ public class CommentServiceImpl implements CommentService {
         User user = userRepository.findById(dto.getUserId())
                         .orElseThrow(()-> new UserNotFoundException("User not found "));
 
+
         Comment parent = null;
         if (dto.getCommentParentId() != null && !dto.getCommentParentId().isBlank()) {
             parent = commentRepository.findById(dto.getCommentParentId())
@@ -94,10 +91,7 @@ public class CommentServiceImpl implements CommentService {
                     .orElseThrow(() -> new CommentNotFoundException("Comment image not found"));
         }
 
-
         blog.setCommentsCount(blog.getCommentsCount() + 1);
-        System.out.println(blog.getCommentsCount());
-        System.out.println("DTO " + dto.toString());
 
         if (parent != null) {
             if (parent.getReplyCount() == null) parent.setReplyCount(0L);
@@ -106,7 +100,33 @@ public class CommentServiceImpl implements CommentService {
 
         Comment saved = commentRepository.save(commentMapper.toModel(dto));
 
-        // 8. Return
+        String reviewerId = blog.getUser().getId();
+        if(reviewerService.isReviewer(reviewerId)){
+            Reviewer reviewer = reviewerRepository.findById(reviewerId)
+                    .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
+
+            PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
+            if (pricingRule == null) {
+                throw new PricingRuleNotFound("No active pricing rule");
+            }
+
+            BigDecimal weight = pricingRule.getCommentWeight();
+            if (weight == null) {
+                weight = BigDecimal.ZERO;
+            }
+            BigDecimal unitPrice = pricingRule.getUnitPrice();
+            BigDecimal amount = unitPrice.multiply(weight);
+
+            EarningEventCreateDTO earningEventCreateDTO = new EarningEventCreateDTO();
+            earningEventCreateDTO.setBlogId(dto.getBlogId());
+            earningEventCreateDTO.setSourceType("COMMENT");
+            earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
+            earningEventCreateDTO.setReviewerId(reviewerId);
+            earningEventCreateDTO.setAmount(amount);
+
+            earningEventService.create(earningEventCreateDTO);
+        }
+
         return commentMapper.toResponse(saved);
     }
 

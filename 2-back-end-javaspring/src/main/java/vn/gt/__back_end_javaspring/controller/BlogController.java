@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import vn.gt.__back_end_javaspring.DTO.BlogCreateDTO;
@@ -23,7 +24,7 @@ public class BlogController {
 
 
     @GetMapping("")
-    public RestResponse<CursorPage<BlogResponse>> getNewBlogs(
+    public ResponseEntity<CursorPage<BlogResponse>> getNewBlogs(
             @RequestParam(required = false) String userId,
             @RequestParam(required = false) String cursor,
             @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size
@@ -33,46 +34,37 @@ public class BlogController {
             RestResponse<CursorPage<BlogResponse>> restResponse = new RestResponse<>();
 
             CursorPage<BlogResponse> data = blogService.findNewestBlog(cursor, size);
-            restResponse.setStatusCode(200);
-            restResponse.setData(data);
-            restResponse.setMessage("success");
-            return restResponse;
+
+            return ResponseEntity.ok().body(data);
         } else{
             RestResponse<CursorPage<BlogResponse>> restResponse = new RestResponse<>();
             CursorPage<BlogResponse> data = blogService.findUserBlog(userId, cursor, size);
-            restResponse.setStatusCode(200);
-            restResponse.setData(data);
-            restResponse.setMessage("success");
-            return restResponse;
+
+            return ResponseEntity.ok().body(data);
         }
 
     }
 
     @GetMapping("/{id}")
-    public RestResponse<BlogResponse> getBlogById(
+    public ResponseEntity<BlogResponse> getBlogById(
             @PathVariable String id
     ){
         RestResponse<BlogResponse> restResponse = new RestResponse<>();
         BlogResponse blogResponse = blogService.getBlogById(id);
 
-        restResponse.setStatusCode(200);
-        restResponse.setData(blogResponse);
-        restResponse.setMessage("success");
 
-        return restResponse;
+
+        return ResponseEntity.ok().body(blogResponse);
     }
 
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<BlogResponse> createBlog(
+    public ResponseEntity<BlogResponse> createBlog(
             @RequestBody @Valid BlogCreateDTO blogCreateDTO){
-        RestResponse<BlogResponse> restResponse = new RestResponse<>();
         BlogResponse data = blogService.createBlog(blogCreateDTO);
-        restResponse.setStatusCode(201);
-        restResponse.setMessage("success");
-        restResponse.setData(data);
-        return restResponse;
+
+        return ResponseEntity.ok().body(data);
     }
 
 
@@ -82,19 +74,15 @@ public class BlogController {
         blogService.deleteBlog(id);
     }
 
-
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RestResponse<BlogResponse> updateBlog(
+    public ResponseEntity<BlogResponse> updateBlog(
             @PathVariable String id,
             @RequestBody @Valid BlogUpdateDTO blogUpdateDTO
     ){
-        RestResponse<BlogResponse> restResponse = new RestResponse<>();
         BlogResponse data = blogService.updateBlog(id, blogUpdateDTO);
-        restResponse.setStatusCode(200);
-        restResponse.setMessage("success");
-        restResponse.setData(data);
-        return restResponse;
+
+        return ResponseEntity.ok().body(data);
     }
 
 

@@ -14,5 +14,6 @@ public interface FollowService {
 
     List<FollowResponse> getPageFollower(String pageId); //Lya nhung thang follow page page
 
-    void deleteFollowed(String userId, String followdId);
+    void deletedFollowingUserId(String userId, String userFollowingId);
+    void deletedFollowingPageId(String userId, String pageId);
 }

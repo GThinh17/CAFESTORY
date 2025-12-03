@@ -5,6 +5,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class FollowCreateDTO {
     @NotBlank(message = "UserId is Required")
     private String followerId;//User
 
-    @NotBlank(message = "Type is required")
+    @NotNull(message = "Type is required")
     private FollowType followType; //User /page
 
     private String followedUserId;

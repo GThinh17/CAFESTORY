@@ -27,7 +27,7 @@ public class Badge {
     @Column(name = "description", length = 255)
     private String description;
 
-    @Column(name = "icon_url", length = 255)
+    @Column(name = "icon_url", length = 255, nullable = false)
     private String iconUrl;
 
     @Column(name = "is_deleted", nullable = false)
@@ -37,7 +37,7 @@ public class Badge {
     @Column(name = "criteria_type", length = 30, nullable = false)
     private CriteriaType criteriaType;
 
-    @Column(name = "criteria_value")
+    @Column(name = "criteria_value", nullable = false)
     private Long criteriaValue;
 
     @Column(name = "created_at", updatable = false)

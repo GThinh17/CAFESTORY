@@ -57,7 +57,7 @@ public class BlogServiceImpl implements BlogService {
             List<Media> mediaList = dto.getMediaUrls().stream()
                     .map(url -> {
                         Media m = new Media();
-                        m.setMediaUrl(url);   // hoặc m.setUrl(url); tuỳ entity của bạn
+                        m.setMediaUrl(url);
                         m.setBlog(blog);
                         return m;
                     })

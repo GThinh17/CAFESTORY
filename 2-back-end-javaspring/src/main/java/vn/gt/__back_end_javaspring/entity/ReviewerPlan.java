@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Table(name = "pricing_plan")
@@ -13,11 +12,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PricingPlan {
+public class ReviewerPlan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "pricing_plan_id")
+    @Column(name = "reviewer_plan")
     private String id;
 
     @Column(name = "plan_name", nullable = false, length = 100)
