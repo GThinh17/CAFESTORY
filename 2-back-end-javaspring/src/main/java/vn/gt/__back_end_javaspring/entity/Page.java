@@ -24,6 +24,9 @@ public class Page {
         @Column(name = "page_name", nullable = false, length = 150)
         private String pageName;
 
+        @Column(name = "slug")
+        private String slug;
+
 
         @Column(name = "post_count", nullable = false)
         private Long postCount = 0L;
@@ -31,7 +34,7 @@ public class Page {
         @Column(name = "follower_count", nullable = false)
         private Long followersCount ;
 
-        @Column(name = "following_count")
+        @Column(name = "following_count") //Bo truogn nay
         private Long followingCount;
 
         @Column(name = "description", length = 1000)

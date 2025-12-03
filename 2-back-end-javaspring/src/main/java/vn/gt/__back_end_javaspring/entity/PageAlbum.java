@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import vn.gt.__back_end_javaspring.enums.Visibility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,10 +30,19 @@ public class PageAlbum {
     @Column(name = "visibility")
     private Visibility visibility;
 
-    @Column(name = "cover_photo_id")
-    private String coverPhotoId;
+
+    @OneToMany(mappedBy = "pageAlbum", cascade = CascadeType.ALL, orphanRemoval = true )
+    private List<PageImage> images = new ArrayList<>();
 
     @Column(name = "total_photo")
     private Integer totalPhoto;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
+    @PrePersist
+    public void prePersist() {
+        this.totalPhoto = 0;
+        this.isDeleted = false;
+    }
 }

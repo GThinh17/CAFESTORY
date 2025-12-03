@@ -1,8 +1,5 @@
 package vn.gt.__back_end_javaspring.exception;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,48 +9,52 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import vn.gt.__back_end_javaspring.entity.RestResponse;
-import vn.gt.__back_end_javaspring.entity.Share;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalException {
-    @ExceptionHandler(value = { IdInvalidException.class, UsernameNotFoundException.class,
-            BadCredentialsException.class })
-    public ResponseEntity<RestResponse<Object>> handleException(IdInvalidException idInvalidException) {
-        RestResponse<Object> res = new RestResponse<Object>();
+
+    //---Handle wwith invalid
+    @ExceptionHandler(IdInvalidException.class)
+    public ResponseEntity<RestResponse<Object>> handleIdInvalid(IdInvalidException ex) {
+        RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setMessage(idInvalidException.getMessage());
-        res.setErrors("Id Invalid");
+        res.setMessage(ex.getMessage());
+        res.setErrors("Id invalid");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
-    // (MethodArgumentNotValidException.class hfm xử lí ngoại lệ trong DTO ví dụ như
-    // là NotBlank, Size, Valid
+    @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
+    public ResponseEntity<RestResponse<Object>> handleAuthException(RuntimeException ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.UNAUTHORIZED.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Authentication failed");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(res);
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<RestResponse<Object>> validationEntity(MethodArgumentNotValidException ex) {
-        BindingResult result = ex.getBindingResult(); // lấy thông tin chi tiết về kết quả validate exeception
-        final List<FieldError> fieldErorrs = result.getFieldErrors(); // lấy tất cả các lỗi liên quan đến field bị vi
-                                                                      // phạm ràng buộc
+    public ResponseEntity<RestResponse<Object>> handleValidation(MethodArgumentNotValidException ex) {
+        BindingResult result = ex.getBindingResult();
+        List<FieldError> fieldErrors = result.getFieldErrors();
 
-        RestResponse<Object> res = new RestResponse<Object>();
+        List<String> errors = fieldErrors.stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.toList());
+
+        RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setErrors(ex.getBody().getDetail()); // lấy lỗi chi tiết từ ExceptionBody
+        res.setMessage("Validation failed");
+        res.setErrors(String.join("; ", errors));
 
-        List<String> errors = fieldErorrs.stream().map(f -> f.getDefaultMessage()).collect(Collectors.toList()); // duyệt
-                                                                                                                 // qua
-                                                                                                                 // các
-                                                                                                                 // fielErorr
-                                                                                                                 // gôm
-                                                                                                                 // lại
-                                                                                                                 // thành
-                                                                                                                 // danh
-                                                                                                                 // sách
-                                                                                                                 // errors
-        res.setMessage(errors.size() > 1 ? errors : errors.get(0));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
+    //--handle with not found
     @ExceptionHandler(BlogNotFoundException.class)
     public ResponseEntity<RestResponse<Object>> handleBlogNotFound(BlogNotFoundException ex) {
         RestResponse<Object> res = new RestResponse<>();
@@ -72,17 +73,8 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
 
-    @ExceptionHandler(LikeExist.class)
-    public ResponseEntity<RestResponse<Object>> handleLikeExist(LikeExist ex) {
-        RestResponse<Object> res = new RestResponse<>();
-        res.setStatusCode(HttpStatus.CONFLICT.value());
-        res.setMessage(ex.getMessage());
-        res.setErrors("Like already exist");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
-    }
-
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(UserNotFoundException ex) {
+    public ResponseEntity<RestResponse<Object>> handleUserNotFound(UserNotFoundException ex) {
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.NOT_FOUND.value());
         res.setMessage(ex.getMessage());
@@ -91,7 +83,7 @@ public class GlobalException {
     }
 
     @ExceptionHandler(LikeNotFoundException.class)
-    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(LikeNotFoundException ex) {
+    public ResponseEntity<RestResponse<Object>> handleLikeNotFound(LikeNotFoundException ex) {
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.NOT_FOUND.value());
         res.setMessage(ex.getMessage());
@@ -100,7 +92,7 @@ public class GlobalException {
     }
 
     @ExceptionHandler(ShareNotFoundException.class)
-    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(ShareNotFoundException ex) {
+    public ResponseEntity<RestResponse<Object>> handleShareNotFound(ShareNotFoundException ex) {
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.NOT_FOUND.value());
         res.setMessage(ex.getMessage());
@@ -109,21 +101,114 @@ public class GlobalException {
     }
 
     @ExceptionHandler(PageNotFoundException.class)
-    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(PageNotFoundException ex) {
+    public ResponseEntity<RestResponse<Object>> handlePageNotFound(PageNotFoundException ex) {
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.NOT_FOUND.value());
         res.setMessage(ex.getMessage());
-        res.setErrors("Share not found");
+        res.setErrors("Page not found");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
+    @ExceptionHandler(WalletNotFound.class)
+    public ResponseEntity<RestResponse<Object>> handleWalletNotFound(WalletNotFound ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Wallet not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
+    @ExceptionHandler(WalletTransactionNotFound.class)
+    public ResponseEntity<RestResponse<Object>> handleWalletTransactionNotFound(WalletTransactionNotFound ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Wallet transaction not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
+    @ExceptionHandler(PricingRuleNotFound.class)
+    public ResponseEntity<RestResponse<Object>> handlePricingRuleNotFound(PricingRuleNotFound ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Pricing rule not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
+    @ExceptionHandler(BadgeNotFound.class)
+    public ResponseEntity<RestResponse<Object>> handleBadgeNotFound(BadgeNotFound ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Badge not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
+    @ExceptionHandler(PageAlbumNotFoundException.class)
+    public ResponseEntity<RestResponse<Object>> handlePageAlbumNotFound(PageAlbumNotFoundException ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Page album not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
+    @ExceptionHandler(ReviewerNotFound.class)
+    public ResponseEntity<RestResponse<Object>> handlePageAlbumNotFound(ReviewerNotFound ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Reviewer not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
+
+
+    //--Handle with conflict
+    @ExceptionHandler(LikeExist.class)
+    public ResponseEntity<RestResponse<Object>> handleLikeExist(LikeExist ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.CONFLICT.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Like already exists");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
     }
 
     @ExceptionHandler(ExistFollow.class)
-    public ResponseEntity<RestResponse<Object>> handleCommentNotFound(ExistFollow ex) {
+    public ResponseEntity<RestResponse<Object>> handleExistFollow(ExistFollow ex) {
         RestResponse<Object> res = new RestResponse<>();
-        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setStatusCode(HttpStatus.CONFLICT.value());
         res.setMessage(ex.getMessage());
-        res.setErrors("Share not found");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+        res.setErrors("Follow already exists");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
     }
 
+    @ExceptionHandler(UserAlreadyhaveWallet.class)
+    public ResponseEntity<RestResponse<Object>> handleUserAlreadyHaveWallet(UserAlreadyhaveWallet ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.CONFLICT.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Wallet already exists for user");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
+    }
+
+    @ExceptionHandler(PricingRuleConflictException.class)
+    public ResponseEntity<RestResponse<Object>> handlePricingRuleConflict(PricingRuleConflictException ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.CONFLICT.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Pricing rule conflict");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
+    }
+
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<RestResponse<Object>> handleGenericException(Exception ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        res.setMessage("Internal server error");
+        res.setErrors(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+    }
 }

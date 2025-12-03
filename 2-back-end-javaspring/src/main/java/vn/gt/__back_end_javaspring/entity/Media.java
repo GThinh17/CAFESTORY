@@ -27,4 +27,9 @@ public class Media { //Check
     @Column(name = "description")
     private String description;
 
+    @PrePersist
+    public void prePersist() {
+        this.mediaType = MediaType.IMAGE;
+    }
+
 }

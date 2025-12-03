@@ -17,6 +17,8 @@ public interface PageMapper {
 
     @Mapping(source = "id", target = "pageId")
     @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.fullName", target = "userName")
+    @Mapping(source = "user.avatar", target = "userAvatarUrl")
     PageResponse toResponse(Page page);
 
     default String map(JsonNode node) {

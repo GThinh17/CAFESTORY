@@ -2,6 +2,7 @@ package vn.gt.__back_end_javaspring.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import vn.gt.__back_end_javaspring.DTO.ShareCreateDTO;
@@ -20,65 +21,45 @@ public class ShareController {
     private final ShareService shareService;
 
     @PostMapping()
-    public RestResponse<ShareReponse> createShare(
+    public ResponseEntity<ShareReponse> createShare(
             @Valid @RequestBody ShareCreateDTO shareCreateDTO
             ){
         ShareReponse shareReponse = shareService.createShare(shareCreateDTO);
-        RestResponse<ShareReponse> response = new RestResponse<>();
 
-        response.setData(shareReponse);
-        response.setMessage("Share created successfully");
-        response.setStatusCode(200);
-        return response;
+
+        return ResponseEntity.ok().body(shareReponse);
     }
 
     @GetMapping("/{id}")
-    public RestResponse<ShareReponse> getShareById(@PathVariable String id){
+    public ResponseEntity<ShareReponse> getShareById(@PathVariable String id){
         ShareReponse shareReponse = shareService.getShareById(id);
 
-        RestResponse<ShareReponse> response = new RestResponse<>();
-        response.setData(shareReponse);
-        response.setMessage("Share found successfully");
-        response.setStatusCode(200);
-        return response;
+        return ResponseEntity.ok().body(shareReponse);
     }
 
     @GetMapping("/by-blog")
-    public RestResponse<List<ShareReponse>> getSharesByBlog(
+    public ResponseEntity<List<ShareReponse>> getSharesByBlog(
             @RequestParam String blogId){
         List<ShareReponse> data = shareService.getSharesByBlog(blogId);
-        RestResponse<List<ShareReponse>> response = new RestResponse<>();
 
-        response.setData(data);
-        response.setMessage("Share found successfully");
-        response.setStatusCode(200);
-        return response;
+        return ResponseEntity.ok().body(data);
     }
 
     @GetMapping("/by-user")
-    public RestResponse<List<ShareReponse>> getSharesByUser(
+    public ResponseEntity<List<ShareReponse>> getSharesByUser(
             @RequestParam String userId
     ){
         List<ShareReponse> data = shareService.getSharesByUser(userId);
-        RestResponse<List<ShareReponse>> response = new RestResponse<>();
-
-        response.setData(data);
-        response.setMessage("Share found successfully");
-        response.setStatusCode(200);
-        return response;
+        return ResponseEntity.ok().body(data);
     }
 
 
     @DeleteMapping("/{shareId}")
-    public RestResponse<ShareReponse> deleteShare(
+    public ResponseEntity<ShareReponse> deleteShare(
             @PathVariable String shareId,
             @RequestParam String userId){
         shareService.softDeleteShare(shareId, userId);
-        RestResponse<ShareReponse> response = new RestResponse<>();
 
-        response.setMessage("Share deleted successfully");
-        response.setStatusCode(200);
-        response.setData(null);
-        return response;
+        return ResponseEntity.ok().build();
     }
 }

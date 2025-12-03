@@ -24,10 +24,10 @@ public class WalletTransaction {
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "wallet_id")
+    @JoinColumn(name = "wallet_id", nullable = false)
     private Wallet wallet;
 
-    @Column(name = "amount", precision = 18, scale = 2)
+    @Column(name = "amount", precision = 18, scale = 2, nullable = false)
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
@@ -39,10 +39,10 @@ public class WalletTransaction {
     private TransactionStatus status;
 
 
-    @Column(name = "balance_after")
+    @Column(name = "balance_after", precision = 18, scale = 2, nullable = false)
     private BigDecimal balanceAfter;
 
-    @Column(name = "balance_before")
+    @Column(name = "balance_before",  precision = 18, scale = 2, nullable = false)
     private BigDecimal balanceBefore;
 
 
@@ -52,11 +52,15 @@ public class WalletTransaction {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
     @PrePersist
     public void onPrePersist() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
         status = TransactionStatus.PENDING;
+        isDeleted = Boolean.FALSE;
     }
 
     @PreUpdate

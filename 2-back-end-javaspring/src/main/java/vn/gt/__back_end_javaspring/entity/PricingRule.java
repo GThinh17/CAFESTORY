@@ -1,6 +1,5 @@
 package vn.gt.__back_end_javaspring.entity;
 
-import com.google.type.DateTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +26,7 @@ public class PricingRule {
     private String description;
 
     @Column(name = "like_weight")
-    private BigDecimal likeWeight;
+    private BigDecimal likeWeight; //Trong so cua like 1 like = 2 diem
 
     @Column(name = "comment_weight")
     private BigDecimal commentWeight;
@@ -36,16 +35,16 @@ public class PricingRule {
     private BigDecimal shareWeight;
 
     @Column(name = "unit_price", precision = 10, scale = 2, nullable = false)
-    private BigDecimal unitPrice;
+    private BigDecimal unitPrice; //Gia tien tren moi diem
 
     @Column(name = "currency", length = 10)
     private String currency;
 
     @Column(name = "effective_from")
-    private DateTime effectiveFrom;
+    private LocalDateTime effectiveFrom;
 
     @Column(name = "effective_to")
-    private DateTime effectiveTo;
+    private LocalDateTime effectiveTo;
 
     @Column(name = "is_active")
     private Boolean isActive;
@@ -53,13 +52,14 @@ public class PricingRule {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
-        likeWeight = BigDecimal.ZERO;
-        commentWeight = BigDecimal.ZERO;
-        shareWeight = BigDecimal.ZERO;
-        unitPrice = BigDecimal.ZERO;
         isActive = true;
+        currency = "USD";
+        isDeleted = false;
     }
 }

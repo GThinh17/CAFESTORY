@@ -3,6 +3,7 @@ package vn.gt.__back_end_javaspring.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.gt.__back_end_javaspring.DTO.BlogLikeCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.BlogLikeResponse;
@@ -20,71 +21,49 @@ public class BlogLikeController {
 
 
     @PostMapping("")
-    public RestResponse<BlogLikeResponse> likeBlog(
+    public ResponseEntity<BlogLikeResponse> likeBlog(
             @Valid @RequestBody BlogLikeCreateDTO request) {
         BlogLikeResponse response = blogLikeService.like(request);
 
-        RestResponse<BlogLikeResponse> res = new RestResponse<>();
-        res.setStatusCode(HttpStatus.CREATED.value());
-        res.setMessage("Liked blog successfully");
-        res.setData(response);
-
-        return res;
+        return ResponseEntity.ok().body(response);
     }
 
 
     @DeleteMapping("")
-    public RestResponse<Void> unlikeBlog(
+    public ResponseEntity<Void> unlikeBlog(
             @RequestParam String blogId,
             @RequestParam String userId
     ) {
         blogLikeService.unlike(blogId, userId);
 
-        RestResponse<Void> res = new RestResponse<>();
-        res.setStatusCode(HttpStatus.OK.value());
-        res.setMessage("Unliked blog successfully");
-        res.setData(null);
-
-        return res;
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/is-liked")
-    public RestResponse<Boolean> isLiked(
+    public ResponseEntity<Boolean> isLiked(
             @RequestParam String blogId,
             @RequestParam String userId
     ) {
         boolean liked = blogLikeService.isLiked(userId, blogId);
 
-        RestResponse<Boolean> res = new RestResponse<>();
-        res.setStatusCode(HttpStatus.OK.value());
-        res.setMessage("Check like status successfully");
-        res.setData(liked);
 
-        return res;
+
+        return ResponseEntity.ok().body(liked);
     }
 
 
     @GetMapping("/count")
-    public RestResponse<Long> countLikes(@RequestParam String blogId) {
+    public ResponseEntity<Long> countLikes(@RequestParam String blogId) {
         long count = blogLikeService.countLikes(blogId);
 
-        RestResponse<Long> res = new RestResponse<>();
-        res.setStatusCode(HttpStatus.OK.value());
-        res.setMessage("Get like count successfully");
-        res.setData(count);
 
-        return res;
+        return ResponseEntity.ok().body(count);
     }
 
     @GetMapping("/by-blog")
-    public RestResponse<List<BlogLikeResponse>> getLikes(@RequestParam String blogId) {
+    public ResponseEntity<List<BlogLikeResponse>> getLikes(@RequestParam String blogId) {
         List<BlogLikeResponse> list = blogLikeService.getLikesByBlog(blogId);
 
-        RestResponse<List<BlogLikeResponse>> res = new RestResponse<>();
-        res.setStatusCode(HttpStatus.OK.value());
-        res.setMessage("Get list of likes successfully");
-        res.setData(list);
-
-        return res;
+        return ResponseEntity.ok().body(list);
     }
 }

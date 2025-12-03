@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 public class PageResponse {
     private String pageId;
     private String userId;
+    private String userName;
+    private String userAvatarUrl;
     private String pageName;
     private Long postCount;
     private Long followersCount;

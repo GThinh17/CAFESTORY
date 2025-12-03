@@ -21,6 +21,7 @@ public class PageCreateDTO {
     @NotBlank
     private String pageName;
 
+    private String slug;
     private String description;
     private String avatarUrl;
     private String coverUrl;
