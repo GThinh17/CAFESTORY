@@ -10,6 +10,7 @@ import vn.gt.__back_end_javaspring.DTO.WalletUpdateDTO;
 import vn.gt.__back_end_javaspring.service.WalletService;
 
 import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api/wallets")
 @RequiredArgsConstructor
@@ -68,21 +69,21 @@ public class WalletController {
         return ResponseEntity.ok(data);
     }
 
-//   @PostMapping("/{id}/deposit")
-//    public ResponseEntity<WalletResponse> deposit(
-//            @PathVariable String id,
-//            @RequestParam BigDecimal amount) {
-//
-//        WalletResponse data = walletService.deposit(id, amount);
-//        return ResponseEntity.ok(data);
-//    }
-//
-//  @PostMapping("/{id}/withdraw")
-//    public ResponseEntity<WalletResponse> withdraw(
-//            @PathVariable String id,
-//            @RequestParam BigDecimal amount) {
-//
-//        WalletResponse data = walletService.withdraw(id, amount);
-//        return ResponseEntity.ok(data);
-//    }
+    // @PostMapping("/{id}/deposit")
+    // public ResponseEntity<WalletResponse> deposit(
+    // @PathVariable String id,
+    // @RequestParam BigDecimal amount) {
+    //
+    // WalletResponse data = walletService.deposit(id, amount);
+    // return ResponseEntity.ok(data);
+    // }
+    //
+    // @PostMapping("/{id}/withdraw")
+    // public ResponseEntity<WalletResponse> withdraw(
+    // @PathVariable String id,
+    // @RequestParam BigDecimal amount) {
+    //
+    // WalletResponse data = walletService.withdraw(id, amount);
+    // return ResponseEntity.ok(data);
+    // }
 }
