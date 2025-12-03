@@ -1,11 +1,9 @@
 package vn.gt.__back_end_javaspring.entity;
 
 import jakarta.persistence.*;
-import jdk.jfr.Enabled;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.N;
 import vn.gt.__back_end_javaspring.enums.TransactionStatus;
 import vn.gt.__back_end_javaspring.enums.TransactionType;
 
@@ -32,19 +30,17 @@ public class WalletTransaction {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    private TransactionType type; //EARNING//PAYOUT/ ADJUSTMENT
+    private TransactionType type; // EARNING//PAYOUT/ ADJUSTMENT
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private TransactionStatus status;
-
 
     @Column(name = "balance_after")
     private BigDecimal balanceAfter;
 
     @Column(name = "balance_before")
     private BigDecimal balanceBefore;
-
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

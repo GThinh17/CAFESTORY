@@ -55,6 +55,9 @@ public class User { // Check
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "vertifiedBank")
+    private String vertifiedBank;
+
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
