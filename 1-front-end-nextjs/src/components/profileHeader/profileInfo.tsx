@@ -31,7 +31,7 @@ export function ProfileInfo() {
         const res = await axios.get(
           `http://localhost:8080/api/blogs?userId=${userId}`
         );
-        const posts = res.data?.data?.data?.data ?? [];
+        const posts = res.data?.data?.data ?? [];
         setCount(posts.length);
       } catch (err) {
         console.error("Failed to fetch posts:", err);

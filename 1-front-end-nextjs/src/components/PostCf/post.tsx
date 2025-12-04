@@ -74,7 +74,7 @@ export function Post({
                   alt={`${username} image ${i + 1}`}
                   width={470}
                   height={470}
-                  className="max-h-[470px] object-contain "
+                  className="max-h-[470px] object-contain"
                 />
               </CarouselItem>
             ))}

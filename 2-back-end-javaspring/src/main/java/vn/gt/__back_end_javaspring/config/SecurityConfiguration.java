@@ -67,7 +67,7 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                         .accessDeniedHandler(new CustomAccessDeniedHandler()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/signin", "/api/blogs").permitAll()
+                        .requestMatchers("/api/login", "/api/blogs", "/api/signup","/users/{id}","/api/blogs?userId={userId}","/api/production").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
