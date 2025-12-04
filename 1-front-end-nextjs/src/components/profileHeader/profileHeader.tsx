@@ -61,12 +61,14 @@ export function ProfileHeader({
               </span>
             )}
 
-            <button
-              className={`${styles.btn} ${styles.moreBtn}`}
-              onClick={() => setIsProfile(true)}
-            >
-              ⋯
-            </button>
+            {!isMe && (
+              <button
+                className={`${styles.btn} ${styles.moreBtn}`}
+                onClick={() => setIsProfile(true)}
+              >
+                ⋯
+              </button>
+            )}
           </div>
 
           <div className={styles.profileStats}>

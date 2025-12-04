@@ -8,18 +8,60 @@ export function PostList() {
   const [isOpenPost, setIsOpenPost] = useState(false);
   const [selectedPost, setSelectedPost] = useState<any>(null);
   const [posts, setPosts] = useState<any[]>([]);
+  const [cursor, setCursor] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchPosts = async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+
+    try {
+      const res = await axios.get(`http://localhost:8080/api/blogs`, {
+        params: {
+          size: 10,
+          cursor: cursor ?? undefined, // không gửi cursor ở lần đầu
+        },
+      });
+
+      const newData = res.data?.data?.data?.data ?? [];
+      const nextCursor = res.data?.data?.data?.nextCursor ?? null;
+
+      // append posts, tránh trùng
+      setPosts((prev) => [
+        ...prev,
+        ...newData.filter((p) => !prev.some((x) => x.id === p.id)),
+      ]);
+
+      setCursor(nextCursor);
+      if (!nextCursor) setHasMore(false); // hết bài
+    } catch (err) {
+      console.error("Failed to fetch posts:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // fetch lần đầu và lần scroll
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await axios.get("http://localhost:8080/api/blogs");
-        const data = res.data?.data?.data?.data ?? []; // path theo JSON API bạn cung cấp
-        setPosts(data);
-      } catch (err) {
-        console.error("Failed to fetch posts:", err);
-      }
-    };
     fetchPosts();
   }, []);
+
+  // infinite scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 400
+      ) {
+        if (!loading) fetchPosts();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [cursor, loading]);
+
   const openPost = (post: any) => {
     setSelectedPost({
       ...post,
@@ -35,21 +77,24 @@ export function PostList() {
 
   return (
     <>
-      {posts.map((p, index) => (
+      {posts.map((p) => (
         <Post
-          key={p.id ?? index}
+          key={p.id}
+          userId={p.userId} 
           username={p.userFullName}
           avatar={
             p.userAvatar ??
             "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
           }
-          image={p.mediaUrls[0] ?? ""}
+          image={p.mediaUrls?.[0] ?? ""}
           likes={p.likeCount}
           caption={p.caption}
           time={new Date(p.createdAt).toLocaleString()}
           onOpenPost={() => openPost(p)}
         />
       ))}
+
+      {loading && <p className="text-center py-4">Loading...</p>}
 
       <PostModal
         open={isOpenPost}

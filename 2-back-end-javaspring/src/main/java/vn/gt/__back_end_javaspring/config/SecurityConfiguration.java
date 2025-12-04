@@ -65,7 +65,7 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/blogs", "/api/signup").permitAll()
+                        .requestMatchers("/api/login", "/api/blogs", "/api/signup","/users/{id}","/api/blogs?userId={userId}").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(Customizer.withDefaults()));

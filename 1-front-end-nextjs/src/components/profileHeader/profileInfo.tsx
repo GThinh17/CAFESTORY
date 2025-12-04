@@ -7,7 +7,7 @@ import axios from "axios";
 
 export function ProfileInfo() {
   const { userId } = useParams(); // <-- đây là userId từ URL
-  const { user, token, loading } = useAuth();
+  const { user, loading } = useAuth();
   const [me, setMe] = useState<any>(null);
   const [count, setCount] = useState<number>(0);
 
@@ -15,10 +15,7 @@ export function ProfileInfo() {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/users/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log(res);
+        const res = await axios.get(`http://localhost:8080/users/${userId}`);
         setMe(res.data.data);
       } catch (err: any) {
         console.error("API error:", err.response?.status, err.message);
@@ -26,7 +23,7 @@ export function ProfileInfo() {
     };
 
     fetchMe();
-  }, [token, userId]);
+  }, [userId]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -36,7 +33,6 @@ export function ProfileInfo() {
         );
         const posts = res.data?.data?.data?.data ?? [];
         setCount(posts.length);
-        console.log(res);
       } catch (err) {
         console.error("Failed to fetch posts:", err);
       }

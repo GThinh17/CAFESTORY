@@ -34,10 +34,7 @@ export function ProfilePostList() {
         if (cursor) url.searchParams.append("cursor", cursor);
 
         const res = await fetch(url.toString(), {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+          method: "GET",
         });
         const data = await res.json();
         const postData = data.data?.data?.data || [];
@@ -74,16 +71,15 @@ export function ProfilePostList() {
             try {
               const url = new URL("http://localhost:8080/api/blogs");
               url.searchParams.append("size", "9");
-              url.searchParams.append("userId", userId!);
+              url.searchParams.append("userId", userId);
               url.searchParams.append("cursor", nextCursor);
 
               const res = await fetch(url.toString(), {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                },
+                method: "GET",
               });
+
               const data = await res.json();
+
               // trong fetchMore
               const postData = data.data?.data?.data || [];
               setPosts((prev) => {
@@ -111,7 +107,7 @@ export function ProfilePostList() {
   }, [nextCursor, userId, token]);
 
   if (authLoading || loading) return <div>Loading...</div>;
-  if (posts.length === 0) return <div>No posts found</div>;
+  if (posts.length === 0) return <div>No post</div>;
 
   return (
     <>
