@@ -37,7 +37,7 @@ export function ProfilePostList() {
           method: "GET",
         });
         const data = await res.json();
-        const postData = data.data?.data?.data || [];
+        const postData = data.data?.data || [];
         setPosts((prev) => {
           // lọc post mới không trùng với các post đã có
           const newPosts = postData.filter(
@@ -46,7 +46,7 @@ export function ProfilePostList() {
           return [...prev, ...newPosts];
         });
 
-        setNextCursor(data.data?.data?.nextCursor || null);
+        setNextCursor(data.data?.nextCursor || null);
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {
@@ -81,14 +81,14 @@ export function ProfilePostList() {
               const data = await res.json();
 
               // trong fetchMore
-              const postData = data.data?.data?.data || [];
+              const postData = data.data?.data || [];
               setPosts((prev) => {
                 const newPosts = postData.filter(
                   (p: Post) => !prev.some((prevP) => prevP.id === p.id)
                 );
                 return [...prev, ...newPosts];
               });
-              setNextCursor(data.data?.data?.nextCursor || null);
+              setNextCursor(data.data?.nextCursor || null);
             } catch (error) {
               console.error("Error fetching more posts:", error);
             } finally {

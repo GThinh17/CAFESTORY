@@ -24,8 +24,9 @@ export function PostList() {
         },
       });
 
-      const newData = res.data?.data?.data?.data ?? [];
-      const nextCursor = res.data?.data?.data?.nextCursor ?? null;
+      const newData = res.data?.data?.data ?? [];
+      console.log(newData);
+      const nextCursor = res.data?.data?.nextCursor ?? null;
 
       // append posts, tránh trùng
       setPosts((prev) => [
@@ -69,7 +70,7 @@ export function PostList() {
       avatar:
         post.userAvatar ??
         "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
-      image: post.mediaUrls?.[0] ?? "https://via.placeholder.com/500",
+      images: post.mediaUrls ?? [],
       likes: post.likeCount,
     });
     setIsOpenPost(true);
@@ -86,7 +87,7 @@ export function PostList() {
             p.userAvatar ??
             "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
           }
-          image={p.mediaUrls?.[0] ?? ""}
+          images={p.mediaUrls ?? []} // ⬅️ truyền toàn bộ ảnh vào carousel
           likes={p.likeCount}
           caption={p.caption}
           time={new Date(p.createdAt).toLocaleString()}

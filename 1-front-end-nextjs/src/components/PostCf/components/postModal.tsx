@@ -2,6 +2,13 @@
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import "./postModal.css";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../../ui/carousel";
 import { Heart, MessageCircle, Send, MoreHorizontal } from "lucide-react";
 
 interface PostModalProps {
@@ -18,8 +25,30 @@ export function PostModal({ open, onClose, post }: PostModalProps) {
       <DialogContent className="PostModalCon">
         <div className="PostWrapper">
           {/* LEFT */}
-          <div className="PostImage">
-            <img src={post.image} alt={post.username} />
+          <div className="PostImage flex items-center justify-center bg-black">
+            <Carousel className="w-full max-w-[500px]">
+              <CarouselContent>
+                {post.images.map((img: string, i: number) => (
+                  <CarouselItem
+                    key={i}
+                    className="flex items-center justify-center"
+                  >
+                    <img
+                      src={img}
+                      alt={`image ${i + 1}`}
+                      className="max-h-[500px] object-contain"
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+
+              {post.images.length > 1 && (
+                <>
+                  <CarouselPrevious className="left-2 bg-black/40 text-white hover:bg-black/60" />
+                  <CarouselNext className="right-2 bg-black/40 text-white hover:bg-black/60" />
+                </>
+              )}
+            </Carousel>
           </div>
 
           {/* RIGHT */}
