@@ -26,8 +26,10 @@ public class PaymentServiceImpl implements PaymentService {
         return this.paymentRepository.findById(id);
     }
 
-    public Payment CreatePayment(Payment payment) {
+    public Payment CreatePayment(Payment payment, int time) {
         payment.setProcessedAt(LocalDateTime.now());
+        LocalDateTime endAt = payment.getProcessedAt().plusMonths(time);
+        payment.setEndAt(endAt);
         return this.paymentRepository.save(payment);
     }
 

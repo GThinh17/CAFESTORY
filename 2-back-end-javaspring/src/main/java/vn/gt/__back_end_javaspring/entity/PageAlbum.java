@@ -30,8 +30,7 @@ public class PageAlbum {
     @Column(name = "visibility")
     private Visibility visibility;
 
-
-    @OneToMany(mappedBy = "pageAlbum", cascade = CascadeType.ALL, orphanRemoval = true )
+    @OneToMany(mappedBy = "pageAlbum", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PageImage> images = new ArrayList<>();
 
     @Column(name = "total_photo")

@@ -4,19 +4,23 @@ import Image from "next/image";
 import { useState } from "react";
 import { Heart, MessageCircle, Send, MoreHorizontal } from "lucide-react";
 import { Input } from "../ui/input";
+import Link from "next/link";
+
 import "./post.css";
 
 export interface PostProps {
+  userId: string;
   username: string;
   avatar: string;
   image: string;
   likes: number;
   caption: string;
   time: string;
-  onOpenPost: () => void;  // 👈 thêm vào
+  onOpenPost: () => void; // 👈 thêm vào
 }
 
 export function Post({
+  userId,
   username,
   avatar,
   image,
@@ -32,13 +36,15 @@ export function Post({
       {/* Header */}
       <div className="post-header">
         <div className="user-info">
-          <Image
-            src={avatar}
-            alt="avatar"
-            width={30}
-            height={30}
-            className="avatar"
-          />
+          <Link href={`/profile/${userId}`}>
+            <Image
+              src={avatar}
+              alt="avatar"
+              width={30}
+              height={30}
+              className="avatar cursor-pointer"
+            />
+          </Link>
           <span className="username-post">{username}</span>
           <span className="dot">•</span>
           <span className="time">{time}</span>
@@ -64,7 +70,7 @@ export function Post({
           <MessageCircle
             size={24}
             className="icon"
-            onClick={onOpenPost}     // 👈 mở modal khi bấm comment
+            onClick={onOpenPost} // 👈 mở modal khi bấm comment
           />
           <Send size={24} className="icon" />
         </div>
@@ -95,7 +101,7 @@ export function Post({
       <div className="add-comment">
         <Input
           placeholder="Add a comment"
-          onClick={onOpenPost}        // 👈 click input cũng mở modal
+          onClick={onOpenPost} // 👈 click input cũng mở modal
         />
       </div>
     </div>

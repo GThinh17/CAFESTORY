@@ -1,10 +1,12 @@
 package vn.gt.__back_end_javaspring.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import vn.gt.__back_end_javaspring.DTO.ProductionDTO;
 import vn.gt.__back_end_javaspring.entity.Production;
 import vn.gt.__back_end_javaspring.repository.ProductionRepository;
 import vn.gt.__back_end_javaspring.service.ProductionService;
@@ -25,7 +27,13 @@ public class ProductionServiceImpl implements ProductionService {
     }
 
     @Override
-    public Production CreateProduction(Production production) {
+    public Production CreateProduction(ProductionDTO productionDTO) {
+        Production production = productionDTO.getProduction();
+
+        // tao timeexpire
+        int timeExpired = productionDTO.getTimeExpired();
+        production.setTimeExpired(timeExpired);
+
         return this.productionRepository.save(production);
     }
 

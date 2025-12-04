@@ -48,13 +48,14 @@ public class PaymentIntentController {
         User user = this.userService.handleGetUserByEmail(email);
         Production production = this.productionService.GetProduction(productionId);
         PaymentMethod paymentMethod = this.paymentMethodService.GetPaymentMethodService(paymentMethodId);
+        int timeExpired = production.getTimeExpired();
 
         Payment payment = new Payment();
         payment.setAmount(amount);
         payment.setUser(user);
         payment.setPaymentMethod(paymentMethod);
         payment.setProduction(production);
-        payment = this.paymentService.CreatePayment(payment);
+        payment = this.paymentService.CreatePayment(payment, timeExpired);
 
         Long Amount = Long.valueOf(amount) * Long.valueOf(production.getTotal());
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()

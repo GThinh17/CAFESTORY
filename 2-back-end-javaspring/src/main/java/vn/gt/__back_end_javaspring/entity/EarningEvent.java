@@ -39,9 +39,9 @@ public class EarningEvent {
     @Column(name = "source_type", length = 50)
     private SourceType sourceType;
 
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalException {
 
-    //---Handle wwith invalid
+    // ---Handle wwith invalid
     @ExceptionHandler(IdInvalidException.class)
     public ResponseEntity<RestResponse<Object>> handleIdInvalid(IdInvalidException ex) {
         RestResponse<Object> res = new RestResponse<>();
@@ -27,7 +27,7 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
-    @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
+    @ExceptionHandler({ UsernameNotFoundException.class, BadCredentialsException.class })
     public ResponseEntity<RestResponse<Object>> handleAuthException(RuntimeException ex) {
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.UNAUTHORIZED.value());
@@ -35,7 +35,6 @@ public class GlobalException {
         res.setErrors("Authentication failed");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(res);
     }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<RestResponse<Object>> handleValidation(MethodArgumentNotValidException ex) {
@@ -54,7 +53,7 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
-    //--handle with not found
+    // --handle with not found
     @ExceptionHandler(BlogNotFoundException.class)
     public ResponseEntity<RestResponse<Object>> handleBlogNotFound(BlogNotFoundException ex) {
         RestResponse<Object> res = new RestResponse<>();
@@ -163,9 +162,7 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
 
-
-
-    //--Handle with conflict
+    // --Handle with conflict
     @ExceptionHandler(LikeExist.class)
     public ResponseEntity<RestResponse<Object>> handleLikeExist(LikeExist ex) {
         RestResponse<Object> res = new RestResponse<>();
@@ -201,7 +198,6 @@ public class GlobalException {
         res.setErrors("Pricing rule conflict");
         return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
     }
-
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<RestResponse<Object>> handleGenericException(Exception ex) {

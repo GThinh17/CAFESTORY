@@ -21,31 +21,24 @@ public class CommentLikeController {
 
     @PostMapping("")
     public ResponseEntity<CommentLikeResponse> likeComment(
-            @Valid @RequestBody CommentLikeCreateDTO dto
-    ) {
+            @Valid @RequestBody CommentLikeCreateDTO dto) {
         CommentLikeResponse data = commentLikeService.likeComment(dto);
-
 
         return ResponseEntity.ok().body(data);
     }
 
-
     @DeleteMapping("")
     public ResponseEntity<Object> unlikeComment(
             @RequestParam String userId,
-            @RequestParam String commentId
-    ) {
+            @RequestParam String commentId) {
         commentLikeService.unlikeComment(userId, commentId);
-
-
 
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/by-comment")
     public ResponseEntity<List<CommentLikeResponse>> getLikesByComment(
-            @RequestParam String commentId
-    ) {
+            @RequestParam String commentId) {
         List<CommentLikeResponse> data = commentLikeService.getLikesByComment(commentId);
 
         return ResponseEntity.ok().body(data);
@@ -54,8 +47,7 @@ public class CommentLikeController {
     @GetMapping("/is-liked")
     public ResponseEntity<Boolean> isLiked(
             @RequestParam String userId,
-            @RequestParam String commentId
-    ) {
+            @RequestParam String commentId) {
         boolean liked = commentLikeService.isLikedByUser(userId, commentId);
 
         return ResponseEntity.ok().body(liked);

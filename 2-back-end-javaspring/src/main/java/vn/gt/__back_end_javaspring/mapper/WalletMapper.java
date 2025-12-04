@@ -1,7 +1,6 @@
 package vn.gt.__back_end_javaspring.mapper;
 
 import org.mapstruct.*;
-import org.springframework.context.annotation.Bean;
 import vn.gt.__back_end_javaspring.DTO.WalletCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.WalletResponse;
 import vn.gt.__back_end_javaspring.DTO.WalletUpdateDTO;

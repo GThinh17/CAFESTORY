@@ -48,7 +48,7 @@ public class ShareServiceImpl implements ShareService {
         Share saved = shareRepository.save(share);
 
         String reviewerId = blog.getUser().getId();
-        if(reviewerService.isReviewer(reviewerId)){
+        if (reviewerService.isReviewer(reviewerId)) {
             Reviewer reviewer = reviewerRepository.findById(reviewerId)
                     .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
 

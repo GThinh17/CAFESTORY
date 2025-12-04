@@ -26,7 +26,7 @@ public class PricingRule {
     private String description;
 
     @Column(name = "like_weight")
-    private BigDecimal likeWeight; //Trong so cua like 1 like = 2 diem
+    private BigDecimal likeWeight; // Trong so cua like 1 like = 2 diem
 
     @Column(name = "comment_weight")
     private BigDecimal commentWeight;
@@ -35,7 +35,7 @@ public class PricingRule {
     private BigDecimal shareWeight;
 
     @Column(name = "unit_price", precision = 10, scale = 2, nullable = false)
-    private BigDecimal unitPrice; //Gia tien tren moi diem
+    private BigDecimal unitPrice; // Gia tien tren moi diem
 
     @Column(name = "currency", length = 10)
     private String currency;

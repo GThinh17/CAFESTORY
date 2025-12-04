@@ -7,13 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "earning_summary",
-        uniqueConstraints = @UniqueConstraint(
-                name = "uk_reviewer_year_month",
-                columnNames = {"reviewer_id", "year", "month"}
-        )
-)
+@Table(name = "earning_summary", uniqueConstraints = @UniqueConstraint(name = "uk_reviewer_year_month", columnNames = {
+        "reviewer_id", "year", "month" }))
 @Getter
 @Setter
 @NoArgsConstructor

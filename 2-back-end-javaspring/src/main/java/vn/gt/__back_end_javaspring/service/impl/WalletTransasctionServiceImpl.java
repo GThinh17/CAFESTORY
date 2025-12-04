@@ -33,29 +33,28 @@ public class WalletTransasctionServiceImpl implements WalletTransactionService {
     private final WalletRepository walletRepository;
     private final UserRepository userRepository;
 
-
     @Override
     public WalletTransactionResponse create(WalletTransactionCreateDTO dto) {
 
         Wallet wallet = walletRepository.findById(dto.getWalletId())
-                .orElseThrow(()-> new WalletNotFound("wallet not found"));
+                .orElseThrow(() -> new WalletNotFound("wallet not found"));
 
         BigDecimal amount = dto.getAmount();
 
-        if(amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new  IllegalArgumentException("AMount must be greater than 0");
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("AMount must be greater than 0");
         }
         TransactionType transactionType = dto.getTransactionType();
 
         BigDecimal balanceBefore = wallet.getBalance();
         BigDecimal balanceAfter;
 
-        if(transactionType == TransactionType.WITHDRAW) {
+        if (transactionType == TransactionType.WITHDRAW) {
             balanceAfter = wallet.getBalance().subtract(amount);
-            if(balanceAfter.compareTo(BigDecimal.ZERO) <= 0) {
-                throw new  IllegalArgumentException("Insufficient funds");
+            if (balanceAfter.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("Insufficient funds");
             }
-        } else{
+        } else {
             balanceAfter = balanceBefore.add(amount);
         }
 
@@ -77,14 +76,14 @@ public class WalletTransasctionServiceImpl implements WalletTransactionService {
     @Override
     public WalletTransactionResponse getById(String transactionId) {
         WalletTransaction walletTransaction = walletTransactionRepository.findById(transactionId)
-                .orElseThrow(()-> new WalletTransactionNotFound("wallet not found"));
+                .orElseThrow(() -> new WalletTransactionNotFound("wallet not found"));
         return walletTransactionMapper.toResponse(walletTransaction);
     }
 
     @Override
     public List<WalletTransactionResponse> getByWalletId(String walletId) {
         Wallet wallet = walletRepository.findById(walletId)
-                .orElseThrow(()-> new WalletNotFound("wallet not found"));
+                .orElseThrow(() -> new WalletNotFound("wallet not found"));
 
         List<WalletTransaction> walletTransactions = walletTransactionRepository
                 .findByWalletId(walletId);
@@ -94,21 +93,21 @@ public class WalletTransasctionServiceImpl implements WalletTransactionService {
 
     @Override
     public List<WalletTransactionResponse> getByUserId(String userId) {
-       User user = userRepository.findById(userId)
-               .orElseThrow(()->new UserNotFoundException("User not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-       Wallet wallet = walletRepository.findWalletByUser_Id(user.getId());
-       List<WalletTransaction> walletTransaction = walletTransactionRepository
-               .findByWalletId(wallet.getId());
+        Wallet wallet = walletRepository.findWalletByUser_Id(user.getId());
+        List<WalletTransaction> walletTransaction = walletTransactionRepository
+                .findByWalletId(wallet.getId());
 
-       return walletTransactionMapper.toResponseList(walletTransaction);
+        return walletTransactionMapper.toResponseList(walletTransaction);
 
     }
 
     @Override
     public List<WalletTransactionResponse> getByWalletIdAndType(String walletId, TransactionType type) {
         Wallet wallet = walletRepository.findById(walletId)
-                .orElseThrow(()-> new WalletNotFound("wallet not found"));
+                .orElseThrow(() -> new WalletNotFound("wallet not found"));
 
         List<WalletTransaction> walletTransactions = walletTransactionRepository
                 .findByWalletIdAndType(walletId, type);
@@ -118,7 +117,7 @@ public class WalletTransasctionServiceImpl implements WalletTransactionService {
     @Override
     public List<WalletTransactionResponse> getByWalletIdAndStatus(String walletId, TransactionStatus status) {
         Wallet wallet = walletRepository.findById(walletId)
-                .orElseThrow(()-> new WalletNotFound("wallet not found"));
+                .orElseThrow(() -> new WalletNotFound("wallet not found"));
 
         List<WalletTransaction> walletTransactions = walletTransactionRepository
                 .findByWalletIdAndStatus(walletId, status);

@@ -13,6 +13,7 @@ import vn.gt.__back_end_javaspring.enums.SourceType;
 import vn.gt.__back_end_javaspring.exception.BlogNotFoundException;
 import vn.gt.__back_end_javaspring.exception.PricingRuleNotFound;
 import vn.gt.__back_end_javaspring.exception.ReviewerNotFound;
+import vn.gt.__back_end_javaspring.mapper.EarningEventMapper;
 import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.EarningEventService;
 
@@ -35,10 +36,10 @@ public class EarningEventServiceImpl implements EarningEventService {
                 .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
 
         PricingRule pricingRule = pricingRuleRepository.findById(earningEventCreateDTO.getPricingRuleId())
-                .orElseThrow(()-> new PricingRuleNotFound("Pricing rule not found"));
+                .orElseThrow(() -> new PricingRuleNotFound("Pricing rule not found"));
 
-        Blog blog  = blogRepository.findById(earningEventCreateDTO.getBlogId())
-                        .orElseThrow(()-> new BlogNotFoundException("Blog not found"));
+        Blog blog = blogRepository.findById(earningEventCreateDTO.getBlogId())
+                .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
         earningEvent.setReviewer(reviewer);
         earningEvent.setPricingRule(pricingRule);
         earningEvent.setBlog(blog);

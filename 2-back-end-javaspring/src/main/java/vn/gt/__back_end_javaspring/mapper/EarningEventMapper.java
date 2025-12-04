@@ -1,4 +1,4 @@
-package vn.gt.__back_end_javaspring.repository;
+package vn.gt.__back_end_javaspring.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

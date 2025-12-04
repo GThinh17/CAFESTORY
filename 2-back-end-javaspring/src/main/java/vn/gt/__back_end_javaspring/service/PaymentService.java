@@ -10,7 +10,7 @@ public interface PaymentService {
 
     public Optional<Payment> GetUserPayment(String payString);
 
-    public Payment CreatePayment(Payment payment);
+    public Payment CreatePayment(Payment payment, int timeExpired);
 
     public Payment UpdatePaymentSUCCESS(String paymentId);
 

@@ -16,7 +16,6 @@ import vn.gt.__back_end_javaspring.service.CommentService;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/comments")
 @RequiredArgsConstructor
@@ -31,53 +30,44 @@ public class CommentController {
         return ResponseEntity.ok().body(commentResponse);
     }
 
-
     @GetMapping("")
     public ResponseEntity<CursorPage<CommentResponse>> getNewestCommentsByBlogId(
             @RequestParam String blogId,
             @RequestParam(required = false) String cursor,
-            @RequestParam (defaultValue = "20" ) @Min(1) @Max(100) int size
-    ) {
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
         CursorPage<CommentResponse> commentResponses = commentService.getCommentsNewestByBlogId(blogId, cursor, size);
 
         return ResponseEntity.ok().body(commentResponses);
 
     }
 
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<CommentResponse> createComment(
-            @RequestBody @Validated CommentCreateDTO commentCreateDTO){
+            @RequestBody @Validated CommentCreateDTO commentCreateDTO) {
         RestResponse<CommentResponse> restResponse = new RestResponse<>();
         CommentResponse commentResponse = commentService.addComment(commentCreateDTO);
 
-        //Thieu adding 1 for reply count
+        // Thieu adding 1 for reply count
         return ResponseEntity.ok().body(commentResponse);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<CommentResponse> updateComment(
             @PathVariable String id,
-            @RequestBody @Validated CommentUpdateDTO commentUpdateDTO
-    ){
+            @RequestBody @Validated CommentUpdateDTO commentUpdateDTO) {
         CommentResponse commentResponse = commentService.updateComment(id, commentUpdateDTO);
 
         return ResponseEntity.ok().body(commentResponse);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<CommentResponse> deleteComment(
-            @PathVariable String id
-    ){
+            @PathVariable String id) {
 
         CommentResponse commentResponse = commentService.deleteComment(id);
 
-
-
         return ResponseEntity.ok().body(commentResponse);
     }
-
 
 }

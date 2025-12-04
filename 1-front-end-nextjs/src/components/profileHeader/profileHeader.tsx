@@ -1,11 +1,14 @@
 "use client";
 
+"use client";
+
 import Image from "next/image";
 import styles from "./profileHeader.module.css";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ProfileModal } from "./components/profileModal";
+import { Check } from "lucide-react";
 
 interface ProfileHeaderProps {
   username: string;
@@ -18,6 +21,7 @@ interface ProfileHeaderProps {
   bio: string;
   website?: string;
   avatar: string;
+  isMe?: boolean;
 }
 
 export function ProfileHeader({
@@ -27,16 +31,11 @@ export function ProfileHeader({
   posts,
   followers,
   followingCount,
-  name,
-  bio,
-  website,
   avatar,
+  isMe,
 }: ProfileHeaderProps) {
   const router = useRouter();
   const [isProfile, setIsProfile] = useState(false);
-
-
-
 
   return (
     <>
@@ -46,31 +45,30 @@ export function ProfileHeader({
           <Image
             src={avatar}
             alt={username}
+            className={styles.avatarImg}
             width={150}
             height={150}
           />
-
         </div>
 
         {/* Info */}
         <div className={styles.profileInfo}>
           <div className={styles.profileTop}>
-            <h2 className={styles.username}>{username}</h2>
-            {verified && <span className={styles.verified}>✔️</span>}
-            <button className={`${styles.btn} ${styles.followBtn}`}>
-              {following ? "Following" : "Follow"}
-            </button>
-            <Link href="/messages">
-              <button className={`${styles.btn} ${styles.messageBtn}`}>
-                Message
+            <h5 className={styles.username}>{username}</h5>
+            {verified && (
+              <span className={styles.verified}>
+                <Check />
+              </span>
+            )}
+
+            {!isMe && (
+              <button
+                className={`${styles.btn} ${styles.moreBtn}`}
+                onClick={() => setIsProfile(true)}
+              >
+                ⋯
               </button>
-            </Link>
-            <button
-              className={`${styles.btn} ${styles.moreBtn}`}
-              onClick={() => setIsProfile(true)}
-            >
-              ⋯
-            </button>
+            )}
           </div>
 
           <div className={styles.profileStats}>
@@ -84,21 +82,19 @@ export function ProfileHeader({
               <strong>{followingCount}</strong> following
             </span>
           </div>
-
-          <div className={styles.profileBio}>
-            <strong>{name}</strong>
-            <p>{bio}</p>
-            {website && (
-              <a
-                href={website}
-                className={styles.website}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {website}
-              </a>
-            )}
-          </div>
+          <div className={styles.profileBio}></div>
+          {isMe && (
+            <>
+              <button className={`${styles.btn} ${styles.followBtn}`}>
+                {following ? "Following" : "Follow"}
+              </button>
+              <Link href="/messages">
+                <button className={`${styles.btn} ${styles.messageBtn}`}>
+                  Message
+                </button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
       <ProfileModal open={isProfile} onClose={() => setIsProfile(false)} />

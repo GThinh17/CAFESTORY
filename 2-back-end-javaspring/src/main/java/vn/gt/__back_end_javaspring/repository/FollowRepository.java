@@ -7,12 +7,16 @@ import java.util.List;
 
 public interface FollowRepository extends JpaRepository<Follow, String> {
     List<Follow> findByFollower_Id(String followerId);
+
     List<Follow> findByFollowedUser_Id(String followedUserId);
 
     List<Follow> findByFollowedPage_Id(String followedPageId);
 
     void deleteByFollower_IdAndFollowedUser_Id(String followerId, String followedUserId);
+
     void deleteByFollower_IdAndFollowedPage_Id(String userId, String pageId);
+
     boolean existsByFollower_IdAndFollowedUser_Id(String followerId, String followedUserId);
+
     boolean existsByFollower_IdAndFollowedPage_Id(String followerId, String followedPageId);
 }

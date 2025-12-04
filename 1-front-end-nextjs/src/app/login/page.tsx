@@ -7,6 +7,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,6 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useState } from "react";
 import { useAuth, User } from "@/context/AuthContext";
-
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -31,19 +31,19 @@ export default function LoginPage() {
       const token = res.data.data.accessToken;
       const id = res.data.data.userId;
       const username = res.data.data.fullname;
-      const avatar = res.data.data.imagePath
+      const avatar = res.data.data.imagePath;
       const user: User = {
         id: id,
         username: username,
-        avatar: avatar
-      }
+        avatar: avatar,
+      };
       if (token && user) {
         const safeUser = {
           ...user,
           avatar:
             user.avatar && user.avatar !== "null" && user.avatar.trim() !== ""
               ? user.avatar
-              : "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
+              : "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
         };
 
         localStorage.setItem("token", token);
@@ -64,32 +64,44 @@ export default function LoginPage() {
       <Card className={styles.card}>
         <CardHeader>
           <CardTitle className={styles.title}>
-            <Link href="/">Admin CafBlog</Link>
+            <Link href="/">CafBlog</Link>
           </CardTitle>
         </CardHeader>
         <CardContent className={styles.content}>
 
           <div className={styles.field}>
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="Enter your email" value={email}
-              onChange={(e) => setEmail(e.target.value)} />
+            <Input
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
+
 
           <div className={styles.field}>
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="Enter your password" value={password}
-              onChange={(e) => setPassword(e.target.value)} />
+            <Input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
         </CardContent>
 
+
         <CardFooter className={styles.footer}>
-          <Button
-            onClick={() => handleLogin()}
-            className={styles.button}
-          >
+          <Button onClick={() => handleLogin()} className={styles.button}>
             Log in
           </Button>
         </CardFooter>
+        <Link href="/register">
+          <h5>Already have account? Register</h5>
+        </Link>
       </Card>
     </div>
   );

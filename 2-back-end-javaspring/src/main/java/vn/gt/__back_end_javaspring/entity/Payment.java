@@ -43,6 +43,9 @@ public class Payment {
     @Column(name = "processed_at")
     private LocalDateTime processedAt;
 
+    @Column(name = "endAt")
+    private LocalDateTime endAt;
+
     @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
     private Payout payout;
 

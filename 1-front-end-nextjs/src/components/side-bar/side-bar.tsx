@@ -14,17 +14,26 @@ import {
   Coffee,
   Crown,
 } from "lucide-react";
+
+
 import { ModeToggle } from "@/components/dark-theme-btn";
 import { NotificationModal } from "../Notification/components/notification-modal";
 import { CreateModal } from "../createModal/createModal";
 import { PricingPlans } from "../goProModal/goProModal";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+
 import "./sidebar.scss";
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user, loading, token } = useAuth();
   const [isOpenNotice, setIsOpenNotice] = useState(false);
   const [isOpenCreate, setIsOpenCreate] = useState(false);
   const [isOpenPricing, setIsOpenPricing] = useState(false);
+
+  const router = useRouter();
+
   const menuItems = [
     { href: "/", icon: Home, label: "Home" },
     { href: "/search", icon: Search, label: "Search" },
@@ -35,7 +44,7 @@ export function Sidebar() {
     { icon: Heart, label: "Notifications", modal: true },
 
     { icon: PlusSquare, label: "Create", modal: true },
-    { href: "/profile", icon: User, label: "Profile" },
+    { href: `/profile/${user?.id}`, icon: User, label: "Profile" },
   ];
 
   return (
@@ -46,6 +55,7 @@ export function Sidebar() {
           <h2 className="sidebar__logo">
             <Link href="/">CafeBlog</Link>
           </h2>
+
           <span className="logoCon">
             <Coffee />
           </span>
@@ -59,6 +69,16 @@ export function Sidebar() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
+                      if (label === "Notifications") setIsOpenNotice(true);
+                      if (label === "Create") {
+                        if (!token) {
+
+                          router.push("/login");
+                          return;
+                        }
+                        setIsOpenCreate(true);
+                      }
+
                       if (label === "Notifications") setIsOpenNotice(true);
                       if (label === "Create") setIsOpenCreate(true);
                     }}
@@ -88,9 +108,8 @@ export function Sidebar() {
           <li>
             <Menu size={22} /> <span className="sidebarComp">More</span>
           </li>
-          <li  onClick={() => setIsOpenPricing(true)}>
-            <Crown size={22} />{" "}
-            <span className="sidebarComp">Go pro</span>
+          <li onClick={() => setIsOpenPricing(true)}>
+            <Crown size={22} /> <span className="sidebarComp">Go pro</span>
           </li>
         </div>
       </div>
@@ -104,7 +123,7 @@ export function Sidebar() {
       <CreateModal open={isOpenCreate} onClose={() => setIsOpenCreate(false)} />
 
       <PricingPlans
-        open = {isOpenPricing}
+        open={isOpenPricing}
         onClose={() => setIsOpenPricing(false)}
       />
     </>

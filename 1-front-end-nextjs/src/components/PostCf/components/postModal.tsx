@@ -32,18 +32,21 @@ export function PostModal({ open, onClose, post }: PostModalProps) {
 
             <div className="PostComments">
               <div className="CommentItem">
-                <span className="CommentAuthor">{post.username}: {post.caption} </span>
-                
+                <span className="CommentAuthor">
+                  {post.username}: {post.caption}{" "}
+                </span>
               </div>
             </div>
 
             {/* Likes */}
-            <div className="PostActions"><Heart/> {post.likes} likes</div>
+            <div className="PostActions">
+              <Heart /> {post.likes} likes
+            </div>
 
             {/* Input */}
             <div className="PostInput">
               <input placeholder="Add a comment..." />
-              <button>Post</button>
+              <button>Send</button>
             </div>
           </div>
         </div>

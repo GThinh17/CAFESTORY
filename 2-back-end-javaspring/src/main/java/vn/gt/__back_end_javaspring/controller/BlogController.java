@@ -22,21 +22,19 @@ import vn.gt.__back_end_javaspring.service.BlogService;
 public class BlogController {
     private final BlogService blogService;
 
-
     @GetMapping("")
     public ResponseEntity<CursorPage<BlogResponse>> getNewBlogs(
             @RequestParam(required = false) String userId,
             @RequestParam(required = false) String cursor,
-            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size
-    ){
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
 
-        if(userId == null){
+        if (userId == null) {
             RestResponse<CursorPage<BlogResponse>> restResponse = new RestResponse<>();
 
             CursorPage<BlogResponse> data = blogService.findNewestBlog(cursor, size);
 
             return ResponseEntity.ok().body(data);
-        } else{
+        } else {
             RestResponse<CursorPage<BlogResponse>> restResponse = new RestResponse<>();
             CursorPage<BlogResponse> data = blogService.findUserBlog(userId, cursor, size);
 
@@ -47,26 +45,21 @@ public class BlogController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BlogResponse> getBlogById(
-            @PathVariable String id
-    ){
+            @PathVariable String id) {
         RestResponse<BlogResponse> restResponse = new RestResponse<>();
         BlogResponse blogResponse = blogService.getBlogById(id);
-
-
 
         return ResponseEntity.ok().body(blogResponse);
     }
 
-
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<BlogResponse> createBlog(
-            @RequestBody @Valid BlogCreateDTO blogCreateDTO){
+            @RequestBody @Valid BlogCreateDTO blogCreateDTO) {
         BlogResponse data = blogService.createBlog(blogCreateDTO);
 
         return ResponseEntity.ok().body(data);
     }
-
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -78,14 +71,10 @@ public class BlogController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<BlogResponse> updateBlog(
             @PathVariable String id,
-            @RequestBody @Valid BlogUpdateDTO blogUpdateDTO
-    ){
+            @RequestBody @Valid BlogUpdateDTO blogUpdateDTO) {
         BlogResponse data = blogService.updateBlog(id, blogUpdateDTO);
 
         return ResponseEntity.ok().body(data);
     }
-
-
-
 
 }
