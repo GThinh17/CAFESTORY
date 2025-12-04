@@ -93,3 +93,11 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+.P {
+  left: 2;
+}
+
+.N {
+  right: 2;
+}

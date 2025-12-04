@@ -80,13 +80,13 @@ export function PostList() {
       {posts.map((p) => (
         <Post
           key={p.id}
-          userId={p.userId} 
+          userId={p.userId}
           username={p.userFullName}
           avatar={
             p.userAvatar ??
             "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
           }
-          image={p.mediaUrls?.[0] ?? ""}
+          images={p.mediaUrls ?? []}
           likes={p.likeCount}
           caption={p.caption}
           time={new Date(p.createdAt).toLocaleString()}
