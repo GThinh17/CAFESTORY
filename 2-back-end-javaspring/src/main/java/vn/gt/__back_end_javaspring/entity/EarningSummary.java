@@ -7,13 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "earning_summary",
-        uniqueConstraints = @UniqueConstraint(
-                name = "uk_reviewer_period",
-                columnNames = {"reviewer_id", "period_id"}
-        )
-)
+@Table(name = "earning_summary", uniqueConstraints = @UniqueConstraint(name = "uk_reviewer_year_month", columnNames = {
+        "reviewer_id", "year", "month" }))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,9 +25,11 @@ public class EarningSummary {
     @JoinColumn(name = "reviewer_id", nullable = false)
     private Reviewer reviewer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "period_id", nullable = false)
-    private EarningPeriod earningPeriod;
+    @Column(name = "year", nullable = false)
+    private Integer year;
+
+    @Column(name = "month", nullable = false)
+    private Integer month; // 1–12
 
     @Column(name = "total_likes_count")
     private Long totalLikesCount;

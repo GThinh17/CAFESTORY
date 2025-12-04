@@ -29,15 +29,18 @@ public class Production {
     @Column(name = "productionType")
     private ProductionType productionType;
 
-    @Column(name = "start_at")
-    private LocalDateTime startAt;
-
-    @Column(name = "end_at")
-    private LocalDateTime endAt;
+    @Column(name = "timeExpired")
+    private int timeExpired;
 
     @Column(name = "status", length = 50)
     private String status; // ACTIVE / EXPIRED / CANCELED ...
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+    }
 }

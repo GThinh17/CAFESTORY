@@ -5,19 +5,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.BlogLikeCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.BlogLikeResponse;
-import vn.gt.__back_end_javaspring.entity.Blog;
-import vn.gt.__back_end_javaspring.entity.BlogLike;
-import vn.gt.__back_end_javaspring.entity.User;
-import vn.gt.__back_end_javaspring.exception.BlogNotFoundException;
-import vn.gt.__back_end_javaspring.exception.LikeExist;
-import vn.gt.__back_end_javaspring.exception.LikeNotFoundException;
-import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
+import vn.gt.__back_end_javaspring.DTO.EarningEventCreateDTO;
+import vn.gt.__back_end_javaspring.entity.*;
+import vn.gt.__back_end_javaspring.exception.*;
 import vn.gt.__back_end_javaspring.mapper.BlogLikeMapper;
-import vn.gt.__back_end_javaspring.repository.BlogRepository;
-import vn.gt.__back_end_javaspring.repository.BlogLikeRepository;
-import vn.gt.__back_end_javaspring.repository.UserRepository;
+import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.BlogLikeService;
+import vn.gt.__back_end_javaspring.service.EarningEventService;
+import vn.gt.__back_end_javaspring.service.ReviewerService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -28,14 +25,18 @@ public class BlogLikeServiceImpl implements BlogLikeService {
     private final UserRepository userRepository;
     private final BlogRepository blogRepository;
     private final BlogLikeMapper blogLikeMapper;
-
+    private final ReviewerService reviewerService;
+    private final ReviewerRepository reviewerRepository;
+    private final PricingRuleRepository pricingRuleRepository;
+    private final EarningEventService earningEventService;
 
     @Override
     public BlogLikeResponse like(BlogLikeCreateDTO request) {
         String userId = request.getUserId();
         String blogId = request.getBlogId();
 
-        if(blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
+        // Tran like doube
+        if (blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
             throw new LikeExist("Like already exists");
         }
 
@@ -43,14 +44,36 @@ public class BlogLikeServiceImpl implements BlogLikeService {
                 .orElseThrow(() -> new UserNotFoundException("User not found!"));
 
         Blog blog = blogRepository.findById(blogId)
-                .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
+                .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
 
-        System.out.println("DTO: " + request.toString());
+        String reviewerId = blog.getUser().getId();
+        System.out.println("ReviewerId: " + reviewerId);
+        System.out.println("Boolean: " + reviewerService.isReviewer(reviewerId));
+        if (reviewerService.isReviewer(reviewerId)) {
+            Reviewer reviewer = reviewerRepository.findById(reviewerId)
+                    .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
+
+            PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
+            System.out.println("pricingRule = " + pricingRule.toString());
+
+            EarningEventCreateDTO earningEventCreateDTO = new EarningEventCreateDTO();
+
+            BigDecimal weight = pricingRule.getLikeWeight();
+            BigDecimal unitPrice = pricingRule.getUnitPrice();
+
+            earningEventCreateDTO.setBlogId(blogId);
+            earningEventCreateDTO.setSourceType("LIKE");
+            earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
+            earningEventCreateDTO.setReviewerId(reviewerId);
+            earningEventCreateDTO.setAmount(weight.multiply(unitPrice));
+            earningEventService.create(earningEventCreateDTO);
+        }
+
         blog.setLikesCount(blog.getLikesCount() + 1);
         blogRepository.save(blog);
 
         BlogLike bloglike = blogLikeMapper.toModel(request);
-        BlogLike saved =  blogLikeRepository.save(bloglike);
+        BlogLike saved = blogLikeRepository.save(bloglike);
 
         return blogLikeMapper.toResponse(saved);
 
@@ -60,13 +83,13 @@ public class BlogLikeServiceImpl implements BlogLikeService {
     public void unlike(String blogId, String userId) {
 
         Blog blog = blogRepository.findById(blogId)
-                .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
+                .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
 
         blog.setLikesCount(blog.getLikesCount() - 1);
 
         System.out.println("blogId: " + blogId + ", userId: " + userId);
 
-        if(!blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
+        if (!blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
             throw new LikeNotFoundException("Like not exists");
         }
 
@@ -81,7 +104,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
     @Override
     public long countLikes(String blogId) {
         Blog blog = blogRepository.findById(blogId)
-                .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
+                .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
 
         return blogLikeRepository.countByBlog_Id(blogId);
     }
@@ -89,7 +112,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
     @Override
     public List<BlogLikeResponse> getLikesByBlog(String blogId) {
         Blog blog = blogRepository.findById(blogId)
-                .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
+                .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
 
         return blogLikeMapper.toResponseList(blogLikeRepository.findByBlog_Id(blogId));
     }

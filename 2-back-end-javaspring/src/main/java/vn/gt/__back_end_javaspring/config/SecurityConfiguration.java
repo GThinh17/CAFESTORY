@@ -27,6 +27,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
 
+import vn.gt.__back_end_javaspring.exception.CustomAccessDeniedHandler;
+import vn.gt.__back_end_javaspring.exception.CustomAuthenticationEntryPoint;
 import vn.gt.__back_end_javaspring.util.SecurityUtil;
 
 @Configuration
@@ -62,13 +64,13 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                        .accessDeniedHandler(new CustomAccessDeniedHandler()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/blogs", "/api/signup","/users/{id}","/api/blogs?userId={userId}").permitAll()
+                        .requestMatchers("/api/login", "/api/signin", "/api/blogs").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
-                        .jwt(Customizer.withDefaults()));
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
         return http.build();
     }
@@ -96,19 +98,6 @@ public class SecurityConfiguration {
             }
         };
     }
-
-    // @Bean
-    // public JwtAuthenticationConverter jwtAuthenticationConverter() {
-    // JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new
-    // JwtGrantedAuthoritiesConverter();
-    // grantedAuthoritiesConverter.setAuthorityPrefix("");
-    // grantedAuthoritiesConverter.setAuthoritiesClaimName("gthinh17");
-
-    // JwtAuthenticationConverter jwtAuthenticationConverter = new
-    // JwtAuthenticationConverter();
-    // jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-    // return jwtAuthenticationConverter;
-    // }
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {

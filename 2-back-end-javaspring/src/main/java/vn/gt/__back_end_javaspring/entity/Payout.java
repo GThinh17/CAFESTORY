@@ -47,6 +47,7 @@ public class Payout {
     private Payment payment;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "wallet_transasction_id")
+    @JoinColumn(name = "wallet_transaction_id", unique = true)
     private WalletTransaction walletTransaction;
+
 }

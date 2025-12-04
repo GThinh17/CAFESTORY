@@ -2,6 +2,7 @@ package vn.gt.__back_end_javaspring.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import vn.gt.__back_end_javaspring.enums.SourceType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,7 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class EarningEvent {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "event_id")
@@ -35,12 +35,13 @@ public class EarningEvent {
     @Column(nullable = false)
     private BigDecimal amount;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "source_type", length = 50)
-    private String sourceType; // BLOG / LIKE / COMMENT / SHARE...
-
+    private SourceType sourceType;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();

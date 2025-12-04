@@ -36,11 +36,12 @@ public class PaymentController {
         return ResponseEntity.ok().body(payment);
     }
 
-    @PostMapping("/")
-    public ResponseEntity<?> createPayment(@Valid @RequestBody Payment payment) {
-        Payment createPayment = this.paymentService.CreatePayment(payment);
-        return ResponseEntity.ok().body(createPayment);
-    }
+    // @PostMapping("/")
+    // public ResponseEntity<?> createPayment(@Valid @RequestBody Payment payment, )
+    // {
+    // Payment createPayment = this.paymentService.CreatePayment(payment);
+    // return ResponseEntity.ok().body(createPayment);
+    // }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePayment(@Valid @PathVariable("id") String id) {

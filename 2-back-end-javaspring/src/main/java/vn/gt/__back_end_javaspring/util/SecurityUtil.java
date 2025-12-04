@@ -37,14 +37,18 @@ public class SecurityUtil {
 		Instant validity = now.plus(this.jwtExpiration, ChronoUnit.SECONDS);
 		User user = this.userService.handleGetUserByEmail(authentication.getName());
 		// @formatter:off
-	        JwtClaimsSet claims = JwtClaimsSet.builder()
-	            .issuedAt(now)
-	            .expiresAt(validity)
-	            .subject(authentication.getName())
-	            .claim("email", authentication.getName())
-				.claim("roles", authentication.getAuthorities())
+		JwtClaimsSet claims = JwtClaimsSet.builder()
+				.issuedAt(now)
+				.expiresAt(validity)
+				.subject(authentication.getName())
+				.claim("email", authentication.getName())
 				.claim("id", user.getId())
-	            .build();
+				.claim("authorities", authentication.getAuthorities()
+						.stream()
+						.map(a -> a.getAuthority())      // convert to "ROLE_ADMIN"
+						.toList()
+				)
+				.build();
 	        
 	        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
 	        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();

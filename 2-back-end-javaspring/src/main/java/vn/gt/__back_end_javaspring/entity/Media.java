@@ -7,14 +7,14 @@ import vn.gt.__back_end_javaspring.enums.MediaType;
 @Data
 @Entity
 @Table(name = "media")
-public class Media { //Check
+public class Media { // Check
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "media_id")
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "blog_id") //Ten cot la blog_id
+    @JoinColumn(name = "blog_id") // Ten cot la blog_id
     private Blog blog;
 
     @Enumerated(EnumType.STRING)
@@ -26,5 +26,10 @@ public class Media { //Check
 
     @Column(name = "description")
     private String description;
+
+    @PrePersist
+    public void prePersist() {
+        this.mediaType = MediaType.IMAGE;
+    }
 
 }

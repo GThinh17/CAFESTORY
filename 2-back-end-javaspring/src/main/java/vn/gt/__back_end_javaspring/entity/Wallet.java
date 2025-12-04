@@ -21,22 +21,22 @@ public class Wallet {
     private String id;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
 
     @Column(name = "balance", precision = 18, scale = 2, nullable = false)
     private BigDecimal balance;
 
-    @Column(name = "currency")
+    @Column(name = "currency", nullable = false)
     private String currency;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
 
     @PrePersist
@@ -44,13 +44,13 @@ public class Wallet {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.isDeleted = false;
-        this.balance =  BigDecimal.ZERO;
+        this.balance = BigDecimal.ZERO;
+        this.currency = "USD";
     }
 
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
 
 }

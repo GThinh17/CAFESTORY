@@ -8,29 +8,33 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "page")
 @Data
-@NoArgsConstructor @AllArgsConstructor //Check
+@NoArgsConstructor
+@AllArgsConstructor // Check
 public class Page {
         @Id
         @GeneratedValue(strategy = GenerationType.UUID)
         @Column(name = "page_id")
         private String id;
 
+        @OneToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        private User user;
+
         @NotBlank
         @Column(name = "page_name", nullable = false, length = 150)
         private String pageName;
+
+        @Column(name = "slug")
+        private String slug;
 
         @Column(name = "post_count", nullable = false)
         private Long postCount = 0L;
 
         @Column(name = "follower_count", nullable = false)
-        private Long followersCount = 0L;
+        private Long followersCount;
 
-        @Column(name = "following_count")
-        private Long followingCount = 0L;
-
-        @NotBlank
-        @Column(name = "slug", nullable = false, length = 160)
-        private String slug;
+        @Column(name = "following_count") // Bo truogn nay
+        private Long followingCount;
 
         @Column(name = "description", length = 1000)
         private String description;
@@ -63,5 +67,18 @@ public class Page {
         @Column(name = "updated_at", nullable = false)
         private LocalDateTime updatedAt;
 
+        @PrePersist
+        private void prePersist() {
+                createdAt = LocalDateTime.now();
+                updatedAt = LocalDateTime.now();
+                this.postCount = 0L;
+                this.followersCount = 0L;
+                this.followingCount = 0L;
 
+        }
+
+        @PreUpdate
+        private void preUpdate() {
+                updatedAt = LocalDateTime.now();
+        }
 }

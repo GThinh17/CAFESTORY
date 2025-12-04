@@ -16,7 +16,6 @@ import vn.gt.__back_end_javaspring.service.CommentService;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/comments")
 @RequiredArgsConstructor
@@ -25,80 +24,50 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/{id}")
-    public RestResponse<CommentResponse> getCommentById(@PathVariable String id) {
+    public ResponseEntity<CommentResponse> getCommentById(@PathVariable String id) {
         CommentResponse commentResponse = commentService.getCommentById(id);
 
-        RestResponse<CommentResponse> restResponse = new RestResponse<>();
-        restResponse.setData(commentResponse);
-        restResponse.setStatusCode(200);
-        restResponse.setMessage("Success");
-
-        return restResponse;
+        return ResponseEntity.ok().body(commentResponse);
     }
-
 
     @GetMapping("")
-    public RestResponse<CursorPage<CommentResponse>> getNewestCommentsByBlogId(
+    public ResponseEntity<CursorPage<CommentResponse>> getNewestCommentsByBlogId(
             @RequestParam String blogId,
             @RequestParam(required = false) String cursor,
-            @RequestParam (defaultValue = "20" ) @Min(1) @Max(100) int size
-    ) {
-        RestResponse<CursorPage<CommentResponse>> restResponse = new RestResponse<>();
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
         CursorPage<CommentResponse> commentResponses = commentService.getCommentsNewestByBlogId(blogId, cursor, size);
-        restResponse.setData(commentResponses);
-        restResponse.setStatusCode(200);
-        restResponse.setMessage("Success");
-        return restResponse;
+
+        return ResponseEntity.ok().body(commentResponses);
 
     }
-
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RestResponse<CommentResponse> createComment(
-            @RequestBody @Validated CommentCreateDTO commentCreateDTO){
+    public ResponseEntity<CommentResponse> createComment(
+            @RequestBody @Validated CommentCreateDTO commentCreateDTO) {
         RestResponse<CommentResponse> restResponse = new RestResponse<>();
         CommentResponse commentResponse = commentService.addComment(commentCreateDTO);
 
-        //Thieu adding 1 for reply count
-
-        restResponse.setData(commentResponse);
-        restResponse.setMessage("Success");
-        restResponse.setStatusCode(HttpStatus.CREATED.value());
-
-        return restResponse;
+        // Thieu adding 1 for reply count
+        return ResponseEntity.ok().body(commentResponse);
     }
 
     @PatchMapping("/{id}")
-    public RestResponse<CommentResponse> updateComment(
+    public ResponseEntity<CommentResponse> updateComment(
             @PathVariable String id,
-            @RequestBody @Validated CommentUpdateDTO commentUpdateDTO
-    ){
+            @RequestBody @Validated CommentUpdateDTO commentUpdateDTO) {
         CommentResponse commentResponse = commentService.updateComment(id, commentUpdateDTO);
-        RestResponse<CommentResponse> restResponse = new RestResponse<>();
 
-        restResponse.setData(commentResponse);
-        restResponse.setMessage("Success");
-        restResponse.setStatusCode(HttpStatus.OK.value());
-
-        return restResponse;
+        return ResponseEntity.ok().body(commentResponse);
     }
 
-
     @DeleteMapping("/{id}")
-    public RestResponse<CommentResponse> deleteComment(
-            @PathVariable String id
-    ){
-        RestResponse<CommentResponse> restResponse = new RestResponse<>();
+    public ResponseEntity<CommentResponse> deleteComment(
+            @PathVariable String id) {
 
         CommentResponse commentResponse = commentService.deleteComment(id);
 
-        restResponse.setData(commentResponse);
-        restResponse.setMessage("Success");
-        restResponse.setStatusCode(HttpStatus.OK.value());
-
-        return restResponse;
+        return ResponseEntity.ok().body(commentResponse);
     }
-
 
 }

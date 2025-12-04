@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import vn.gt.__back_end_javaspring.DTO.ProductionDTO;
 import vn.gt.__back_end_javaspring.entity.Production;
 import vn.gt.__back_end_javaspring.service.ProductionService;
 
@@ -24,7 +25,8 @@ public class ProductionController {
     }
 
     @PostMapping("")
-    public ResponseEntity CreateProduction(@RequestBody Production entity) {
+    public ResponseEntity CreateProduction(@RequestBody ProductionDTO entity) {
+        System.out.println(entity);
         return ResponseEntity.ok().body(this.productionService.CreateProduction(entity));
     }
 
