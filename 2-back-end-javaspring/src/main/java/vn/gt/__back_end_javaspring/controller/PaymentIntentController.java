@@ -7,11 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.Stripe;
@@ -21,6 +19,7 @@ import com.stripe.model.checkout.Session;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import vn.gt.__back_end_javaspring.DTO.PaymentCreateDTO;
 import vn.gt.__back_end_javaspring.entity.Payment;
@@ -87,7 +86,7 @@ public class PaymentIntentController {
 
         @PostMapping("/create-checkout-session")
         public ResponseEntity<?> createCheckoutSession(
-                        @RequestBody PaymentCreateDTO paymentCreateDTO,
+                        @Valid @RequestBody PaymentCreateDTO paymentCreateDTO,
                         @AuthenticationPrincipal Jwt jwt) throws Exception {
 
                 Stripe.apiKey = secretKey;
@@ -116,6 +115,9 @@ public class PaymentIntentController {
                 Long Amount = Long.valueOf(amount) * Long.valueOf(production.getTotal());
 
                 SessionCreateParams params = SessionCreateParams.builder()
+                                .putMetadata("paymentId", payment.getPaymentId())
+                                .putMetadata("userId", user.getId())
+                                .putMetadata("productionId", productionId)
                                 .setMode(SessionCreateParams.Mode.PAYMENT)
                                 .setCustomerEmail(email)
                                 .setClientReferenceId(productionId)
@@ -147,6 +149,7 @@ public class PaymentIntentController {
                 Session session = Session.create(params);
 
                 Map<String, Object> response = new HashMap<>();
+
                 response.put("url", session.getUrl());
                 response.put("sessionId", session.getId());
 
