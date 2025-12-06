@@ -1,6 +1,8 @@
 package vn.gt.__back_end_javaspring.DTO;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,15 +15,12 @@ import vn.gt.__back_end_javaspring.enums.ReportType;
 @NoArgsConstructor
 public class ReportDTO {
 
-    private User reportingUser; // thằng report
+    private String reportingUser; // thằng report
 
+    @Enumerated(EnumType.STRING)
     private ReportType reportType;
 
-    private User reportedUser; // Thang bị report
-
-    private User reportedBlog; // Thang bị report
-
-    private Page reportedPage;
+    private String reported; // Thang bị report
 
     private String problem;
 

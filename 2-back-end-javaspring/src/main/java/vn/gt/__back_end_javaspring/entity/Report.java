@@ -43,7 +43,7 @@ public class Report {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reported_blog_id")
-    private User reportedBlog; // Thang bị report
+    private Blog reportedBlog; // Thang bị report
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reported_page_id")
