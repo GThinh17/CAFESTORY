@@ -22,3 +22,8 @@ externalPort = 80
 
 [agent]
 expertMode = true
+
+[userenv]
+
+[userenv.shared]
+OPENAI_ASSISTANT_ID = "asst_yD9LBPnkPG5geoogHrVdA9Z2"
