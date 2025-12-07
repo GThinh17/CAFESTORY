@@ -102,10 +102,10 @@ public class FollowServiceImpl implements FollowService {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Follower not found"));
         User userFollowed = userRepository.findById(userFollowedId)
                 .orElseThrow(() -> new UserNotFoundException("Follower not found"));
-        if (user.getFollowingCount() != 0) {
+        if (user.getFollowingCount() != 0 && user.getFollowingCount() > 0) {
             user.setFollowingCount(user.getFollowingCount() - 1);
         }
-        if (user.getFollowerCount() != 0) {
+        if (userFollowed.getFollowerCount() != 0 && userFollowed.getFollowerCount() > 0) {
             user.setFollowerCount(user.getFollowerCount() - 1);
         }
         user.setFollowerCount(user.getFollowerCount() - 1);
@@ -120,17 +120,33 @@ public class FollowServiceImpl implements FollowService {
     public void deletedFollowingPageId(String userId, String pageId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Follower not found"));
         Page page = pageRepository.findById(pageId).orElseThrow(() -> new PageNotFoundException("Page not found"));
-        if (user.getFollowingCount() != 0) {
+        if (user.getFollowingCount() != 0 && user.getFollowingCount() > 0) {
             user.setFollowingCount(user.getFollowingCount() - 1);
         }
-        if (user.getFollowerCount() != 0) {
+        if (page.getFollowersCount() != 0 && user.getFollowingCount() > 0) {
             page.setFollowersCount(page.getFollowersCount() - 1);
-
         }
         if (!followRepository.existsByFollower_IdAndFollowedPage_Id(user.getId(), pageId)) {
             throw new ExistFollow("Follower not exists");
         }
         followRepository.deleteByFollower_IdAndFollowedPage_Id(user.getId(), page.getId());
+    }
+
+    @Override
+    public Boolean isFollowPage(String userId, String pageId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Follower not found"));
+        Page page = pageRepository.findById(pageId).orElseThrow(() -> new PageNotFoundException("Page not found"));
+
+        return followRepository.existsByFollower_IdAndFollowedPage_Id(user.getId(), page.getId());
+
+    }
+
+    @Override
+    public Boolean isFollowUser(String userId, String userFollowingId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Follower not found"));
+        User user1 = userRepository.findById(userFollowingId).orElseThrow(() -> new UserNotFoundException("Follower not found"));
+
+        return followRepository.existsByFollower_IdAndFollowedUser_Id(user.getId(), user1.getId());
     }
 
     private final FollowRepository followRepository;

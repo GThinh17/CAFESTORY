@@ -31,10 +31,15 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setProcessedAt(LocalDateTime.now());
         LocalDateTime endAt = payment.getProcessedAt().plusMonths(time);
         payment.setEndAt(endAt);
+        payment.setStatus(PaymentStatus.PENDING);
+        payment.setAmount(payment.getAmount());
+        payment.setProduction(payment.getProduction());
         return this.paymentRepository.save(payment);
     }
 
     public Payment UpdatePayment(String paymentId, PaymentStatus paymentStatus) {
+
+
         Payment updateStatus = this.paymentRepository.findByPaymentId(paymentId);
         updateStatus.setStatus(paymentStatus);
         return this.paymentRepository.save(updateStatus);

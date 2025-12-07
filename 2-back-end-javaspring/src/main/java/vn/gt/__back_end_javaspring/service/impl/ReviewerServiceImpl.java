@@ -8,6 +8,7 @@ import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.entity.Reviewer;
 import vn.gt.__back_end_javaspring.entity.User;
 
+import vn.gt.__back_end_javaspring.enums.ReviewerStatus;
 import vn.gt.__back_end_javaspring.exception.ReviewerNotFound;
 import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.ReviewerMapper;
@@ -71,7 +72,7 @@ public class ReviewerServiceImpl implements ReviewerService {
             base = now;
         }
 
-        reviewer.setExpiredAt(base.plusDays(extendDays));
+        reviewer.setExpiredAt(base.plusMonths(extendDays));
 
         reviewerRepository.save(reviewer);
         return reviewerMapper.toResponse(reviewer);
@@ -106,6 +107,7 @@ public class ReviewerServiceImpl implements ReviewerService {
             reviewer.setExpiredAt(baseTime.plusMonths(dto.getDuration()));
         }
 
+        reviewer.setStatus(ReviewerStatus.ACTIVE);
         reviewer.setUser(user);
 
         Reviewer saved = reviewerRepository.save(reviewer);

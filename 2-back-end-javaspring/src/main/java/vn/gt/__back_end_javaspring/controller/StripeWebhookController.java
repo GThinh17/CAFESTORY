@@ -16,14 +16,29 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import vn.gt.__back_end_javaspring.entity.Payment;
+import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
+import vn.gt.__back_end_javaspring.entity.*;
 import vn.gt.__back_end_javaspring.enums.PaymentStatus;
+import vn.gt.__back_end_javaspring.enums.ProductionType;
+import vn.gt.__back_end_javaspring.enums.RoleType;
+import vn.gt.__back_end_javaspring.repository.RoleRepository;
+import vn.gt.__back_end_javaspring.repository.UserRepository;
+import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
 import vn.gt.__back_end_javaspring.service.PaymentService;
+import vn.gt.__back_end_javaspring.service.ProductionService;
+import vn.gt.__back_end_javaspring.service.ReviewerService;
+import vn.gt.__back_end_javaspring.service.impl.ReviewerStatusScheduler;
 
 @RestController
 @RequestMapping("/stripe")
 @RequiredArgsConstructor
 public class StripeWebhookController {
+    private final ReviewerStatusScheduler reviewerStatusScheduler;
+    private final ProductionService productionService;
+    private final ReviewerService reviewerService;
+    private final UserRoleRepository userRoleRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     @Value("${stripe.endPointSecret.key}")
     private String endpointSecret;
 
@@ -36,6 +51,7 @@ public class StripeWebhookController {
         if (intent != null) {
             System.out.println(" Payment Success: " + intent.getId());
         }
+
     }
 
     private void handlePaymentFailed(Event event) {
@@ -80,6 +96,7 @@ public class StripeWebhookController {
         String paymentId = metadata.get("paymentId").getAsString();
         String productionId = metadata.get("productionId").getAsString();
 
+        System.out.println(" Checkout Session Completed thanh cong toi day: " + paymentId);
         // >>>>>>>>>>>>>>>>>>>>LOG ĐỂ KIỂM TRA <<<<<<<<<<<<<<<<<<<<<<
         // System.out.println("Checkout Completed: " + sessionId);
         // System.out.println("User Email: " + email);
@@ -89,8 +106,37 @@ public class StripeWebhookController {
         // System.out.println("Metadata ProductionID: " + productionId);
 
         // Cập nhật lại trạng thái payment nếu thành công
+
+        String productId = metadata.get("productId").getAsString();
+        Production production = productionService.GetProduction(productId);
+
+        String userId = metadata.get("userId").getAsString();
+        User user = userRepository.findById(userId).get();
+        //Tao Reviewer
+        ReviewerCreateDTO dto = new ReviewerCreateDTO();
+        dto.setUserId(metadata.getAsJsonObject().get("user_id").getAsString());
+        dto.setDuration(production.getTimeExpired());
+
+        reviewerService.registerReviewer(dto);
+
+        //Set Role
+        UserRole userRole = new UserRole();
+        userRole.setUser(user);
+        if(production.getProductionType() == ProductionType.REVIEWER){
+            Role role = roleRepository.findByroleName(RoleType.REVIEWER);
+            userRole.setRole(role);
+        } else{
+            Role role = roleRepository.findByroleName(RoleType.CAFEOWNER);
+            userRole.setRole(role);
+        }
+        userRoleRepository.save(userRole);
+
+
+        //Set payment thanh success
         Payment payment = this.paymentService.UpdatePayment(paymentId, PaymentStatus.SUCCESS);
-        System.out.println(payment);
+        //System.out.println(" Checkout Session Completed thanh toi day2: " + paymentId);
+
+        //System.out.println(payment);
     }
 
     @PostMapping("/webhook")
@@ -105,6 +151,7 @@ public class StripeWebhookController {
         try {
             // Verify signature from Stripe
             event = Webhook.constructEvent(payload, signature, endpointSecret);
+
         } catch (Exception e) {
             System.out.println(" Invalid Signature: " + e.getMessage());
             return ResponseEntity.badRequest().body("Invalid Signature");
@@ -114,10 +161,10 @@ public class StripeWebhookController {
         // Handle events from Stripe
         switch (event.getType()) {
             case "checkout.session.completed":
-                handleCheckoutSessionCompleted(event);
+                handleCheckoutSessionCompleted(event); //Dang ky
                 break;
 
-            case "payment_intent.succeeded":
+            case "payment_intent.succeeded": //Nap tien
                 handlePaymentSucceeded(event);
                 break;
 
