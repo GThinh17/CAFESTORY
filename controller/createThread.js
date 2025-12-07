@@ -1,3 +1,6 @@
+const { OpenAI } = require("openai");
+const Knowledge = require("../models/Knowledge");
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const createThread = async (req, res) => {
   try {
     const thread = await openai.beta.threads.create();
