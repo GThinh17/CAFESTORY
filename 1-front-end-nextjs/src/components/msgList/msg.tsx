@@ -5,11 +5,18 @@ interface message {
   avatar: string;
   lastMessage?: string;
   time?: string;
+  onClick?: () => void;
 }
 
-export function MessageItem({ name, avatar, time, lastMessage }: message) {
+export function MessageItem({
+  name,
+  avatar,
+  time,
+  onClick,
+  lastMessage,
+}: message) {
   return (
-    <div className={styles.item}>
+    <div className={styles.item} onClick={onClick}>
       <img src={avatar} alt={name} className={styles.avatar} />
       <div className={styles.info}>
         <div className={styles.row}>

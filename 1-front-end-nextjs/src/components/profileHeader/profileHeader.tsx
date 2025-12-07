@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import Image from "next/image";
 import styles from "./profileHeader.module.css";
 import Link from "next/link";
@@ -83,6 +81,61 @@ export function ProfileHeader({
     }
   }
 
+  async function handleCreateChat() {
+    if (!currentUserId || !profileUserId) {
+      console.error("Cannot create chat, missing user IDs", {
+        currentUserId,
+        profileUserId,
+      });
+      return;
+    }
+    if (!token) {
+      console.error("Cannot create chat, missing token");
+      return;
+    }
+
+    try {
+      // 1️⃣ Lấy danh sách chat hiện có
+      const res = await axios.get("http://localhost:8081/chat/list", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const chats = res.data as any[];
+
+      // 2️⃣ Tìm chat đã có giữa 2 user
+      const existingChat = chats.find(
+        (chat) =>
+          chat.members.includes(currentUserId) &&
+          chat.members.includes(profileUserId)
+      );
+
+      if (existingChat) {
+        // Nếu đã có → chuyển tới chatId đó
+        router.push(`/messages/${existingChat.chatId}`);
+        return;
+      }
+
+      // 3️⃣ Nếu chưa có → tạo chat mới
+      const createRes = await axios.post(
+        "http://localhost:8081/chat/createchat",
+        { members: [currentUserId, profileUserId] },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const chatId = createRes.data?.id || createRes.data?.chatId;
+      router.push(`/messages/${chatId}`);
+    } catch (err: any) {
+      console.error(
+        "Error creating/opening chat:",
+        err.response?.data || err.message
+      );
+    }
+  }
   return (
     <>
       <div className={styles.profileHeader}>
@@ -137,11 +190,14 @@ export function ProfileHeader({
               >
                 {localFollow ? "Following" : "Follow"}
               </button>
-              <Link href="/messages">
-                <button className={`${styles.btn} ${styles.messageBtn}`}>
+              
+                <button
+                  className={`${styles.btn} ${styles.messageBtn}`}
+                  onClick={handleCreateChat}
+                >
                   Message
                 </button>
-              </Link>
+              
             </>
           )}
         </div>
