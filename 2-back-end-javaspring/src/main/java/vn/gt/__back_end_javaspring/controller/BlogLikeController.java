@@ -19,7 +19,6 @@ public class BlogLikeController {
 
     private final BlogLikeService blogLikeService;
 
-
     @PostMapping("")
     public ResponseEntity<BlogLikeResponse> likeBlog(
             @Valid @RequestBody BlogLikeCreateDTO request) {
@@ -28,12 +27,10 @@ public class BlogLikeController {
         return ResponseEntity.ok().body(response);
     }
 
-
     @DeleteMapping("")
     public ResponseEntity<Void> unlikeBlog(
             @RequestParam String blogId,
-            @RequestParam String userId
-    ) {
+            @RequestParam String userId) {
         blogLikeService.unlike(blogId, userId);
 
         return ResponseEntity.ok().build();
@@ -42,20 +39,15 @@ public class BlogLikeController {
     @GetMapping("/is-liked")
     public ResponseEntity<Boolean> isLiked(
             @RequestParam String blogId,
-            @RequestParam String userId
-    ) {
+            @RequestParam String userId) {
         boolean liked = blogLikeService.isLiked(userId, blogId);
-
-
 
         return ResponseEntity.ok().body(liked);
     }
 
-
     @GetMapping("/count")
     public ResponseEntity<Long> countLikes(@RequestParam String blogId) {
         long count = blogLikeService.countLikes(blogId);
-
 
         return ResponseEntity.ok().body(count);
     }

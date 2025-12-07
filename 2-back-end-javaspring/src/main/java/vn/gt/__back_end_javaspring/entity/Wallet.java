@@ -44,7 +44,7 @@ public class Wallet {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.isDeleted = false;
-        this.balance =  BigDecimal.ZERO;
+        this.balance = BigDecimal.ZERO;
         this.currency = "USD";
     }
 
@@ -52,6 +52,5 @@ public class Wallet {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
 
 }

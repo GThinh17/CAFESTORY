@@ -12,7 +12,10 @@
   position: relative;
   border-radius: 50%;
   padding: 4px;
-  background: linear-gradient(45deg,var(--chart-4), var(--chart-1),var(--chart-5));
+  background: linear-gradient(45deg,
+      var(--chart-4),
+      var(--chart-1),
+      var(--chart-5));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,7 +23,7 @@
 
 .avatarImg {
   border-radius: 50%;
-  border: 3px solid var(--color-background);
+  border: 3px solid var(--background);
 }
 
 .profileInfo {
@@ -30,12 +33,12 @@
 .profileTop {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   margin-bottom: 10px;
 }
 
 .username {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -53,11 +56,7 @@
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
-  transition: background 0.2s ease;
-}
-
-.btn:hover {
-  background-color: var(--color-muted);
+  margin-right: 5px;
 }
 
 .followBtn {
@@ -98,4 +97,3 @@
 .website:hover {
   text-decoration: underline;
 }
-

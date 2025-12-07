@@ -21,10 +21,14 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
 
+import vn.gt.__back_end_javaspring.exception.CustomAccessDeniedHandler;
+import vn.gt.__back_end_javaspring.exception.CustomAuthenticationEntryPoint;
 import vn.gt.__back_end_javaspring.util.SecurityUtil;
 
 @Configuration
@@ -39,25 +43,36 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http,
-            CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:3000", "http://localhost:5173")
+                        .allowedMethods("*")
+                        .allowedHeaders("*")
+                        .exposedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-
-                .authorizeHttpRequests(authz -> authz
-                            .requestMatchers("/", "/api/login", "/api/signup").permitAll()
+                .cors(Customizer.withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                        .accessDeniedHandler(new CustomAccessDeniedHandler()))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/login", "/api/blogs", "/api/signup", "/users/{id}",
+                                "/api/blogs?userId={userId}", "/api/production", "/stripe/webhook", "/")
+                        .permitAll()
                         .anyRequest().authenticated())
-
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(Customizer.withDefaults())
-                        .authenticationEntryPoint(customAuthenticationEntryPoint))
-
-                .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(customAuthenticationEntryPoint) // dùng bản của bạn
-                )
-
-                .formLogin(form -> form.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .oauth2ResourceServer(oauth -> oauth
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
         return http.build();
     }
@@ -85,19 +100,6 @@ public class SecurityConfiguration {
             }
         };
     }
-
-    // @Bean
-    // public JwtAuthenticationConverter jwtAuthenticationConverter() {
-    // JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new
-    // JwtGrantedAuthoritiesConverter();
-    // grantedAuthoritiesConverter.setAuthorityPrefix("");
-    // grantedAuthoritiesConverter.setAuthoritiesClaimName("gthinh17");
-
-    // JwtAuthenticationConverter jwtAuthenticationConverter = new
-    // JwtAuthenticationConverter();
-    // jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-    // return jwtAuthenticationConverter;
-    // }
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {

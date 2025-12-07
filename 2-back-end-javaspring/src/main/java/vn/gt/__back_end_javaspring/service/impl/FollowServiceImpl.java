@@ -31,34 +31,34 @@ public class FollowServiceImpl implements FollowService {
     public FollowResponse follow(FollowCreateDTO request) {
         Follow follow = new Follow();
         User user = userRepository.findById(request.getFollowerId())
-                .orElseThrow(()-> new UserNotFoundException("Follower not found"));
+                .orElseThrow(() -> new UserNotFoundException("Follower not found"));
 
         user.setFollowingCount(user.getFollowingCount() + 1);
-
 
         follow.setFollower(user);
         follow.setFollowType(request.getFollowType());
         System.out.println("Follow: " + follow.getFollower().getEmail());
-        if(request.getFollowType() == FollowType.USER){
+        if (request.getFollowType() == FollowType.USER) {
             User userFollow = userRepository.findById(request.getFollowedUserId())
-                    .orElseThrow(()-> new UserNotFoundException("Follower not found"));
+                    .orElseThrow(() -> new UserNotFoundException("Follower not found"));
 
-            if(followRepository.existsByFollower_IdAndFollowedUser_Id(request.getFollowerId(), request.getFollowedUserId())){
+            if (followRepository.existsByFollower_IdAndFollowedUser_Id(request.getFollowerId(),
+                    request.getFollowedUserId())) {
                 throw new ExistFollow("Follower already exists");
             }
 
             userFollow.setFollowerCount(userFollow.getFollowerCount() + 1);
 
-            if(user.getId().equals(userFollow.getId())){
+            if (user.getId().equals(userFollow.getId())) {
                 throw new RuntimeException("Cannot follow yourself");
             }
             follow.setFollowedUser(userFollow);
             follow.setFollowedPage(null);
             System.out.println("Followed: " + follow.getFollowedUser().getEmail());
 
-        } else{
+        } else {
             Page page = pageRepository.findById(request.getFollowedPageId())
-                    .orElseThrow(()-> new PageNotFoundException("Page not found"));
+                    .orElseThrow(() -> new PageNotFoundException("Page not found"));
             page.setFollowersCount(page.getFollowersCount() + 1);
             follow.setFollowedPage(page);
             follow.setFollowedUser(null);
@@ -68,43 +68,48 @@ public class FollowServiceImpl implements FollowService {
         return followMapper.toResponse(saved);
     }
 
-    //Get all follow user (Ai dang follow user nay)
+    // Get all follow user (Ai dang follow user nay)
     @Override
     public List<FollowResponse> getUserFollower(String userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(()-> new UserNotFoundException("Follower not found"));
+                .orElseThrow(() -> new UserNotFoundException("Follower not found"));
         List<Follow> follows = followRepository.findByFollowedUser_Id(user.getId());
         return followMapper.toResponse(follows);
     }
 
-    //Get all user follow (user nay follow ai)
+    // Get all user follow (user nay follow ai)
     @Override
     public List<FollowResponse> getUserFollowing(String userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(()-> new UserNotFoundException("Follower not found"));
+                .orElseThrow(() -> new UserNotFoundException("Follower not found"));
 
         List<Follow> follows = followRepository.findByFollower_Id(user.getId());
         return followMapper.toResponse(follows);
     }
 
-    //Get all user follow page
+    // Get all user follow page
     @Override
     public List<FollowResponse> getPageFollower(String pageId) {
         Page page = pageRepository.findById(pageId)
-                .orElseThrow(()-> new PageNotFoundException("Page not found"));
+                .orElseThrow(() -> new PageNotFoundException("Page not found"));
 
         List<Follow> follows = followRepository.findByFollowedPage_Id(page.getId());
         return followMapper.toResponse(follows);
     }
 
     @Override
-    public void deletedFollowingUserId(String userId, String userFollowedId){
-        User user = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("Follower not found"));
-        User userFollowed = userRepository.findById(userFollowedId).orElseThrow(()-> new UserNotFoundException("Follower not found"));
-       if(user.getFollowingCount() != 0){ user.setFollowingCount(user.getFollowingCount() - 1);}
-       if(user.getFollowerCount() != 0){ user.setFollowerCount(user.getFollowerCount() - 1);}
+    public void deletedFollowingUserId(String userId, String userFollowedId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Follower not found"));
+        User userFollowed = userRepository.findById(userFollowedId)
+                .orElseThrow(() -> new UserNotFoundException("Follower not found"));
+        if (user.getFollowingCount() != 0) {
+            user.setFollowingCount(user.getFollowingCount() - 1);
+        }
+        if (user.getFollowerCount() != 0) {
+            user.setFollowerCount(user.getFollowerCount() - 1);
+        }
         user.setFollowerCount(user.getFollowerCount() - 1);
-        if(!followRepository.existsByFollower_IdAndFollowedUser_Id(userId, userFollowedId)){
+        if (!followRepository.existsByFollower_IdAndFollowedUser_Id(userId, userFollowedId)) {
             throw new ExistFollow("Follower not exists");
         }
         followRepository.deleteByFollower_IdAndFollowedUser_Id(user.getId(), userFollowed.getId());
@@ -113,12 +118,12 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public void deletedFollowingPageId(String userId, String pageId) {
-        User user = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("Follower not found"));
-        Page page =  pageRepository.findById(pageId).orElseThrow(()-> new PageNotFoundException("Page not found"));
-        if(user.getFollowingCount() != 0){
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Follower not found"));
+        Page page = pageRepository.findById(pageId).orElseThrow(() -> new PageNotFoundException("Page not found"));
+        if (user.getFollowingCount() != 0) {
             user.setFollowingCount(user.getFollowingCount() - 1);
         }
-        if(user.getFollowerCount() != 0){
+        if (user.getFollowerCount() != 0) {
             page.setFollowersCount(page.getFollowersCount() - 1);
 
         }
@@ -128,9 +133,7 @@ public class FollowServiceImpl implements FollowService {
         followRepository.deleteByFollower_IdAndFollowedPage_Id(user.getId(), page.getId());
     }
 
-
     private final FollowRepository followRepository;
     private final FollowMapper followMapper;
-
 
 }

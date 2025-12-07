@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ShareMapper {
-    
+
     Share toEntity(ShareCreateDTO dto);
 
     @Mapping(target = "shareId", source = "id")

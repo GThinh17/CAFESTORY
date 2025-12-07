@@ -22,16 +22,14 @@ public class ShareController {
 
     @PostMapping()
     public ResponseEntity<ShareReponse> createShare(
-            @Valid @RequestBody ShareCreateDTO shareCreateDTO
-            ){
+            @Valid @RequestBody ShareCreateDTO shareCreateDTO) {
         ShareReponse shareReponse = shareService.createShare(shareCreateDTO);
-
 
         return ResponseEntity.ok().body(shareReponse);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ShareReponse> getShareById(@PathVariable String id){
+    public ResponseEntity<ShareReponse> getShareById(@PathVariable String id) {
         ShareReponse shareReponse = shareService.getShareById(id);
 
         return ResponseEntity.ok().body(shareReponse);
@@ -39,7 +37,7 @@ public class ShareController {
 
     @GetMapping("/by-blog")
     public ResponseEntity<List<ShareReponse>> getSharesByBlog(
-            @RequestParam String blogId){
+            @RequestParam String blogId) {
         List<ShareReponse> data = shareService.getSharesByBlog(blogId);
 
         return ResponseEntity.ok().body(data);
@@ -47,17 +45,15 @@ public class ShareController {
 
     @GetMapping("/by-user")
     public ResponseEntity<List<ShareReponse>> getSharesByUser(
-            @RequestParam String userId
-    ){
+            @RequestParam String userId) {
         List<ShareReponse> data = shareService.getSharesByUser(userId);
         return ResponseEntity.ok().body(data);
     }
 
-
     @DeleteMapping("/{shareId}")
     public ResponseEntity<ShareReponse> deleteShare(
             @PathVariable String shareId,
-            @RequestParam String userId){
+            @RequestParam String userId) {
         shareService.softDeleteShare(shareId, userId);
 
         return ResponseEntity.ok().build();

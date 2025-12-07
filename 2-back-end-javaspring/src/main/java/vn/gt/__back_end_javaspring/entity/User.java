@@ -3,6 +3,8 @@ package vn.gt.__back_end_javaspring.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,8 +17,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class User {
-
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User { // Check
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
@@ -31,6 +33,7 @@ public class User {
     @Column(name = "email", unique = true, nullable = false, length = 100)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password", nullable = false, length = 100)
     private String password;
 
@@ -44,10 +47,10 @@ public class User {
     private String avatar;
 
     @Column(name = "follower_count")
-    private Integer followerCount;
+    Integer followerCount;
 
     @Column(name = "following_count")
-    private Integer followingCount;
+    Integer followingCount;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -55,23 +58,19 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private Reviewer reviewer;
-
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private CafeOwner cafeOwner;
+    @Column(name = "vertifiedBank")
+    private String vertifiedBank;
 
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
-        if (this.followerCount == null) this.followerCount = 0;
-        if (this.followingCount == null) this.followingCount = 0;
-        reviewer = null;
-        cafeOwner = null;
+        this.followerCount = 0;
+        this.followingCount = 0;
     }
 
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
 }

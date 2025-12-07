@@ -14,9 +14,6 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/payment")
@@ -36,15 +33,17 @@ public class PaymentController {
         return ResponseEntity.ok().body(payment);
     }
 
-    @PostMapping("/")
-    public ResponseEntity<?> createPayment(@Valid @RequestBody Payment payment) {
-        Payment createPayment = this.paymentService.CreatePayment(payment);
-        return ResponseEntity.ok().body(createPayment);
-    }
+    // @PostMapping("/")
+    // public ResponseEntity<?> createPayment(@Valid @RequestBody Payment payment, )
+    // {
+    // Payment createPayment = this.paymentService.CreatePayment(payment);
+    // return ResponseEntity.ok().body(createPayment);
+    // }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updatePayment(@Valid @PathVariable("id") String id) {
-        Payment createPayment = this.paymentService.UpdatePaymentSUCCESS(id);
-        return ResponseEntity.ok().body(createPayment);
-    }
+    // @PutMapping("/{id}")
+    // public ResponseEntity<?> updatePayment(@Valid @PathVariable("id") String id)
+    // {
+    // Payment createPayment = this.paymentService.UpdatePayment(id);
+    // return ResponseEntity.ok().body(createPayment);
+    // }
 }

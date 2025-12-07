@@ -80,13 +80,13 @@ public class BlogServiceImpl implements BlogService {
         blogRepository.save(blog);
     }
 
-//    @Override
-//    public void deleteBlog(String id) {
-//        Blog blog = blogRepository.findById(id)
-//                .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
-//
-//        blogRepository.delete(blog);
-//    }
+    // @Override
+    // public void deleteBlog(String id) {
+    // Blog blog = blogRepository.findById(id)
+    // .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
+    //
+    // blogRepository.delete(blog);
+    // }
 
     @Override
     @Transactional(readOnly = true)
@@ -107,7 +107,7 @@ public class BlogServiceImpl implements BlogService {
 
         // TODO: xử lý mediaUrls, locationId nếu cần (update mediaList, location)
 
-        //Hibernate se check neu co id thi update ngc lai thi inseret
+        // Hibernate se check neu co id thi update ngc lai thi inseret
         Blog saved = blogRepository.save(blog);
         return blogMapper.toResponse(saved);
     }
@@ -135,8 +135,6 @@ public class BlogServiceImpl implements BlogService {
             nextCursor = CursorUtil.encode(last.getCreatedAt(), last.getId());
             System.out.println("nextCursor: " + nextCursor);
         }
-
-
 
         return CursorPage.<BlogResponse>builder()
                 .data(items)
@@ -171,5 +169,3 @@ public class BlogServiceImpl implements BlogService {
                 .build();
     }
 }
-
-

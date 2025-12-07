@@ -1,9 +1,17 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import "./goProModal.scss";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
 
 interface PricingPlansProps {
   open: boolean;
@@ -11,97 +19,125 @@ interface PricingPlansProps {
 }
 
 export function PricingPlans({ open, onClose }: PricingPlansProps) {
-  const plans = [
-    {
-      name: "Starter",
-      description: "Everything you need to get started.",
-      price: "$19",
-      per: "per month",
-      features: [
-        { text: "Custom domains", active: true },
-        { text: "Edge content delivery", active: true },
-        { text: "Advanced analytics", active: true },
-        { text: "Quarterly workshops", active: false },
-        { text: "Single sign-on (SSO)", active: false },
-        { text: "Priority phone support", active: false },
-      ],
-    },
-    {
-      name: "Growth",
-      description: "All the extras for your growing team.",
-      price: "$49",
-      per: "per month",
-      features: [
-        { text: "Custom domains", active: true },
-        { text: "Edge content delivery", active: true },
-        { text: "Advanced analytics", active: true },
-        { text: "Quarterly workshops", active: true },
-        { text: "Single sign-on (SSO)", active: false },
-        { text: "Priority phone support", active: false },
-      ],
-    },
-    {
-      name: "Scale",
-      description: "Added flexibility at scale.",
-      price: "$99",
-      per: "per month",
-      features: [
-        { text: "Custom domains", active: true },
-        { text: "Edge content delivery", active: true },
-        { text: "Advanced analytics", active: true },
-        { text: "Quarterly workshops", active: true },
-        { text: "Single sign-on (SSO)", active: true },
-        { text: "Priority phone support", active: true },
-      ],
-    },
-  ];
+  const [plans, setPlans] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { user, token } = useAuth(); // ⚡ Lấy userId từ context
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/production");
+        setPlans(res.data.data || []);
+      } catch (err) {
+        console.error("Failed to fetch production plans:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (open) fetchPlans();
+  }, [open]);
+
+  // ⚡ Hàm gọi API tạo checkout session
+  const handleStartSubscription = async (productionId: string) => {
+    if (!user?.id) {
+      alert("Bạn cần đăng nhập trước!");
+      return;
+    }
+
+    try {
+      const body = {
+        userId: user.id,
+        productionId: productionId,
+        paymentMethodId: "30a80395-ee12-417d-ad6f-1a96f21637de",
+        amount: "1",
+      };
+
+      const res = await axios.post(
+        "http://localhost:8080/api/create-checkout-session",
+        body,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(res);
+      const redirectUrl = res.data.data?.url;
+
+      if (redirectUrl) {
+        window.location.href = redirectUrl; // ⚡ Redirect sang Stripe
+      } else {
+        console.error("No URL returned from backend");
+      }
+    } catch (err) {
+      console.error("Failed to create checkout session:", err);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="pricingModal">
         <DialogHeader>
-          <DialogTitle className="pricingModal__title">Upgrade your plan</DialogTitle>
+          <DialogTitle className="pricingModal__title">
+            Upgrade your plan
+          </DialogTitle>
           <p className="pricingModal__subtitle">
-            Choose the plan that fits your needs and unlock premium features.
+            Choose a plan to unlock premium features.
           </p>
         </DialogHeader>
 
-        <div className="pricingModal__cards">
-          {plans.map((plan) => (
-            <Card key={plan.name} className="pricingCard">
-              <CardHeader>
-                <CardTitle className="pricingCard__name">{plan.name}</CardTitle>
-                <p className="pricingCard__desc">{plan.description}</p>
-              </CardHeader>
+        {loading ? (
+          <p className="text-center py-6">Loading...</p>
+        ) : (
+          <div className="pricingModal__cards">
+            {plans.map((plan) => (
+              <Card key={plan.productionId} className="pricingCard">
+                <CardHeader>
+                  <CardTitle className="pricingCard__name">
+                    {plan.productionType}
+                  </CardTitle>
+                  <p className="pricingCard__desc">{plan.description}</p>
+                </CardHeader>
 
-              <CardContent>
-                <div className="pricingCard__price">
-                  {plan.price}
-                  <span className="pricingCard__usd">USD</span>
-                </div>
-                <p className="pricingCard__per">{plan.per}</p>
+                <CardContent>
+                  <div className="pricingCard__price">
+                    ${plan.total}
+                    <span className="pricingCard__usd"> USD</span>
+                  </div>
 
-                <Button className="pricingCard__btn">Start a free trial</Button>
+                  <p className="pricingCard__per">
+                    Valid for {plan.timeExpired} months
+                  </p>
 
-                <div>
-                  <p className="pricingCard__section">Start selling with:</p>
-                  <ul className="pricingCard__features">
-                    {plan.features.map((feature, i) => (
-                      <li
-                        key={i}
-                        className={`pricingCard__feature ${
-                          feature.active ? "active" : "inactive"
-                        }`}
-                      >
-                        ＋ {feature.text}
+                  {/* 🚀 NÚT THANH TOÁN */}
+                  <Button
+                    className="pricingCard__btn"
+                    onClick={() => handleStartSubscription(plan.productionId)}
+                  >
+                    Start this subscription
+                  </Button>
+
+                  <div>
+                    <p className="pricingCard__section">Plan information:</p>
+                    <ul className="pricingCard__features">
+                      <li className="pricingCard__feature active">
+                        • Type: {plan.productionType}
                       </li>
-                    ))}
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                      <li className="pricingCard__feature active">
+                        • Status: {plan.status}
+                      </li>
+                      <li className="pricingCard__feature active">
+                        • Created: {new Date(plan.createdAt).toLocaleString()}
+                      </li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

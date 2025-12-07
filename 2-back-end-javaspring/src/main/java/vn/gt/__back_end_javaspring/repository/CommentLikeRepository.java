@@ -1,8 +1,6 @@
 package vn.gt.__back_end_javaspring.repository;
 
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import vn.gt.__back_end_javaspring.entity.CommentLike;
 

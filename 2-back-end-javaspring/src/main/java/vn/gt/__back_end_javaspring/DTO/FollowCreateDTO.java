@@ -20,10 +20,10 @@ import vn.gt.__back_end_javaspring.enums.FollowType;
 @Builder
 public class FollowCreateDTO {
     @NotBlank(message = "UserId is Required")
-    private String followerId;//User
+    private String followerId;// User
 
     @NotNull(message = "Type is required")
-    private FollowType followType; //User /page
+    private FollowType followType; // User /page
 
     private String followedUserId;
 

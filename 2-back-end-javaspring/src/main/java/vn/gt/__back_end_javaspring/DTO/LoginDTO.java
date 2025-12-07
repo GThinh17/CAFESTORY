@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.checkerframework.checker.units.qual.A;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,8 +18,7 @@ public class LoginDTO {
 	private String email;
 
 	@NotBlank(message = "password is not blank")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
-
-
 
 }

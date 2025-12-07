@@ -10,9 +10,9 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PricingRuleMapper {
-    PricingRule toEntity (PricingRuleCreateDTO  pricingRuleCreateDTO);
+    PricingRule toEntity(PricingRuleCreateDTO pricingRuleCreateDTO);
 
-    @Mapping(source = "id",target = "pricingRuleResponseId")
+    @Mapping(source = "id", target = "pricingRuleResponseId")
     PricingRuleResponse toResponse(PricingRule pricingRule);
 
     List<PricingRuleResponse> toResponseList(List<PricingRule> pricingRules);
