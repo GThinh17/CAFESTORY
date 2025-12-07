@@ -5,7 +5,8 @@ import { useState } from "react";
 import { Heart, MessageCircle, Send, MoreHorizontal } from "lucide-react";
 import { Input } from "../ui/input";
 import Link from "next/link";
-
+import axios from "axios";
+import { useEffect } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -15,6 +16,7 @@ import {
 } from "../ui/carousel";
 
 import "./post.css";
+import { useAuth } from "@/context/AuthContext";
 
 export interface PostProps {
   userId: string;
@@ -24,7 +26,10 @@ export interface PostProps {
   likes: number;
   caption: string;
   time: string;
+  postId: string; // 👈 blogId
+  userIdLogin: string; // 👈 id user login
   onOpenPost: () => void;
+  onLikeUpdate: (postId: string) => void; // 👈 update UI
 }
 
 export function Post({
@@ -35,9 +40,89 @@ export function Post({
   likes,
   caption,
   time,
+  postId,
+  userIdLogin,
   onOpenPost,
+  onLikeUpdate,
 }: PostProps) {
-  const [expanded, setExpanded] = useState(false);
+  const [localLikes, setLocalLikes] = useState(likes);
+  const { token, user } = useAuth();
+  const [isLiked, setIsLiked] = useState(false);
+
+  ////////////////////////////// LIKE ////////////////////////////////////////////
+  const handleLike = async () => {
+    if (isLiked) {
+      // Update UI ngay
+      setIsLiked(false);
+      setLocalLikes((prev) => prev - 1);
+      onLikeUpdate(postId, false);
+
+      try {
+        await axios.delete("http://localhost:8080/api/blog-likes", {
+          params: { blogId: postId, userId: userIdLogin },
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      } catch (error) {
+        console.error("Unlike failed:", error);
+
+        // rollback UI
+        setIsLiked(true);
+        setLocalLikes((prev) => prev + 1);
+      }
+
+      return;
+    }
+
+    setIsLiked(true);
+    setLocalLikes((prev) => prev + 1);
+    onLikeUpdate(postId); // update danh sách bài viết
+
+    try {
+      await axios.post(
+        "http://localhost:8080/api/blog-likes",
+        {
+          userId: userIdLogin,
+          blogId: postId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Like failed:", error);
+      // rollback nếu thích
+      setIsLiked(false);
+      setLocalLikes((prev) => prev - 1);
+    }
+  };
+  ///////////////////////////////////////////////////////////////////////////////
+
+  /////////////////////////////////// Checked Like /////////////////////////////
+  useEffect(() => {
+    if (!postId || !user?.id) return;
+
+    const checkLiked = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/blog-likes/is-liked`,
+          {
+            params: { blogId: postId, userId: user.id },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        setIsLiked(res.data.data === true);
+      } catch (err) {
+        console.error("Error checking like:", err);
+      }
+    };
+
+    checkLiked();
+  }, [postId, user?.id]);
+  //////////////////////////////////////////////////////////////////////////////
 
   return (
     <div className="post">
@@ -92,30 +177,24 @@ export function Post({
       {/* Actions */}
       <div className="post-actions">
         <div className="left-actions">
-          <Heart size={24} className="icon" />
+          <Heart
+            size={24}
+            className={`icon ${isLiked ? "fill-red-500 text-red-500" : ""}`}
+            onClick={handleLike} // 👈 LIKE HERE
+          />
           <MessageCircle size={24} className="icon" onClick={onOpenPost} />
           <Send size={24} className="icon" />
         </div>
       </div>
 
       {/* Likes */}
-      <div className="likes">{likes} likes</div>
+      <div className="likes">{localLikes} likes</div>
 
       {/* Caption */}
       <div className="caption-container">
-        <div className={`caption ${expanded ? "expanded" : "clamped"}`}>
+        <div className="caption">
           <strong>{username}</strong> {caption}
         </div>
-        {!expanded && caption.length > 80 && (
-          <button className="more" onClick={() => setExpanded(true)}>
-            more
-          </button>
-        )}
-        {expanded && (
-          <button className="less" onClick={() => setExpanded(false)}>
-            less
-          </button>
-        )}
       </div>
 
       {/* Comment input */}

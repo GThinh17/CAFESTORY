@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import "./postModal.css";
 import {
   Carousel,
@@ -9,24 +9,97 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../../ui/carousel";
-import { Heart, MessageCircle, Send, MoreHorizontal } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
 
 interface PostModalProps {
   open: boolean;
   onClose: () => void;
   post: any;
+  blogId: string;
 }
 
-export function PostModal({ open, onClose, post }: PostModalProps) {
+export function PostModal({ open, onClose, post, blogId }: PostModalProps) {
   if (!post) return null;
+
+  const [comments, setComments] = useState<any[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [comment, setComment] = useState("");
+
+  const { user, token } = useAuth();
+
+  // ------------------------------------------
+  // GET COMMENTS
+  // ------------------------------------------
+  const getComments = async (cursor?: string) => {
+    try {
+      const res = await axios.get("http://localhost:8080/api/comments", {
+        params: {
+          blogId: blogId,
+          size: 12,
+          cursor: cursor ? cursor : null,
+        },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const newComments = res.data.data.data;
+      const newCursor = res.data.data.nextCursor;
+
+      if (!cursor) {
+        setComments(newComments);
+      } else {
+        setComments((prev) => [...prev, ...newComments]);
+      }
+
+      setNextCursor(newCursor);
+    } catch (error) {
+      console.error("Failed to load comments", error);
+    }
+  };
+
+  // Load comment mỗi khi mở modal
+  useEffect(() => {
+    if (open) {
+      getComments(); // load trang đầu tiên
+    }
+  }, [open]);
+
+  // ------------------------------------------
+  // HANDLE SEND COMMENT
+  // ------------------------------------------
+  const handleComment = async () => {
+    try {
+      await axios.post(
+        "http://localhost:8080/api/comments",
+        {
+          blogId: blogId,
+          userId: user?.id,
+          commentParentId: null,
+          content: comment,
+          commentImageId: null,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setComment("");
+      getComments(); // reload comments
+    } catch (error) {
+      console.error("Comment failed:", error);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
+      <DialogTitle></DialogTitle>
+
       <DialogContent className="PostModalCon">
         <div className="PostWrapper">
           {/* LEFT */}
           <div className="PostImage flex items-center justify-center bg-black">
-            <Carousel className="w-full max-w-[500px]">
+            <Carousel className="w-full ">
               <CarouselContent>
                 {post.images.map((img: string, i: number) => (
                   <CarouselItem
@@ -55,27 +128,51 @@ export function PostModal({ open, onClose, post }: PostModalProps) {
           <div className="PostInfo">
             {/* Header */}
             <div className="PostHeader">
-              <img className="Avatar" src={post.avatar} alt="avatar" />
-              <span className="UserName">{post.username}</span>
-            </div>
-
-            <div className="PostComments">
-              <div className="CommentItem">
-                <span className="CommentAuthor">
-                  {post.username}: {post.caption}{" "}
-                </span>
+              <div className="avatarHeader">
+                <img className="Avatar" src={post.avatar} alt="avatar" />
+                <span className="UserName">{post.username} : </span>
+              </div>
+              <div className="status">
+                <span className="Author">{post.caption}</span>
               </div>
             </div>
 
-            {/* Likes */}
-            <div className="PostActions">
-              <Heart /> {post.likes} likes
+            {/* Caption */}
+            <div className="PostComments">
+              {/* Render comments */}
+              {[...comments].reverse().map((cmt) => (
+                <div key={cmt.commentId} className="CommentItem">
+                  <span className="CommentGuest">
+                    {cmt.userFullName}: {cmt.content}
+                  </span>
+                </div>
+              ))}
+
+              {/* Load more */}
+              {nextCursor && (
+                <button
+                  onClick={() => getComments(nextCursor!)}
+                  className="LoadMoreBtn"
+                >
+                  Load more...
+                </button>
+              )}
             </div>
 
-            {/* Input */}
+            {/* Comment input */}
             <div className="PostInput">
-              <input placeholder="Add a comment..." />
-              <button>Send</button>
+              <input
+                placeholder="Add a comment..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleComment();
+                  }
+                }}
+              />
+              <button onClick={handleComment}>Send</button>
             </div>
           </div>
         </div>

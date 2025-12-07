@@ -66,65 +66,75 @@ public class CommentServiceImpl implements CommentService {
 
     }
 
-    @Override
-    public CommentResponse addComment(CommentCreateDTO dto) {
-        Blog blog = blogRepository.findById(dto.getBlogId())
-                .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
+   @Override
+public CommentResponse addComment(CommentCreateDTO dto) {
 
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException("User not found "));
+    Blog blog = blogRepository.findById(dto.getBlogId())
+            .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
 
-        Comment parent = null;
-        if (dto.getCommentParentId() != null && !dto.getCommentParentId().isBlank()) {
-            parent = commentRepository.findById(dto.getCommentParentId())
-                    .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
-        }
+    User user = userRepository.findById(dto.getUserId())
+            .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        CommentImage commentImage = null;
-        if (dto.getCommentImageId() != null && !dto.getCommentImageId().isBlank()) {
-            commentImage = commentImageRepository.findById(dto.getCommentImageId())
-                    .orElseThrow(() -> new CommentNotFoundException("Comment image not found"));
-        }
-
-        blog.setCommentsCount(blog.getCommentsCount() + 1);
-
-        if (parent != null) {
-            if (parent.getReplyCount() == null)
-                parent.setReplyCount(0L);
-            parent.setReplyCount(parent.getReplyCount() + 1);
-        }
-
-        Comment saved = commentRepository.save(commentMapper.toModel(dto));
-
-        String reviewerId = blog.getUser().getId();
-        if (reviewerService.isReviewer(reviewerId)) {
-            Reviewer reviewer = reviewerRepository.findById(reviewerId)
-                    .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
-
-            PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
-            if (pricingRule == null) {
-                throw new PricingRuleNotFound("No active pricing rule");
-            }
-
-            BigDecimal weight = pricingRule.getCommentWeight();
-            if (weight == null) {
-                weight = BigDecimal.ZERO;
-            }
-            BigDecimal unitPrice = pricingRule.getUnitPrice();
-            BigDecimal amount = unitPrice.multiply(weight);
-
-            EarningEventCreateDTO earningEventCreateDTO = new EarningEventCreateDTO();
-            earningEventCreateDTO.setBlogId(dto.getBlogId());
-            earningEventCreateDTO.setSourceType("COMMENT");
-            earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
-            earningEventCreateDTO.setReviewerId(reviewerId);
-            earningEventCreateDTO.setAmount(amount);
-
-            earningEventService.create(earningEventCreateDTO);
-        }
-
-        return commentMapper.toResponse(saved);
+    Comment parent = null;
+    if (dto.getCommentParentId() != null && !dto.getCommentParentId().isBlank()) {
+        parent = commentRepository.findById(dto.getCommentParentId())
+                .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
     }
+
+    CommentImage commentImage = null;
+    if (dto.getCommentImageId() != null && !dto.getCommentImageId().isBlank()) {
+        commentImage = commentImageRepository.findById(dto.getCommentImageId())
+                .orElseThrow(() -> new CommentNotFoundException("Comment image not found"));
+    }
+
+    blog.setCommentsCount(blog.getCommentsCount() + 1);
+
+    if (parent != null) {
+        if (parent.getReplyCount() == null)
+            parent.setReplyCount(0L);
+        parent.setReplyCount(parent.getReplyCount() + 1);
+    }
+
+    // ❗ TẠO COMMENT ĐÚNG CHUẨN — KHÔNG DÙNG commentMapper.toModel(dto)
+    Comment comment = new Comment();
+    comment.setBlog(blog);
+    comment.setUser(user);
+    comment.setParentComment(parent);
+    comment.setContent(dto.getContent());
+    comment.setCommentImage(commentImage);
+
+    // ❗ PrePersist sẽ tự set likesCount = 0, replyCount = 0,…
+
+    Comment saved = commentRepository.save(comment);
+
+    // Giữ logic earning event như cũ
+    String reviewerId = blog.getUser().getId();
+    if (reviewerService.isReviewer(reviewerId)) {
+        Reviewer reviewer = reviewerRepository.findById(reviewerId)
+                .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
+
+        PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
+        if (pricingRule == null)
+            throw new PricingRuleNotFound("No active pricing rule");
+
+        BigDecimal weight = pricingRule.getCommentWeight();
+        if (weight == null) weight = BigDecimal.ZERO;
+
+        BigDecimal amount = pricingRule.getUnitPrice().multiply(weight);
+
+        EarningEventCreateDTO earningEventCreateDTO = new EarningEventCreateDTO();
+        earningEventCreateDTO.setBlogId(dto.getBlogId());
+        earningEventCreateDTO.setSourceType("COMMENT");
+        earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
+        earningEventCreateDTO.setReviewerId(reviewerId);
+        earningEventCreateDTO.setAmount(amount);
+
+        earningEventService.create(earningEventCreateDTO);
+    }
+
+    return commentMapper.toResponse(saved);
+}
+
 
     @Override
     public CommentResponse updateComment(String commentId, CommentUpdateDTO commentUpdateDTO) {

@@ -47,14 +47,16 @@ export function ProfileInfo() {
     <ProfileHeader
       username={me?.fullName ?? "Unknown"}
       verified
-      following
+      following={me?.isFollowing ?? false}
       posts={count}
-      followers={me?.followerCount}
+      followers={me?.followerCount ?? 0}
       followingCount={me?.followingCount}
       avatar={
         me?.avatar ?? "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
       }
-      isMe={!(userId === user?.id)}
+      isMe={userId === user?.id}
+      currentUserId={user?.id}
+      profileUserId={userId}
     />
   );
 }

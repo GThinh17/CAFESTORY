@@ -9,7 +9,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ProfileModal } from "./components/profileModal";
 import { Check } from "lucide-react";
-
+import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
 interface ProfileHeaderProps {
   username: string;
   verified?: boolean;
@@ -22,6 +23,8 @@ interface ProfileHeaderProps {
   website?: string;
   avatar: string;
   isMe?: boolean;
+  currentUserId: string;
+  profileUserId: string;
 }
 
 export function ProfileHeader({
@@ -33,9 +36,52 @@ export function ProfileHeader({
   followingCount,
   avatar,
   isMe,
+  currentUserId,
+  profileUserId,
 }: ProfileHeaderProps) {
   const router = useRouter();
+  const { token } = useAuth();
   const [isProfile, setIsProfile] = useState(false);
+  const [localFollow, setLocalFollow] = useState(following);
+
+  async function handleFollow() {
+    try {
+      await axios.post(
+        "http://localhost:8080/api/follows",
+        {
+          followerId: currentUserId,
+          followType: "USER",
+          followedUserId: profileUserId,
+          followedPageId: null,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setLocalFollow(true);
+    } catch (err) {
+      console.error("Follow error", err);
+    }
+  }
+
+  async function handleUnfollow() {
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/follows/users/${currentUserId}/following/${profileUserId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setLocalFollow(false);
+    } catch (err) {
+      console.error("Unfollow error", err);
+    }
+  }
 
   return (
     <>
@@ -61,7 +107,7 @@ export function ProfileHeader({
               </span>
             )}
 
-            {!isMe && (
+            {isMe && (
               <button
                 className={`${styles.btn} ${styles.moreBtn}`}
                 onClick={() => setIsProfile(true)}
@@ -83,10 +129,13 @@ export function ProfileHeader({
             </span>
           </div>
           <div className={styles.profileBio}></div>
-          {isMe && (
+          {!isMe && (
             <>
-              <button className={`${styles.btn} ${styles.followBtn}`}>
-                {following ? "Following" : "Follow"}
+              <button
+                className={`${styles.btn} ${styles.followBtn}`}
+                onClick={localFollow ? handleUnfollow : handleFollow}
+              >
+                {localFollow ? "Following" : "Follow"}
               </button>
               <Link href="/messages">
                 <button className={`${styles.btn} ${styles.messageBtn}`}>
