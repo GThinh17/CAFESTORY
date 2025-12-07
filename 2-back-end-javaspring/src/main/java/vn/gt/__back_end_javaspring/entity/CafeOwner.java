@@ -13,8 +13,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "cafe_owner")
-@PrimaryKeyJoinColumn(name = "user_id") //subtype
-public class CafeOwner extends User {
+public class CafeOwner {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "cafe_owner_id")
+    private String id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
 
     @Column(name = "business_name")
     private String businessName;
@@ -35,7 +42,11 @@ public class CafeOwner extends User {
     private LocalDateTime createdAt;
 
 
-
-
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        averageRating = BigDecimal.ZERO;
+        totalReview = 0;
+    }
 
 }

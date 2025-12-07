@@ -15,8 +15,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@Inheritance(strategy = InheritanceType.JOINED)
-public class User { // Check
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
@@ -44,10 +44,10 @@ public class User { // Check
     private String avatar;
 
     @Column(name = "follower_count")
-    Integer followerCount;
+    private Integer followerCount;
 
     @Column(name = "following_count")
-    Integer followingCount;
+    private Integer followingCount;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -55,16 +55,23 @@ public class User { // Check
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Reviewer reviewer;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private CafeOwner cafeOwner;
+
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
-        this.followerCount = 0;
-        this.followingCount = 0;
+        if (this.followerCount == null) this.followerCount = 0;
+        if (this.followingCount == null) this.followingCount = 0;
+        reviewer = null;
+        cafeOwner = null;
     }
 
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
 }

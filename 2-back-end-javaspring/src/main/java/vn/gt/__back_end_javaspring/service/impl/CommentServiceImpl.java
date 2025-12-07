@@ -100,9 +100,9 @@ public class CommentServiceImpl implements CommentService {
 
         Comment saved = commentRepository.save(commentMapper.toModel(dto));
 
-        String reviewerId = blog.getUser().getId();
-        if(reviewerService.isReviewer(reviewerId)){
-            Reviewer reviewer = reviewerRepository.findById(reviewerId)
+        String userId = blog.getUser().getId();
+        if(reviewerService.isReviewerByUserId(userId)){
+            Reviewer reviewer = reviewerRepository.findById(userId)
                     .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
 
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
@@ -121,7 +121,7 @@ public class CommentServiceImpl implements CommentService {
             earningEventCreateDTO.setBlogId(dto.getBlogId());
             earningEventCreateDTO.setSourceType("COMMENT");
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
-            earningEventCreateDTO.setReviewerId(reviewerId);
+            earningEventCreateDTO.setReviewerId(userId);
             earningEventCreateDTO.setAmount(amount);
 
             earningEventService.create(earningEventCreateDTO);
