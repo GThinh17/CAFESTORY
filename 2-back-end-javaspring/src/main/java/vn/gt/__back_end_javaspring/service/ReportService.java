@@ -15,6 +15,8 @@ public interface ReportService {
 
     public Report UpdateReportById(String reportId, Report report);
 
+    public Report UpdateReportByIdFromChatBot(String reportId, ReportDTO report);
+
     public List<?> GetListReportByUserId(String userId);
 
     public List<?> GetListReportByBlogId(String blogId);

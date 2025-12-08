@@ -107,4 +107,18 @@ public class ReportServiceImpl implements ReportService {
         return reportMapper.toDTOList(reportRepository.findAllByReportedPage_Id(pageId));
     }
 
+    @Override
+    public Report UpdateReportByIdFromChatBot(String reportId, ReportDTO report) {
+        Report updateReport = this.reportRepository.findById(reportId).orElseThrow(null);
+        String feedback = report.getFeedback();
+        Boolean isFlag = report.getIsFlagged();
+        Boolean isBan = report.getIsBanned();
+        Boolean isDelete = report.getIsDeleted();
+        updateReport.setFeedback(feedback);
+        updateReport.setIsBanned(isBan);
+        updateReport.setIsDeleted(isDelete);
+        updateReport.setIsFlagged(isFlag);
+        return this.reportRepository.save(updateReport);
+    }
+
 }

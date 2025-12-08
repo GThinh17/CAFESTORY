@@ -67,8 +67,23 @@ public class Report {
     @Column(name = "feedback")
     private String Feedback;
 
+    // tức là cần theo dõi thêm
+    @Column(name = "isFlagged")
+    private Boolean isFlagged;
+
+    // cần phải ban model gợi í
+    @Column(name = "isBanned")
+    private Boolean isBanned;
+
+    // cần phải delete model gợi í
+    @Column(name = "isDeleted")
+    private Boolean isDeleted;
+
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.isBanned = false;
+        this.isDeleted = false;
+        this.isFlagged = false;
     }
 }

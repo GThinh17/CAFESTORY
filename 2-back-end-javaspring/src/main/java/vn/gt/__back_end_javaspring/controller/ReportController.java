@@ -13,6 +13,7 @@ import vn.gt.__back_end_javaspring.service.ReportService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +61,12 @@ public class ReportController {
     // return ResponseEntity.ok().body(this.reportService.UpdateReportById(id,
     // createReport));
     // }
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> UpdateReportByModel(@PathVariable("id") String id, @RequestBody ReportDTO reportDTO) {
+        Report UpdateReport = this.reportService.UpdateReportByIdFromChatBot(id, reportDTO);
+
+        return ResponseEntity.ok().body(reportDTO);
+    }
 
     @GetMapping("/userId/{id}")
     public ResponseEntity<?> GetListReportByUserId(@PathVariable("id") String id) {
