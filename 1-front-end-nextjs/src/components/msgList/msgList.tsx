@@ -37,39 +37,71 @@ interface MessageUI {
 // ----- COMPONENT -----
 export function MessageList() {
   const [messages, setMessages] = useState<MessageUI[]>([]);
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const router = useRouter();
+  const currentUserId = user?.id;
 
   const handleClick = (chatId: string) => {
     router.push(`/messages/${chatId}`);
   };
   useEffect(() => {
     const fetchChats = async () => {
-      if (!token) return;
+      if (!token || !currentUserId) return;
 
       try {
         const res = await axios.get<ChatApi[]>(
           "http://localhost:8081/chat/list",
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            timeout: 5000, // tránh treo request
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        console.log("res:", res.data);
+        const chats = res.data.filter((c) => c.lastMessage?.trim() !== "");
 
-        const formatted: MessageUI[] = res.data
-          .filter((chat) => chat.lastMessage?.trim() !== "")
-          .map((chat) => ({
-            id: chat.chatId,
-            name: chat.groupName || "Người dùng",
-            avatar: "/testPost.jpg",
-            lastMessage: chat.lastMessage,
-            time: convertTimestamp(chat.updatedAt._seconds),
-            you: chat.lastMessageSender === "you",
-          }));
+        const formatted = await Promise.all(
+          chats.map(async (chat) => {
+            // lấy user còn lại
+            const otherId = chat.members.find((id) => id !== currentUserId);
+
+            let userInfo = {
+              name: "Người dùng",
+              avatar: "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
+            };
+
+            // gọi API user info
+            if (otherId) {
+              try {
+                const userRes = await axios.get(
+                  `http://localhost:8080/users/${otherId}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+        
+                userInfo = {
+                  name: userRes.data.data.fullName || "Người dùng",
+                  avatar:
+                    userRes.data.data.avatar ||
+                    "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
+                };
+              } catch (err) {
+                console.log("User fetch failed");
+              }
+            }
+
+            return {
+              id: chat.chatId,
+              name: chat.groupName || userInfo.name,
+              avatar: userInfo.avatar,
+              lastMessage: chat.lastMessage,
+              time: convertTimestamp(chat.updatedAt._seconds),
+              you: chat.lastMessageSender === currentUserId,
+            };
+          })
+        );
 
         setMessages(formatted);
       } catch (error: any) {
@@ -81,7 +113,7 @@ export function MessageList() {
     };
 
     fetchChats();
-  }, [token]);
+  }, [token, currentUserId]);
 
   return (
     <div className={styles.wrapper}>

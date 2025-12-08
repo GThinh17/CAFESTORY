@@ -25,11 +25,9 @@ interface MessageApi {
 export const ChatMessageList: React.FC = () => {
   const [messages, setMessages] = useState<MessageApi[]>([]);
   const { user, token } = useAuth();
-  const [isSending, setIsSending] = useState(false);
 
   const params = useParams();
   const chatId = params.chatId as string;
-  console.log(chatId);
 
   // ---- FETCH MESSAGES ----
   useEffect(() => {
@@ -88,37 +86,40 @@ export const ChatMessageList: React.FC = () => {
   };
 
   return (
-    <div className="Con">
-      <div className="messageCon">
-        <MessageList>
-          {messages.length > 0 && (
-            <div className="sep">
-              <MessageSeparator content={formatTime(messages[0].timestamp)} />
-            </div>
-          )}
+    <>{chatId&&(
+      <div className="Con">
+        <div className="messageCon">
+          <MessageList>
+            {messages.length > 0 && (
+              <div className="sep">
+                <MessageSeparator content={formatTime(messages[0].timestamp)} />
+              </div>
+            )}
 
-          {messages.map((msg, i) => (
-            <Message
-              key={i}
-              model={{
-                message: msg.content,
-                sentTime: formatTime(msg.timestamp),
-                direction: msg.senderId === user?.id ? "outgoing" : "incoming",
-                position: "single",
-              }}
-            />
-          ))}
-        </MessageList>
-      </div>
+            {messages.map((msg, i) => (
+              <Message
+                key={i}
+                model={{
+                  message: msg.content,
+                  sentTime: formatTime(msg.timestamp),
+                  direction:
+                    msg.senderId === user?.id ? "outgoing" : "incoming",
+                  position: "single",
+                }}
+              />
+            ))}
+          </MessageList>
+        </div>
 
-      {/* INPUT SEND */}
-      <div className="inputCon">
-        <MessageInput
-          placeholder="Type a message..."
-          attachButton={false}
-          onSend={handleSend}
-        />
-      </div>
-    </div>
+        {/* INPUT SEND */}
+        <div className="inputCon">
+          <MessageInput
+            placeholder="Type a message..."
+            attachButton={false}
+            onSend={handleSend}
+          />
+        </div>
+      </div>)}
+    </>
   );
 };

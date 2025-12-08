@@ -3,12 +3,13 @@
 import Image from "next/image";
 import styles from "./profileHeader.module.css";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ProfileModal } from "./components/profileModal";
 import { Check } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
+import { useParams } from "next/navigation";
 interface ProfileHeaderProps {
   username: string;
   verified?: boolean;
@@ -38,9 +39,34 @@ export function ProfileHeader({
   profileUserId,
 }: ProfileHeaderProps) {
   const router = useRouter();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [isProfile, setIsProfile] = useState(false);
-  const [localFollow, setLocalFollow] = useState(following);
+  const [localFollow, setLocalFollow] = useState(false);
+console.log(profileUserId)
+console.log("current",currentUserId)
+
+  useEffect(() => {
+    if (!token || !currentUserId || !profileUserId) return;
+    const fetchIsFollowed = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/follows/users/${currentUserId}/following/${profileUserId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setLocalFollow(res.data.data);
+      } catch (err) {
+        console.error("Failed to fetch status followed:", err);
+      }
+    };
+
+    fetchIsFollowed();
+  }, [profileUserId]);
+  console.log(localFollow)
 
   async function handleFollow() {
     try {
@@ -190,14 +216,13 @@ export function ProfileHeader({
               >
                 {localFollow ? "Following" : "Follow"}
               </button>
-              
-                <button
-                  className={`${styles.btn} ${styles.messageBtn}`}
-                  onClick={handleCreateChat}
-                >
-                  Message
-                </button>
-              
+
+              <button
+                className={`${styles.btn} ${styles.messageBtn}`}
+                onClick={handleCreateChat}
+              >
+                Message
+              </button>
             </>
           )}
         </div>
