@@ -36,13 +36,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public CursorPage<CommentResponse> getCommentsNewestByBlogId(String blogId, String cursor, int size) {
-        List<Comment> comments;
-        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new BlogNotFoundException("Blog not found"));
+       List<Comment> comments;
+        Blog blog = blogRepository.findById(blogId).
+                orElseThrow(() -> new BlogNotFoundException("Blog not found"));
 
         Pageable pageRequest = PageRequest.of(0, size);
-        if (cursor == null || cursor.isBlank()) {
+        if(cursor == null || cursor.isBlank()) {
             comments = commentRepository.firstPageCommentBlog(blog.getId(), pageRequest);
-        } else {
+        } else{
             var p = CursorUtil.decode(cursor);
             var lastCreatedAt = p.getLeft();
             var lastId = p.getRight();
@@ -50,21 +51,24 @@ public class CommentServiceImpl implements CommentService {
         }
         var items = commentMapper.toResponseList(comments);
         String nextCursor = null;
-        if (comments.size() == size) {
+        if(comments.size() == size){
             var last = comments.get(comments.size() - 1);
             nextCursor = CursorUtil.encode(last.getCreatedAt(), last.getId());
         }
 
-        return CursorPage.<CommentResponse>builder().data(items).nextCursor(nextCursor).build();
+        return CursorPage.<CommentResponse>builder().
+                data(items).
+                nextCursor(nextCursor).
+                build();
     }
 
     @Override
-    public CommentResponse getCommentById(String commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+    public CommentResponse getCommentById(String commentId){
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("Comment not found"));
         return commentMapper.toResponse(comment);
 
     }
+
 
     @Override
     public CommentResponse addComment(CommentCreateDTO dto) {
@@ -72,7 +76,8 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
 
         User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException("User not found "));
+                        .orElseThrow(()-> new UserNotFoundException("User not found "));
+
 
         Comment parent = null;
         if (dto.getCommentParentId() != null && !dto.getCommentParentId().isBlank()) {
@@ -89,16 +94,15 @@ public class CommentServiceImpl implements CommentService {
         blog.setCommentsCount(blog.getCommentsCount() + 1);
 
         if (parent != null) {
-            if (parent.getReplyCount() == null)
-                parent.setReplyCount(0L);
+            if (parent.getReplyCount() == null) parent.setReplyCount(0L);
             parent.setReplyCount(parent.getReplyCount() + 1);
         }
 
         Comment saved = commentRepository.save(commentMapper.toModel(dto));
 
-        String reviewerId = blog.getUser().getId();
-        if (reviewerService.isReviewer(reviewerId)) {
-            Reviewer reviewer = reviewerRepository.findById(reviewerId)
+        String userId = blog.getUser().getId();
+        if(reviewerService.isReviewerByUserId(userId)){
+            Reviewer reviewer = reviewerRepository.findById(userId)
                     .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
 
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
@@ -117,7 +121,7 @@ public class CommentServiceImpl implements CommentService {
             earningEventCreateDTO.setBlogId(dto.getBlogId());
             earningEventCreateDTO.setSourceType("COMMENT");
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
-            earningEventCreateDTO.setReviewerId(reviewerId);
+            earningEventCreateDTO.setReviewerId(userId);
             earningEventCreateDTO.setAmount(amount);
 
             earningEventService.create(earningEventCreateDTO);
@@ -128,32 +132,33 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentResponse updateComment(String commentId, CommentUpdateDTO commentUpdateDTO) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+        Comment comment =  commentRepository.findById(commentId).
+                orElseThrow(() -> new CommentNotFoundException("Comment not found"));
         commentMapper.updateEntity(comment, commentUpdateDTO);
         comment.setIsEdited(true);
         Comment saved = commentRepository.save(comment);
         return commentMapper.toResponse(saved);
     }
 
-    // @Override //HardDelete
-    // public CommentResponse deleteComment(String commentId) {
-    // Comment comment = commentRepository.findById(commentId)
-    // .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
-    // commentRepository.delete(comment);
-    // return commentMapper.toResponse(comment);
-    // }
+//    @Override //HardDelete
+//    public CommentResponse deleteComment(String commentId) {
+//        Comment comment = commentRepository.findById(commentId)
+//                .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+//                commentRepository.delete(comment);
+//                return commentMapper.toResponse(comment);
+//    }
 
-    // Soft Delete
+    //Soft Delete
     @Override
     public CommentResponse deleteComment(String commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
         Blog blog = blogRepository.findById(comment.getBlog().getId())
-                .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
+                        .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
         blog.setCommentsCount(blog.getCommentsCount() - 1);
         comment.setIsDeleted(true);
         commentRepository.save(comment);
         return commentMapper.toResponse(commentRepository.save(comment));
     }
 }
+

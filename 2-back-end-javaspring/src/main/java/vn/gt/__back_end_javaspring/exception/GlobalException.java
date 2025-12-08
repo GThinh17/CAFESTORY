@@ -172,6 +172,15 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
     }
 
+    @ExceptionHandler(NotSignReviewer.class)
+    public ResponseEntity<RestResponse<Object>> hanldeNotSignReviewer(NotSignReviewer ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.CONFLICT.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("User not signed reviewer");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
+    }
+
     @ExceptionHandler(ExistFollow.class)
     public ResponseEntity<RestResponse<Object>> handleExistFollow(ExistFollow ex) {
         RestResponse<Object> res = new RestResponse<>();

@@ -30,13 +30,14 @@ public class Production {
     private ProductionType productionType;
 
     @Column(name = "timeExpired")
-    private int timeExpired;
+    private int timeExpired;  //Ngay
 
     @Column(name = "status", length = 50)
     private String status; // ACTIVE / EXPIRED / CANCELED ...
 
     @Column(name = "productionName", length = 50)
     private String productionName; // ACTIVE / EXPIRED / CANCELED ...
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
