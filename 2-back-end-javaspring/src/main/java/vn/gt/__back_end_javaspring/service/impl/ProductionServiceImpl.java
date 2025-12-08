@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import vn.gt.__back_end_javaspring.DTO.ProductionDTO;
 import vn.gt.__back_end_javaspring.entity.Production;
+import vn.gt.__back_end_javaspring.enums.ProductionType;
 import vn.gt.__back_end_javaspring.repository.ProductionRepository;
 import vn.gt.__back_end_javaspring.service.ProductionService;
 
@@ -43,5 +44,20 @@ public class ProductionServiceImpl implements ProductionService {
         updateProduction = this.productionRepository.save(production);
         return updateProduction;
     }
+
+    @Override
+    public List<Production> getReviewerProduction() {
+        List<Production> productions =
+                productionRepository.findProductionByProductionType(ProductionType.REVIEWER);
+        return productions;
+    }
+
+    @Override
+    public List<Production> getCafeOwnerProduction() {
+        List<Production> productions =
+                productionRepository.findProductionByProductionType(ProductionType.CAFEOWNER);
+        return productions;
+    }
+
 
 }

@@ -17,6 +17,7 @@ import com.google.gson.JsonParser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
+import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.entity.*;
 import vn.gt.__back_end_javaspring.enums.PaymentStatus;
 import vn.gt.__back_end_javaspring.enums.ProductionType;
@@ -52,6 +53,22 @@ public class StripeWebhookController {
             System.out.println(" Payment Success: " + intent.getId());
         }
 
+        EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+
+        String rawJson = deserializer.getRawJson(); // RAW STRING JSON
+        JsonObject stripeObject = JsonParser.parseString(rawJson).getAsJsonObject(); // Parse JSON
+
+        JsonObject metadata = stripeObject.getAsJsonObject("metadata");
+
+        String userId = metadata.get("userId").getAsString();
+        User user = userRepository.findById(userId).get();
+
+
+
+
+
+
+
     }
 
     private void handlePaymentFailed(Event event) {
@@ -61,6 +78,13 @@ public class StripeWebhookController {
         if (intent != null) {
             System.out.println(" Payment Failed: " + intent.getId());
         }
+
+        String paymentId = intent.getMetadata().get("paymentId");
+        if (paymentId != null) {
+            paymentService.UpdatePayment(paymentId, PaymentStatus.FAILED);
+        }
+
+
     }
 
     private void handlePaymentExpired(Event event) {
@@ -112,13 +136,15 @@ public class StripeWebhookController {
 
         String userId = metadata.get("userId").getAsString();
         User user = userRepository.findById(userId).get();
+        System.out.println("Log ra user: "+ user.toString());
+        System.out.println("Log ra production: "+ production.toString());
         //Tao Reviewer
         ReviewerCreateDTO dto = new ReviewerCreateDTO();
         dto.setUserId(metadata.getAsJsonObject().get("user_id").getAsString());
         dto.setDuration(production.getTimeExpired());
+        ReviewerResponse reviewerResponse = reviewerService.registerReviewer(dto);
 
-        reviewerService.registerReviewer(dto);
-
+        System.out.println("Log ra  reviewer: "+ reviewerResponse);
         //Set Role
         UserRole userRole = new UserRole();
         userRole.setUser(user);
@@ -131,6 +157,7 @@ public class StripeWebhookController {
         }
         userRoleRepository.save(userRole);
 
+        System.out.println(" User Role: " + userRole);
 
         //Set payment thanh success
         Payment payment = this.paymentService.UpdatePayment(paymentId, PaymentStatus.SUCCESS);

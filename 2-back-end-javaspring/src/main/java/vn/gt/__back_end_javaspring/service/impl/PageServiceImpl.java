@@ -28,6 +28,7 @@ public class PageServiceImpl implements PageService {
     private final PageMapper pageMapper;
     @Override
     public PageResponse createPage(PageCreateDTO request) {
+
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(()->new UserNotFoundException("User not found"));
         Page page =pageMapper.toModel(request);
