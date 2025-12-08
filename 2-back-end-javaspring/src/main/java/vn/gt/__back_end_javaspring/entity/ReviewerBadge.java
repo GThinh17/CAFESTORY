@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import vn.gt.__back_end_javaspring.enums.CriteriaType;
+import vn.gt.__back_end_javaspring.entity.Embedded.ReviewerBadgeId;
 
 import java.time.LocalDateTime;
 

@@ -95,4 +95,8 @@ public class PayOutService {
 
         return Payout.create(params, requestOptions);
     }
+
+    public Account getAccountStatus(String accountId) throws StripeException {
+        return Account.retrieve(accountId);
+    }
 }

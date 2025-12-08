@@ -72,7 +72,7 @@ export function Sidebar() {
                       if (label === "Notifications") setIsOpenNotice(true);
                       if (label === "Create") {
                         if (!token) {
-            
+
                           router.push("/login");
                           return;
                         }

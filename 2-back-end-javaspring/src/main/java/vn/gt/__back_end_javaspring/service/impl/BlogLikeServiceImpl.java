@@ -25,7 +25,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
     private final UserRepository userRepository;
     private final BlogRepository blogRepository;
     private final BlogLikeMapper blogLikeMapper;
-    private final ReviewerService reviewerService;
+    private final ReviewerService  reviewerService;
     private final ReviewerRepository reviewerRepository;
     private final PricingRuleRepository pricingRuleRepository;
     private final EarningEventService earningEventService;
@@ -35,23 +35,26 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         String userId = request.getUserId();
         String blogId = request.getBlogId();
 
-        // Tran like doube
-        if (blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
+        //Tran like doube
+        if(blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
             throw new LikeExist("Like already exists");
         }
+
+
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found!"));
 
         Blog blog = blogRepository.findById(blogId)
-                .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
+                .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
 
-        String reviewerId = blog.getUser().getId();
-        System.out.println("ReviewerId: " + reviewerId);
-        System.out.println("Boolean: " + reviewerService.isReviewer(reviewerId));
-        if (reviewerService.isReviewer(reviewerId)) {
-            Reviewer reviewer = reviewerRepository.findById(reviewerId)
-                    .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
+
+        String useId = blog.getUser().getId();
+        System.out.println("ReviewerId: " + userId);
+        System.out.println("Boolean: "+ reviewerService.isReviewerByUserId(userId));
+        if(reviewerService.isReviewerByUserId(userId)){
+            Reviewer reviewer = reviewerRepository.findById(userId)
+                    .orElseThrow(()-> new ReviewerNotFound("Reviewer not found"));
 
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
             System.out.println("pricingRule = " + pricingRule.toString());
@@ -64,7 +67,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
             earningEventCreateDTO.setBlogId(blogId);
             earningEventCreateDTO.setSourceType("LIKE");
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
-            earningEventCreateDTO.setReviewerId(reviewerId);
+            earningEventCreateDTO.setReviewerId(userId);
             earningEventCreateDTO.setAmount(weight.multiply(unitPrice));
             earningEventService.create(earningEventCreateDTO);
         }
@@ -73,7 +76,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         blogRepository.save(blog);
 
         BlogLike bloglike = blogLikeMapper.toModel(request);
-        BlogLike saved = blogLikeRepository.save(bloglike);
+        BlogLike saved =  blogLikeRepository.save(bloglike);
 
         return blogLikeMapper.toResponse(saved);
 
@@ -83,13 +86,13 @@ public class BlogLikeServiceImpl implements BlogLikeService {
     public void unlike(String blogId, String userId) {
 
         Blog blog = blogRepository.findById(blogId)
-                .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
+                .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
 
         blog.setLikesCount(blog.getLikesCount() - 1);
 
         System.out.println("blogId: " + blogId + ", userId: " + userId);
 
-        if (!blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
+        if(!blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
             throw new LikeNotFoundException("Like not exists");
         }
 
@@ -104,7 +107,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
     @Override
     public long countLikes(String blogId) {
         Blog blog = blogRepository.findById(blogId)
-                .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
+                .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
 
         return blogLikeRepository.countByBlog_Id(blogId);
     }
@@ -112,7 +115,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
     @Override
     public List<BlogLikeResponse> getLikesByBlog(String blogId) {
         Blog blog = blogRepository.findById(blogId)
-                .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
+                .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
 
         return blogLikeMapper.toResponseList(blogLikeRepository.findByBlog_Id(blogId));
     }

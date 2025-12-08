@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import vn.gt.__back_end_javaspring.entity.Payment;
+import vn.gt.__back_end_javaspring.enums.PaymentStatus;
 import vn.gt.__back_end_javaspring.repository.PaymentRepository;
 import vn.gt.__back_end_javaspring.service.PaymentService;
 
@@ -30,12 +31,17 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setProcessedAt(LocalDateTime.now());
         LocalDateTime endAt = payment.getProcessedAt().plusMonths(time);
         payment.setEndAt(endAt);
+        payment.setStatus(PaymentStatus.PENDING);
+        payment.setAmount(payment.getAmount());
+        payment.setProduction(payment.getProduction());
         return this.paymentRepository.save(payment);
     }
 
-    public Payment UpdatePaymentSUCCESS(String paymentId) {
+    public Payment UpdatePayment(String paymentId, PaymentStatus paymentStatus) {
+
+
         Payment updateStatus = this.paymentRepository.findByPaymentId(paymentId);
-        updateStatus.setStatus(vn.gt.__back_end_javaspring.enums.PaymentStatus.SUCCESS);
+        updateStatus.setStatus(paymentStatus);
         return this.paymentRepository.save(updateStatus);
     }
 

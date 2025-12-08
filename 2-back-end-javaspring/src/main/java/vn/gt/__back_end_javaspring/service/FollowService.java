@@ -17,4 +17,8 @@ public interface FollowService {
     void deletedFollowingUserId(String userId, String userFollowingId);
 
     void deletedFollowingPageId(String userId, String pageId);
+
+    Boolean isFollowPage(String userId, String pageId);
+
+    Boolean isFollowUser(String userId, String userFollowingId);
 }

@@ -1,4 +1,4 @@
-package vn.gt.__back_end_javaspring.entity;
+package vn.gt.__back_end_javaspring.entity.Embedded;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

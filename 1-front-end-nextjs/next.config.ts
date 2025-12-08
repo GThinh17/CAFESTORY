@@ -1,3 +1,5 @@
+import { devIndicatorServerState } from "next/dist/server/dev/dev-indicator-server-state";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,

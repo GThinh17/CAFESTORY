@@ -61,6 +61,24 @@ public class FollowController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/users/{userId}/following/{userFollowedId}")
+    public ResponseEntity<Boolean> isFollowingUser(
+            @PathVariable String userId,
+            @PathVariable String userFollowedId){
+        Boolean result = followService.isFollowUser(userId, userFollowedId);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/users/{userId}/following-page/{pageId}")
+    public ResponseEntity<Boolean> getUserFollowingPage(
+            @PathVariable String userId,
+            @PathVariable String pageId
+    ){
+        Boolean result = followService.isFollowPage(
+                userId,
+                pageId);
+        return ResponseEntity.ok(result);
+    }
 
     @DeleteMapping("/users/{userId}/following-page/{pageId}")
     public ResponseEntity<Object> deleteFollowingPage(
@@ -72,4 +90,6 @@ public class FollowController {
 
         return ResponseEntity.ok().build();
     }
+
+
 }

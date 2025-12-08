@@ -44,4 +44,27 @@ public class PayOutController {
     public ResponseEntity<?> withdraw(@RequestParam long amount, @RequestParam String email) throws StripeException {
         return ResponseEntity.ok().body(payOutService.createPayout(amount, email));
     }
+
+    @GetMapping("/account-status")
+    public ResponseEntity<?> getAccountStatus(@RequestParam String email) throws StripeException {
+        User user = this.userService.handleGetUserByEmail(email);
+        String accountId = user.getVertifiedBank();
+
+        if (accountId == null) {
+            return ResponseEntity.status(400).body(Map.of(
+                    "success", false,
+                    "message", "User chưa tạo Stripe Connected Account"));
+        }
+
+        Account account = payOutService.getAccountStatus(accountId);
+
+        Map<String, Object> response = Map.of(
+                "accountId", accountId,
+                "charges_enabled", account.getChargesEnabled(),
+                "payouts_enabled", account.getPayoutsEnabled(),
+                "requirements", account.getRequirements().getCurrentlyDue(),
+                "past_due", account.getRequirements().getPastDue());
+
+        return ResponseEntity.ok(response);
+    }
 }
