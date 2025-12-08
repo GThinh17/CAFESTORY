@@ -69,64 +69,70 @@ public class CommentServiceImpl implements CommentService {
 
     }
 
-
-    @Override
+       @Override
     public CommentResponse addComment(CommentCreateDTO dto) {
         Blog blog = blogRepository.findById(dto.getBlogId())
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
 
         User user = userRepository.findById(dto.getUserId())
-                        .orElseThrow(()-> new UserNotFoundException("User not found "));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
+        Comment parent = null;
+        if (dto.getCommentParentId() != null && !dto.getCommentParentId().isBlank()) {
+            parent = commentRepository.findById(dto.getCommentParentId())
+                    .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
+        }
 
-    Comment parent = null;
-    if (dto.getCommentParentId() != null && !dto.getCommentParentId().isBlank()) {
-        parent = commentRepository.findById(dto.getCommentParentId())
-                .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
-    }
+        CommentImage commentImage = null;
+        if (dto.getCommentImageId() != null && !dto.getCommentImageId().isBlank()) {
+            commentImage = commentImageRepository.findById(dto.getCommentImageId())
+                    .orElseThrow(() -> new CommentNotFoundException("Comment image not found"));
+        }
 
-    CommentImage commentImage = null;
-    if (dto.getCommentImageId() != null && !dto.getCommentImageId().isBlank()) {
-        commentImage = commentImageRepository.findById(dto.getCommentImageId())
-                .orElseThrow(() -> new CommentNotFoundException("Comment image not found"));
-    }
-
-    blog.setCommentsCount(blog.getCommentsCount() + 1);
+        blog.setCommentsCount(blog.getCommentsCount() + 1);
 
         if (parent != null) {
-            if (parent.getReplyCount() == null) parent.setReplyCount(0L);
+            if (parent.getReplyCount() == null)
+                parent.setReplyCount(0L);
             parent.setReplyCount(parent.getReplyCount() + 1);
         }
 
-        Comment saved = commentRepository.save(commentMapper.toModel(dto));
+        Comment comment = new Comment();
+        comment.setBlog(blog);
+        comment.setUser(user);
+        comment.setParentComment(parent);
+        comment.setContent(dto.getContent());
+        comment.setCommentImage(commentImage);
 
-        String userId = blog.getUser().getId();
-        if(reviewerService.isReviewerByUserId(userId)){
-            Reviewer reviewer = reviewerRepository.findById(userId)
+        Comment saved = commentRepository.save(comment);
+
+        // Giữ logic earning event như cũ
+        String reviewerId = blog.getUser().getId();
+        if (reviewerService.isReviewerByUserId(reviewerId)) {
+            Reviewer reviewer = reviewerRepository.findById(reviewerId)
                     .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
 
-        PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
-        if (pricingRule == null)
-            throw new PricingRuleNotFound("No active pricing rule");
+            PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
+            if (pricingRule == null)
+                throw new PricingRuleNotFound("No active pricing rule");
 
-        BigDecimal weight = pricingRule.getCommentWeight();
-        if (weight == null) weight = BigDecimal.ZERO;
+            BigDecimal weight = pricingRule.getCommentWeight();
+            if (weight == null) weight = BigDecimal.ZERO;
 
-        BigDecimal amount = pricingRule.getUnitPrice().multiply(weight);
+            BigDecimal amount = pricingRule.getUnitPrice().multiply(weight);
 
             EarningEventCreateDTO earningEventCreateDTO = new EarningEventCreateDTO();
             earningEventCreateDTO.setBlogId(dto.getBlogId());
             earningEventCreateDTO.setSourceType("COMMENT");
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
-            earningEventCreateDTO.setReviewerId(userId);
+            earningEventCreateDTO.setReviewerId(reviewerId);
             earningEventCreateDTO.setAmount(amount);
 
-        earningEventService.create(earningEventCreateDTO);
+            earningEventService.create(earningEventCreateDTO);
+        }
+
+        return commentMapper.toResponse(saved);
     }
-
-    return commentMapper.toResponse(saved);
-}
-
 
     @Override
     public CommentResponse updateComment(String commentId, CommentUpdateDTO commentUpdateDTO) {

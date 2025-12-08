@@ -86,8 +86,8 @@ export function PostModal({ open, onClose, post, blogId }: PostModalProps) {
 
       setComment("");
       getComments(); // reload comments
-    } catch (error) {
-      console.error("Comment failed:", error);
+    } catch (err: any) {
+      console.error("Comment failed:", err.response?.data || err.message);
     }
   };
 
