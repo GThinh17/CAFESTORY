@@ -102,15 +102,16 @@ public class FollowServiceImpl implements FollowService {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Follower not found"));
         User userFollowed = userRepository.findById(userFollowedId)
                 .orElseThrow(() -> new UserNotFoundException("Follower not found"));
+
+        if (!followRepository.existsByFollower_IdAndFollowedUser_Id(userId, userFollowedId)) {
+            throw new ExistFollow("Follower not exists");
+        }
+
         if (user.getFollowingCount() != 0 && user.getFollowingCount() > 0) {
             user.setFollowingCount(user.getFollowingCount() - 1);
         }
         if (userFollowed.getFollowerCount() != 0 && userFollowed.getFollowerCount() > 0) {
-            user.setFollowerCount(user.getFollowerCount() - 1);
-        }
-        user.setFollowerCount(user.getFollowerCount() - 1);
-        if (!followRepository.existsByFollower_IdAndFollowedUser_Id(userId, userFollowedId)) {
-            throw new ExistFollow("Follower not exists");
+            userFollowed.setFollowerCount(userFollowed.getFollowerCount() - 1);
         }
         followRepository.deleteByFollower_IdAndFollowedUser_Id(user.getId(), userFollowed.getId());
 
@@ -120,15 +121,17 @@ public class FollowServiceImpl implements FollowService {
     public void deletedFollowingPageId(String userId, String pageId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Follower not found"));
         Page page = pageRepository.findById(pageId).orElseThrow(() -> new PageNotFoundException("Page not found"));
+        if (!followRepository.existsByFollower_IdAndFollowedPage_Id(user.getId(), pageId)) {
+            throw new ExistFollow("Follower not exists");
+        }
+
         if (user.getFollowingCount() != 0 && user.getFollowingCount() > 0) {
             user.setFollowingCount(user.getFollowingCount() - 1);
         }
         if (page.getFollowersCount() != 0 && user.getFollowingCount() > 0) {
             page.setFollowersCount(page.getFollowersCount() - 1);
         }
-        if (!followRepository.existsByFollower_IdAndFollowedPage_Id(user.getId(), pageId)) {
-            throw new ExistFollow("Follower not exists");
-        }
+
         followRepository.deleteByFollower_IdAndFollowedPage_Id(user.getId(), page.getId());
     }
 

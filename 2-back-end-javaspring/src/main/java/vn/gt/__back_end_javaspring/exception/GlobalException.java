@@ -172,6 +172,25 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
     }
 
+    @ExceptionHandler(OwnerCanNotLikePost.class)
+    public ResponseEntity<RestResponse<Object>> handleLikeExist(OwnerCanNotLikePost ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.CONFLICT.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Owner can not like your post exists");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
+    }
+
+    @ExceptionHandler(OnwerCanNotActionOnTheirs.class)
+    public ResponseEntity<RestResponse<Object>> handleLikeExist(OnwerCanNotActionOnTheirs ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.CONFLICT.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Owner can not do anything on their post");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
+    }
+
+
     @ExceptionHandler(NotSignReviewer.class)
     public ResponseEntity<RestResponse<Object>> hanldeNotSignReviewer(NotSignReviewer ex) {
         RestResponse<Object> res = new RestResponse<>();
@@ -208,6 +227,15 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
     }
 
+    @ExceptionHandler(NotificationNotFound.class)
+    public ResponseEntity<RestResponse<Object>> handleGenericException(NotificationNotFound ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        res.setMessage("Notification not found error");
+        res.setErrors(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<RestResponse<Object>> handleGenericException(Exception ex) {
         RestResponse<Object> res = new RestResponse<>();
@@ -216,4 +244,6 @@ public class GlobalException {
         res.setErrors(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
     }
+
+
 }

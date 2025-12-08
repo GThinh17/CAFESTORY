@@ -14,4 +14,8 @@ public interface ProductionService {
 
     public Production UpdateProduction(Production production, String id);
 
+    List<Production> getReviewerProduction();
+
+    List<Production> getCafeOwnerProduction();
+
 }
