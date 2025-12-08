@@ -7,6 +7,7 @@ import com.google.cloud.storage.Acl.Entity;
 
 import lombok.RequiredArgsConstructor;
 import vn.gt.__back_end_javaspring.DTO.ReportDTO;
+import vn.gt.__back_end_javaspring.DTO.ReportResponseDTO;
 import vn.gt.__back_end_javaspring.entity.Report;
 import vn.gt.__back_end_javaspring.enums.ReportType;
 import vn.gt.__back_end_javaspring.service.ReportService;
@@ -63,9 +64,9 @@ public class ReportController {
     // }
     @PatchMapping("/{id}")
     public ResponseEntity<?> UpdateReportByModel(@PathVariable("id") String id, @RequestBody ReportDTO reportDTO) {
-        Report UpdateReport = this.reportService.UpdateReportByIdFromChatBot(id, reportDTO);
+        ReportResponseDTO UpdateReport = this.reportService.UpdateReportByIdFromChatBot(id, reportDTO);
 
-        return ResponseEntity.ok().body(reportDTO);
+        return ResponseEntity.ok().body(UpdateReport);
     }
 
     @GetMapping("/userId/{id}")

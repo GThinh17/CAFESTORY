@@ -1,5 +1,6 @@
 package vn.gt.__back_end_javaspring.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +38,8 @@ public class ReportServiceImpl implements ReportService {
     private final ReportMapper reportMapper;
 
     @Override
-    public List<?> GetAllReport() {
-        return this.reportRepository.findAll();
+    public List<ReportResponseDTO> GetAllReport() {
+        return reportMapper.toDTOList(reportRepository.findAll());
     }
 
     @Override
@@ -108,17 +109,20 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public Report UpdateReportByIdFromChatBot(String reportId, ReportDTO report) {
-        Report updateReport = this.reportRepository.findById(reportId).orElseThrow(null);
-        String feedback = report.getFeedback();
-        Boolean isFlag = report.getIsFlagged();
-        Boolean isBan = report.getIsBanned();
-        Boolean isDelete = report.getIsDeleted();
-        updateReport.setFeedback(feedback);
-        updateReport.setIsBanned(isBan);
-        updateReport.setIsDeleted(isDelete);
-        updateReport.setIsFlagged(isFlag);
-        return this.reportRepository.save(updateReport);
+    public ReportResponseDTO UpdateReportByIdFromChatBot(String reportId, ReportDTO reportDTO) {
+
+        Report updateReport = reportRepository.findById(reportId)
+                .orElseThrow(() -> new RuntimeException("Report not found"));
+
+        updateReport.setFeedback(reportDTO.getFeedback());
+        updateReport.setIsBanned(reportDTO.getIsBanned());
+        updateReport.setIsDeleted(reportDTO.getIsDeleted());
+        updateReport.setIsFlagged(reportDTO.getIsFlagged());
+        updateReport.setHandledAt(LocalDateTime.now());
+
+        Report saved = reportRepository.save(updateReport);
+
+        return reportMapper.toDTO(saved);
     }
 
 }

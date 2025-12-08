@@ -65,7 +65,7 @@ public class Report {
     private LocalDateTime handledAt;
 
     @Column(name = "feedback")
-    private String Feedback;
+    private String feedback;
 
     // tức là cần theo dõi thêm
     @Column(name = "isFlagged")
