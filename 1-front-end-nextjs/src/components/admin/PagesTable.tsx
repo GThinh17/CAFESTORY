@@ -20,15 +20,15 @@ import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 
 interface Page {
-  page_id: string;
-  page_name: string;
-  avatar_url: string;
-  contact_email: string;
-  contact_phone: string;
+  pageId: string;
+  pageName: string;
+  avatarUrl: string;
+  contactEmail: string;
+  contactPhone: string;
   slug: string;
   description: string;
-  post_count: number;
-  followerCount: number;
+  postCount: number;
+  followingCount: number;
 }
 
 export default function PagesTable({ pages = [] }: { pages: Page[] }) {
@@ -38,17 +38,18 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
   // --- FILTER THEO SEARCH ---
   const filtered = useMemo(() => {
     return pages.filter((p) =>
-      (p.page_name + p.contact_email)
+      `${p.pageName ?? ""} ${p.contactEmail ?? ""}`
         .toLowerCase()
         .includes(query.toLowerCase())
     );
   }, [pages, query]);
 
+
   // --- HÀM XEM CHI TIẾT PAGE THEO ID ---
   const handlePageById = async (pageId: string) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/pages/${pageId}`,
+        `http://localhost:8080/api/pages/${pageId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -83,34 +84,36 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
             <TableRow>
               <TableHead>Avatar</TableHead>
               <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
+              <TableHead>Page email</TableHead>
               <TableHead>Followers</TableHead>
+              <TableHead>Post Count</TableHead>
               <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
             {filtered.map((p) => (
-              <TableRow key={p.page_id}>
+              <TableRow key={p.pageId}>
                 <TableCell>
                   <Avatar>
-                    <AvatarImage src={p.avatar_url} />
+                    <AvatarImage src={p.avatarUrl} />
                   </Avatar>
                 </TableCell>
 
-                <TableCell>{p.page_name}</TableCell>
-                <TableCell>{p.contact_email}</TableCell>
-                <TableCell>{p.contact_phone}</TableCell>
+                <TableCell>{p.pageName}</TableCell>
+                <TableCell>{p.contactEmail}</TableCell>
 
                 <TableCell>
-                  <Badge>{p.followerCount}</Badge>
+                  {p.followingCount}
+                </TableCell>
+                <TableCell>
+                  {p.postCount}
                 </TableCell>
 
                 <TableCell>
                   <Button
                     className={styles.button}
-                    onClick={() => handlePageById(p.page_id)}
+                    onClick={() => handlePageById(p.pageId)}
                   >
                     View
                   </Button>
