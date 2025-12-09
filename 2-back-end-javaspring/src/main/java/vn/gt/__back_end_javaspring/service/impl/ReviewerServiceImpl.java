@@ -14,6 +14,7 @@ import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.entity.UserRole;
 import vn.gt.__back_end_javaspring.enums.ReviewerStatus;
 import vn.gt.__back_end_javaspring.enums.RoleType;
+import vn.gt.__back_end_javaspring.exception.ConflictRole;
 import vn.gt.__back_end_javaspring.exception.ReviewerNotFound;
 import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.ReviewerMapper;
@@ -21,6 +22,7 @@ import vn.gt.__back_end_javaspring.repository.ReviewerRepository;
 import vn.gt.__back_end_javaspring.repository.RoleRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
+import vn.gt.__back_end_javaspring.service.CafeOwnerService;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 
 import java.time.LocalDateTime;
@@ -34,7 +36,6 @@ public class ReviewerServiceImpl implements ReviewerService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
-
     @Override
     public void addScore(String reviewerId, Integer score) {
         Reviewer reviewer = reviewerRepository.findById(reviewerId)
@@ -114,6 +115,7 @@ public class ReviewerServiceImpl implements ReviewerService {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Role role = roleRepository.findByroleName(RoleType.REVIEWER);
+
 
         UserRoleId userRoleId = new UserRoleId(user.getId(), role.getId());
         UserRole userRole = new UserRole();

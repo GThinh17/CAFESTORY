@@ -176,7 +176,7 @@ public class NotificationServiceImpl implements NotificationService {
         if (owner == null) {
             return;
         }
-     
+
         Notification notification = new Notification();
         notification = notificationHelper(owner, actor,  NotificationType.LIKE_COMMENT);
 

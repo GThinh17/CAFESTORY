@@ -12,7 +12,6 @@ import vn.gt.__back_end_javaspring.mapper.CommentMapper;
 import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.CommentService;
 import vn.gt.__back_end_javaspring.service.EarningEventService;
-import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
@@ -33,18 +32,17 @@ public class CommentServiceImpl implements CommentService {
     private final ReviewerRepository reviewerRepository;
     private final PricingRuleRepository pricingRuleRepository;
     private final EarningEventService earningEventService;
-    private final NotificationService notificationService;
+
     @Override
     @Transactional(readOnly = true)
     public CursorPage<CommentResponse> getCommentsNewestByBlogId(String blogId, String cursor, int size) {
-       List<Comment> comments;
-        Blog blog = blogRepository.findById(blogId).
-                orElseThrow(() -> new BlogNotFoundException("Blog not found"));
+        List<Comment> comments;
+        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new BlogNotFoundException("Blog not found"));
 
         Pageable pageRequest = PageRequest.of(0, size);
-        if(cursor == null || cursor.isBlank()) {
+        if (cursor == null || cursor.isBlank()) {
             comments = commentRepository.firstPageCommentBlog(blog.getId(), pageRequest);
-        } else{
+        } else {
             var p = CursorUtil.decode(cursor);
             var lastCreatedAt = p.getLeft();
             var lastId = p.getRight();
@@ -52,20 +50,18 @@ public class CommentServiceImpl implements CommentService {
         }
         var items = commentMapper.toResponseList(comments);
         String nextCursor = null;
-        if(comments.size() == size){
+        if (comments.size() == size) {
             var last = comments.get(comments.size() - 1);
             nextCursor = CursorUtil.encode(last.getCreatedAt(), last.getId());
         }
 
-        return CursorPage.<CommentResponse>builder().
-                data(items).
-                nextCursor(nextCursor).
-                build();
+        return CursorPage.<CommentResponse>builder().data(items).nextCursor(nextCursor).build();
     }
 
     @Override
-    public CommentResponse getCommentById(String commentId){
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+    public CommentResponse getCommentById(String commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
         return commentMapper.toResponse(comment);
 
     }
@@ -84,6 +80,7 @@ public CommentResponse addComment(CommentCreateDTO dto) {
                     .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
         }
 
+
         CommentImage commentImage = null;
         if (dto.getCommentImageUrl() != null && !dto.getCommentImageUrl().isBlank()) {
             commentImage = commentImageRepository.findById(dto.getCommentImageUrl())
@@ -96,6 +93,8 @@ public CommentResponse addComment(CommentCreateDTO dto) {
             if (parent.getReplyCount() == null)
                 parent.setReplyCount(0L);
             parent.setReplyCount(parent.getReplyCount() + 1);
+        }
+
         }
 
         Comment comment = new Comment();
@@ -118,7 +117,12 @@ public CommentResponse addComment(CommentCreateDTO dto) {
                 throw new PricingRuleNotFound("No active pricing rule");
 
             BigDecimal weight = pricingRule.getCommentWeight();
+<<<<<<< HEAD
             if (weight == null) weight = BigDecimal.ZERO;
+=======
+            if (weight == null)
+                weight = BigDecimal.ZERO;
+>>>>>>> feature
 
             BigDecimal amount = pricingRule.getUnitPrice().multiply(weight);
 
@@ -132,38 +136,38 @@ public CommentResponse addComment(CommentCreateDTO dto) {
             earningEventService.create(earningEventCreateDTO);
         }
 
+
         return commentMapper.toResponse(saved);
     }
 
     @Override
     public CommentResponse updateComment(String commentId, CommentUpdateDTO commentUpdateDTO) {
-        Comment comment =  commentRepository.findById(commentId).
-                orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
         commentMapper.updateEntity(comment, commentUpdateDTO);
         comment.setIsEdited(true);
         Comment saved = commentRepository.save(comment);
         return commentMapper.toResponse(saved);
     }
 
-//    @Override //HardDelete
-//    public CommentResponse deleteComment(String commentId) {
-//        Comment comment = commentRepository.findById(commentId)
-//                .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
-//                commentRepository.delete(comment);
-//                return commentMapper.toResponse(comment);
-//    }
+    // @Override //HardDelete
+    // public CommentResponse deleteComment(String commentId) {
+    // Comment comment = commentRepository.findById(commentId)
+    // .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+    // commentRepository.delete(comment);
+    // return commentMapper.toResponse(comment);
+    // }
 
-    //Soft Delete
+    // Soft Delete
     @Override
     public CommentResponse deleteComment(String commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
         Blog blog = blogRepository.findById(comment.getBlog().getId())
-                        .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
+                .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
         blog.setCommentsCount(blog.getCommentsCount() - 1);
         comment.setIsDeleted(true);
         commentRepository.save(comment);
         return commentMapper.toResponse(commentRepository.save(comment));
     }
 }
-

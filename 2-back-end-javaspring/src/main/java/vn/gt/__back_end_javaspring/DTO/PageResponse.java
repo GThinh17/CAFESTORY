@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PageResponse {
     private String pageId;
+    private String cafeOwnerId;
     private String businessName;
     private String pageName;
     private Long postCount;

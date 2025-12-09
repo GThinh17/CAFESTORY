@@ -78,4 +78,19 @@ public class PageServiceImpl implements PageService {
         pageRepository.save(page);
     }
 
+    @Override
+    public List<PageResponse> getAllPagesOrderByFollowersDesc() {
+        List<Page> pages = pageRepository.findAllOrderByFollowersDesc();
+        if(pages.isEmpty()){
+            throw new PageNotFoundException("Page not found");
+        }
+
+        return pageMapper.toResponse(pages);
+    }
+
+    @Override
+    public List<PageResponse> getAllPagesByFollwing() {
+        return null;
+    }
+
 }

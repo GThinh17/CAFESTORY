@@ -22,4 +22,6 @@ public interface CafeOwnerService {
     List<CafeOwnerResponse> getAllCafeOwners();
 
     CafeOwnerResponse extendCafeOwner(String cafeOwnerId, CafeOwnerDTO dto);
+
+
 }

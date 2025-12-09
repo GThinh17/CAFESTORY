@@ -110,7 +110,7 @@ public class PaymentIntentController {
                 payment.setUser(user);
                 payment.setPaymentMethod(paymentMethod);
                 payment.setProduction(production);
-                payment = this.paymentService.CreatePayment(payment, timeExpired);
+                payment = this.paymentService.CreatePayment(payment, timeExpired); // pending
 
                 Long Amount = Long.valueOf(amount) * Long.valueOf(production.getTotal());
 

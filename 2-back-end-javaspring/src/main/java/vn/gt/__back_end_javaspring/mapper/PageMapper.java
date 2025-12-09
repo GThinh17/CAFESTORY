@@ -7,6 +7,8 @@ import vn.gt.__back_end_javaspring.DTO.PageResponse;
 import vn.gt.__back_end_javaspring.DTO.PageUpdateDTO;
 import vn.gt.__back_end_javaspring.entity.Page;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface PageMapper {
 
@@ -16,7 +18,11 @@ public interface PageMapper {
 
     @Mapping(source = "id", target = "pageId")
     @Mapping(source = "cafeOwner.businessName", target = "businessName")
+    @Mapping(source = "cafeOwner.id", target = "cafeOwnerId")
     PageResponse toResponse(Page page);
+
+    List<PageResponse> toResponse(List<Page> pages);
+
 
     default String map(JsonNode node) {
         return node != null ? node.toString() : null;
