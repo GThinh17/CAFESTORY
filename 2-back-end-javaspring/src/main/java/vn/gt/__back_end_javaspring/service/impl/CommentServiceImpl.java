@@ -12,6 +12,7 @@ import vn.gt.__back_end_javaspring.mapper.CommentMapper;
 import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.CommentService;
 import vn.gt.__back_end_javaspring.service.EarningEventService;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
@@ -32,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
     private final ReviewerRepository reviewerRepository;
     private final PricingRuleRepository pricingRuleRepository;
     private final EarningEventService earningEventService;
-
+    private final NotificationService notificationService;
     @Override
     @Transactional(readOnly = true)
     public CursorPage<CommentResponse> getCommentsNewestByBlogId(String blogId, String cursor, int size) {
@@ -82,20 +83,31 @@ public class CommentServiceImpl implements CommentService {
             parent = commentRepository.findById(dto.getCommentParentId())
                     .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
         }
-
+        //Neu co comment Anh thi comment
         CommentImage commentImage = null;
-        if (dto.getCommentImageId() != null && !dto.getCommentImageId().isBlank()) {
-            commentImage = commentImageRepository.findById(dto.getCommentImageId())
-                    .orElseThrow(() -> new CommentNotFoundException("Comment image not found"));
+        if (dto.getCommentImageUrl() != null && !dto.getCommentImageUrl().isBlank()) {
+            CommentImage image = new CommentImage();
+            image.setImageUrl(dto.getCommentImageUrl());
+            image.setDescription("Image Comment");
+            commentImage = commentImageRepository.save(image);
         }
 
         blog.setCommentsCount(blog.getCommentsCount() + 1);
 
+        //Xet xem
         if (parent != null) {
             if (parent.getReplyCount() == null)
                 parent.setReplyCount(0L);
             parent.setReplyCount(parent.getReplyCount() + 1);
+            notificationService.notifyReplyComment(user, parent);
         }
+
+        Comment comment = commentMapper.toModel(dto);
+
+        comment.setParentComment(parent);
+        comment.setCommentImage(commentImage);
+        comment.setBlog(blog);
+        comment.setUser(user);
 
         Comment comment = new Comment();
         comment.setBlog(blog);
@@ -129,8 +141,8 @@ public class CommentServiceImpl implements CommentService {
             earningEventCreateDTO.setAmount(amount);
 
             earningEventService.create(earningEventCreateDTO);
-        }
 
+        }
         return commentMapper.toResponse(saved);
     }
 

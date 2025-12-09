@@ -12,6 +12,7 @@ import vn.gt.__back_end_javaspring.exception.*;
 import vn.gt.__back_end_javaspring.mapper.ShareMapper;
 import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.EarningEventService;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 import vn.gt.__back_end_javaspring.service.ShareService;
 
@@ -31,7 +32,7 @@ public class ShareServiceImpl implements ShareService {
     private final ReviewerRepository reviewerRepository;
     private final PricingRuleRepository pricingRuleRepository;
     private final EarningEventService earningEventService;
-
+    private final NotificationService notificationService;
     @Override
     public ShareReponse createShare(ShareCreateDTO dto) {
 
@@ -74,6 +75,7 @@ public class ShareServiceImpl implements ShareService {
             earningEventService.create(earningEventCreateDTO);
 
         }
+        notificationService.notifySharePost(user, blog);
 
         return shareMapper.toResponse(saved);
     }

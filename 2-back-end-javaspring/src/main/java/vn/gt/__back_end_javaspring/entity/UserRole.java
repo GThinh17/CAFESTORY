@@ -29,4 +29,9 @@ public class UserRole {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
 }

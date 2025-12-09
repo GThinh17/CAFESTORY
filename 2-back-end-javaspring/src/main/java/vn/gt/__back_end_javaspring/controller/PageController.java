@@ -24,9 +24,6 @@ public class PageController {
             @Valid @RequestBody PageCreateDTO request
     ) {
         PageResponse data = pageService.createPage(request);
-
-
-
         return ResponseEntity.ok().body(data);
     }
 
@@ -41,13 +38,11 @@ public class PageController {
         return ResponseEntity.ok().body(data);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<PageResponse> getPageByUserId(
-            @PathVariable String userId
+    @GetMapping("/cafe-owner/{cafeOwnerId}")
+    public ResponseEntity<PageResponse> getPageByCafeOwnerId(
+            @PathVariable String cafeOwnerId
     ) {
-        PageResponse data = pageService.getPageByUserId(userId);
-
-
+        PageResponse data = pageService.getPageByCafeOwnerId(cafeOwnerId);
         return ResponseEntity.ok().body(data);
     }
 

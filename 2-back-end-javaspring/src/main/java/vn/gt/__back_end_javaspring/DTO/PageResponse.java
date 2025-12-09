@@ -13,9 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PageResponse {
     private String pageId;
-    private String userId;
-    private String userName;
-    private String userAvatarUrl;
+    private String businessName;
     private String pageName;
     private Long postCount;
     private Long followersCount;

@@ -68,6 +68,7 @@ public class Blog { //Check
         @JoinColumn(name = "user_id")
         private User user;
 
+
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "like_id")
         private BlogLike bloglikeid;

@@ -17,6 +17,7 @@ import vn.gt.__back_end_javaspring.repository.FollowRepository;
 import vn.gt.__back_end_javaspring.repository.PageRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.service.FollowService;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 
 import java.util.List;
 
@@ -26,47 +27,62 @@ import java.util.List;
 public class FollowServiceImpl implements FollowService {
     private final UserRepository userRepository;
     private final PageRepository pageRepository;
+    private final NotificationService notificationService;
 
     @Override
     public FollowResponse follow(FollowCreateDTO request) {
-        Follow follow = new Follow();
-        User user = userRepository.findById(request.getFollowerId())
+        User follower = userRepository.findById(request.getFollowerId())
                 .orElseThrow(() -> new UserNotFoundException("Follower not found"));
 
-        user.setFollowingCount(user.getFollowingCount() + 1);
-
-        follow.setFollower(user);
+        Follow follow = new Follow();
+        follow.setFollower(follower);
         follow.setFollowType(request.getFollowType());
-        System.out.println("Follow: " + follow.getFollower().getEmail());
-        if (request.getFollowType() == FollowType.USER) {
-            User userFollow = userRepository.findById(request.getFollowedUserId())
-                    .orElseThrow(() -> new UserNotFoundException("Follower not found"));
 
-            if (followRepository.existsByFollower_IdAndFollowedUser_Id(request.getFollowerId(),
-                    request.getFollowedUserId())) {
+        if (request.getFollowType() == FollowType.USER) {
+            User followedUser = userRepository.findById(request.getFollowedUserId())
+                    .orElseThrow(() -> new UserNotFoundException("Followed user not found"));
+
+            if (follower.getId().equals(followedUser.getId())) {
+                throw new RuntimeException("Cannot follow yourself");
+            }
+
+            if (followRepository.existsByFollower_IdAndFollowedUser_Id(
+                    request.getFollowerId(), request.getFollowedUserId())) {
                 throw new ExistFollow("Follower already exists");
             }
 
-            userFollow.setFollowerCount(userFollow.getFollowerCount() + 1);
 
-            if (user.getId().equals(userFollow.getId())) {
-                throw new RuntimeException("Cannot follow yourself");
-            }
-            follow.setFollowedUser(userFollow);
+            follower.setFollowingCount(follower.getFollowingCount() + 1);
+            followedUser.setFollowerCount(followedUser.getFollowerCount() + 1);
+
+            follow.setFollowedUser(followedUser);
             follow.setFollowedPage(null);
-            System.out.println("Followed: " + follow.getFollowedUser().getEmail());
 
-        } else {
+            notificationService.notifyNewFollower(follower, followedUser);
+
+        } else if (request.getFollowType() == FollowType.PAGE) {
             Page page = pageRepository.findById(request.getFollowedPageId())
                     .orElseThrow(() -> new PageNotFoundException("Page not found"));
-            page.setFollowersCount(page.getFollowersCount() + 1);
+
+            if (followRepository.existsByFollower_IdAndFollowedPage_Id(
+                    request.getFollowerId(), request.getFollowedPageId())) {
+                throw new ExistFollow("Already followed this page");
+            }
+
+            follower.setFollowingCount(follower.getFollowingCount() + 1);
+            page.setFollowingCount(page.getFollowingCount() + 1);
+
             follow.setFollowedPage(page);
             follow.setFollowedUser(null);
+            notificationService.notifyNewPageFollower(follower, page);
+        } else {
+            throw new IllegalArgumentException("Invalid follow type");
         }
 
         Follow saved = followRepository.save(follow);
         return followMapper.toResponse(saved);
     }
+
 
     // Get all follow user (Ai dang follow user nay)
     @Override
@@ -128,8 +144,8 @@ public class FollowServiceImpl implements FollowService {
         if (user.getFollowingCount() != 0 && user.getFollowingCount() > 0) {
             user.setFollowingCount(user.getFollowingCount() - 1);
         }
-        if (page.getFollowersCount() != 0 && user.getFollowingCount() > 0) {
-            page.setFollowersCount(page.getFollowersCount() - 1);
+        if(page.getFollowingCount() != 0 && page.getFollowingCount() > 0) {
+            page.setFollowingCount(page.getFollowingCount() - 1);
         }
 
         followRepository.deleteByFollower_IdAndFollowedPage_Id(user.getId(), page.getId());

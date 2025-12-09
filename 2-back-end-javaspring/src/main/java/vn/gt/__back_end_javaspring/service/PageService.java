@@ -10,7 +10,7 @@ public interface PageService {
 
     PageResponse getPageById(String pageId);
 
-    PageResponse getPageByUserId(String userId);
+    PageResponse getPageByCafeOwnerId(String cafeOwnerId);
 
     PageResponse updatePage(PageUpdateDTO request, String pageId);
 
