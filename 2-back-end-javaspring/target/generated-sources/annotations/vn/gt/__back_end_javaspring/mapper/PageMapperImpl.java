@@ -1,5 +1,7 @@
 package vn.gt.__back_end_javaspring.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 import vn.gt.__back_end_javaspring.DTO.PageCreateDTO;
@@ -10,7 +12,7 @@ import vn.gt.__back_end_javaspring.entity.Page;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T05:19:19+0700",
+    date = "2025-12-09T15:34:24+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
@@ -46,6 +48,7 @@ public class PageMapperImpl implements PageMapper {
 
         pageResponse.pageId( page.getId() );
         pageResponse.businessName( pageCafeOwnerBusinessName( page ) );
+        pageResponse.cafeOwnerId( pageCafeOwnerId( page ) );
         pageResponse.pageName( page.getPageName() );
         pageResponse.postCount( page.getPostCount() );
         pageResponse.followingCount( page.getFollowingCount() );
@@ -61,6 +64,20 @@ public class PageMapperImpl implements PageMapper {
         pageResponse.updatedAt( page.getUpdatedAt() );
 
         return pageResponse.build();
+    }
+
+    @Override
+    public List<PageResponse> toResponse(List<Page> pages) {
+        if ( pages == null ) {
+            return null;
+        }
+
+        List<PageResponse> list = new ArrayList<PageResponse>( pages.size() );
+        for ( Page page : pages ) {
+            list.add( toResponse( page ) );
+        }
+
+        return list;
     }
 
     @Override
@@ -98,5 +115,13 @@ public class PageMapperImpl implements PageMapper {
             return null;
         }
         return cafeOwner.getBusinessName();
+    }
+
+    private String pageCafeOwnerId(Page page) {
+        CafeOwner cafeOwner = page.getCafeOwner();
+        if ( cafeOwner == null ) {
+            return null;
+        }
+        return cafeOwner.getId();
     }
 }

@@ -11,6 +11,8 @@ import vn.gt.__back_end_javaspring.DTO.PageUpdateDTO;
 import vn.gt.__back_end_javaspring.entity.RestResponse;
 import vn.gt.__back_end_javaspring.service.PageService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/pages")
 @RequiredArgsConstructor
@@ -66,4 +68,12 @@ public class PageController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/top-followers")
+    public ResponseEntity<List<PageResponse>> getAllPagesOrderByFollowersDesc() {
+        List<PageResponse> data = pageService.getAllPagesOrderByFollowersDesc();
+        return ResponseEntity.ok(data);
+    }
+
+
 }
