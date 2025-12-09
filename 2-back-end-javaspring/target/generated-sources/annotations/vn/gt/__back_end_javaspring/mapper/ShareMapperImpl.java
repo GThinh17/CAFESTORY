@@ -13,66 +13,62 @@ import vn.gt.__back_end_javaspring.entity.Location;
 import vn.gt.__back_end_javaspring.entity.Share;
 import vn.gt.__back_end_javaspring.entity.User;
 
-@Generated(
-    value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T16:04:00+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
-)
+@Generated(value = "org.mapstruct.ap.MappingProcessor", date = "2025-12-09T16:04:00+0700", comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)")
 @Component
 public class ShareMapperImpl implements ShareMapper {
 
     @Override
     public Share toEntity(ShareCreateDTO dto) {
-        if ( dto == null ) {
+        if (dto == null) {
             return null;
         }
 
         Share share = new Share();
 
-        share.setCaption( dto.getCaption() );
+        share.setCaption(dto.getCaption());
 
         return share;
     }
 
     @Override
     public ShareReponse toResponse(Share share) {
-        if ( share == null ) {
+        if (share == null) {
             return null;
         }
 
         ShareReponse.ShareReponseBuilder shareReponse = ShareReponse.builder();
 
-        shareReponse.shareId( share.getId() );
-        shareReponse.userId( shareUserId( share ) );
-        shareReponse.userFullName( shareUserFullName( share ) );
-        shareReponse.userAvatarUrl( shareUserAvatar( share ) );
-        shareReponse.blogId( shareBlogId( share ) );
-        shareReponse.blogCaption( shareBlogCaption( share ) );
-        shareReponse.blogCreatedAt( shareBlogCreatedAt( share ) );
-        shareReponse.blogIsDeleted( shareBlogIsDeleted( share ) );
-        shareReponse.locationId( shareLocationId( share ) );
-        shareReponse.locationName( shareLocationName( share ) );
-        shareReponse.addressLine( shareLocationAddressLine( share ) );
-        shareReponse.ward( shareLocationWard( share ) );
-        shareReponse.province( shareLocationProvince( share ) );
-        shareReponse.longitude( shareLocationLongitude( share ) );
-        shareReponse.latitude( shareLocationLatitude( share ) );
-        shareReponse.caption( share.getCaption() );
-        shareReponse.createdAt( share.getCreatedAt() );
-        shareReponse.isDeleted( share.getIsDeleted() );
+        shareReponse.shareId(share.getId());
+        shareReponse.userId(shareUserId(share));
+        shareReponse.userFullName(shareUserFullName(share));
+        shareReponse.userAvatarUrl(shareUserAvatar(share));
+        shareReponse.blogId(shareBlogId(share));
+        shareReponse.blogCaption(shareBlogCaption(share));
+        shareReponse.blogCreatedAt(shareBlogCreatedAt(share));
+        shareReponse.blogIsDeleted(shareBlogIsDeleted(share));
+        shareReponse.locationId(shareLocationId(share));
+        shareReponse.locationName(shareLocationName(share));
+        shareReponse.addressLine(shareLocationAddressLine(share));
+        shareReponse.ward(shareLocationWard(share));
+        shareReponse.province(shareLocationProvince(share));
+        shareReponse.longitude(shareLocationLongitude(share));
+        shareReponse.latitude(shareLocationLatitude(share));
+        shareReponse.caption(share.getCaption());
+        shareReponse.createdAt(share.getCreatedAt());
+        shareReponse.isDeleted(share.getIsDeleted());
 
         return shareReponse.build();
     }
 
     @Override
     public List<ShareReponse> toResponseList(List<Share> shareList) {
-        if ( shareList == null ) {
+        if (shareList == null) {
             return null;
         }
 
-        List<ShareReponse> list = new ArrayList<ShareReponse>( shareList.size() );
-        for ( Share share : shareList ) {
-            list.add( toResponse( share ) );
+        List<ShareReponse> list = new ArrayList<ShareReponse>(shareList.size());
+        for (Share share : shareList) {
+            list.add(toResponse(share));
         }
 
         return list;
@@ -80,21 +76,21 @@ public class ShareMapperImpl implements ShareMapper {
 
     @Override
     public void updateEntity(ShareUpdateDTO dto, Share share) {
-        if ( dto == null ) {
+        if (dto == null) {
             return;
         }
 
-        if ( dto.getCaption() != null ) {
-            share.setCaption( dto.getCaption() );
+        if (dto.getCaption() != null) {
+            share.setCaption(dto.getCaption());
         }
-        if ( dto.getIsDeleted() != null ) {
-            share.setIsDeleted( dto.getIsDeleted() );
+        if (dto.getIsDeleted() != null) {
+            share.setIsDeleted(dto.getIsDeleted());
         }
     }
 
     private String shareUserId(Share share) {
         User user = share.getUser();
-        if ( user == null ) {
+        if (user == null) {
             return null;
         }
         return user.getId();
@@ -102,7 +98,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private String shareUserFullName(Share share) {
         User user = share.getUser();
-        if ( user == null ) {
+        if (user == null) {
             return null;
         }
         return user.getFullName();
@@ -110,7 +106,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private String shareUserAvatar(Share share) {
         User user = share.getUser();
-        if ( user == null ) {
+        if (user == null) {
             return null;
         }
         return user.getAvatar();
@@ -118,7 +114,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private String shareBlogId(Share share) {
         Blog blog = share.getBlog();
-        if ( blog == null ) {
+        if (blog == null) {
             return null;
         }
         return blog.getId();
@@ -126,7 +122,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private String shareBlogCaption(Share share) {
         Blog blog = share.getBlog();
-        if ( blog == null ) {
+        if (blog == null) {
             return null;
         }
         return blog.getCaption();
@@ -134,7 +130,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private LocalDateTime shareBlogCreatedAt(Share share) {
         Blog blog = share.getBlog();
-        if ( blog == null ) {
+        if (blog == null) {
             return null;
         }
         return blog.getCreatedAt();
@@ -142,7 +138,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private Boolean shareBlogIsDeleted(Share share) {
         Blog blog = share.getBlog();
-        if ( blog == null ) {
+        if (blog == null) {
             return null;
         }
         return blog.getIsDeleted();
@@ -150,7 +146,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private String shareLocationId(Share share) {
         Location location = share.getLocation();
-        if ( location == null ) {
+        if (location == null) {
             return null;
         }
         return location.getId();
@@ -158,7 +154,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private String shareLocationName(Share share) {
         Location location = share.getLocation();
-        if ( location == null ) {
+        if (location == null) {
             return null;
         }
         return location.getName();
@@ -166,7 +162,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private String shareLocationAddressLine(Share share) {
         Location location = share.getLocation();
-        if ( location == null ) {
+        if (location == null) {
             return null;
         }
         return location.getAddressLine();
@@ -174,7 +170,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private String shareLocationWard(Share share) {
         Location location = share.getLocation();
-        if ( location == null ) {
+        if (location == null) {
             return null;
         }
         return location.getWard();
@@ -182,7 +178,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private String shareLocationProvince(Share share) {
         Location location = share.getLocation();
-        if ( location == null ) {
+        if (location == null) {
             return null;
         }
         return location.getProvince();
@@ -190,7 +186,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private String shareLocationLongitude(Share share) {
         Location location = share.getLocation();
-        if ( location == null ) {
+        if (location == null) {
             return null;
         }
         return location.getLongitude();
@@ -198,7 +194,7 @@ public class ShareMapperImpl implements ShareMapper {
 
     private String shareLocationLatitude(Share share) {
         Location location = share.getLocation();
-        if ( location == null ) {
+        if (location == null) {
             return null;
         }
         return location.getLatitude();
