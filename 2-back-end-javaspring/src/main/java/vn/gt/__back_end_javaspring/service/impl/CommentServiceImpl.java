@@ -12,7 +12,6 @@ import vn.gt.__back_end_javaspring.mapper.CommentMapper;
 import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.CommentService;
 import vn.gt.__back_end_javaspring.service.EarningEventService;
-import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
@@ -33,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
     private final ReviewerRepository reviewerRepository;
     private final PricingRuleRepository pricingRuleRepository;
     private final EarningEventService earningEventService;
-    private final NotificationService notificationService;
+
     @Override
     @Transactional(readOnly = true)
     public CursorPage<CommentResponse> getCommentsNewestByBlogId(String blogId, String cursor, int size) {
@@ -70,80 +69,68 @@ public class CommentServiceImpl implements CommentService {
 
     }
 
-
     @Override
     public CommentResponse addComment(CommentCreateDTO dto) {
         Blog blog = blogRepository.findById(dto.getBlogId())
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
 
         User user = userRepository.findById(dto.getUserId())
-                        .orElseThrow(()-> new UserNotFoundException("User not found "));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        //Check xem parent
         Comment parent = null;
         if (dto.getCommentParentId() != null && !dto.getCommentParentId().isBlank()) {
             parent = commentRepository.findById(dto.getCommentParentId())
                     .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
         }
-        //Neu co comment Anh thi comment
+
         CommentImage commentImage = null;
-        if (dto.getCommentImageUrl() != null && !dto.getCommentImageUrl().isBlank()) {
-            CommentImage image = new CommentImage();
-            image.setImageUrl(dto.getCommentImageUrl());
-            image.setDescription("Image Comment");
-            commentImage = commentImageRepository.save(image);
+        if (dto.getCommentImageId() != null && !dto.getCommentImageId().isBlank()) {
+            commentImage = commentImageRepository.findById(dto.getCommentImageId())
+                    .orElseThrow(() -> new CommentNotFoundException("Comment image not found"));
         }
 
         blog.setCommentsCount(blog.getCommentsCount() + 1);
 
-        //Xet xem
         if (parent != null) {
-            if (parent.getReplyCount() == null) parent.setReplyCount(0L);
+            if (parent.getReplyCount() == null)
+                parent.setReplyCount(0L);
             parent.setReplyCount(parent.getReplyCount() + 1);
-            notificationService.notifyReplyComment(user, parent);
         }
 
-        Comment comment = commentMapper.toModel(dto);
-
-        comment.setParentComment(parent);
-        comment.setCommentImage(commentImage);
+        Comment comment = new Comment();
         comment.setBlog(blog);
         comment.setUser(user);
+        comment.setParentComment(parent);
+        comment.setContent(dto.getContent());
+        comment.setCommentImage(commentImage);
 
         Comment saved = commentRepository.save(comment);
 
-        if (parent != null) {
-            notificationService.notifyReplyComment(user, saved);
-        } else {
-            notificationService.notifyCommentPost(user, saved);
-        }
-        String userId = blog.getUser().getId();
-        if(reviewerService.isReviewerByUserId(userId)){
-            Reviewer reviewer = reviewerRepository.findById(userId)
+        // Giữ logic earning event như cũ
+        String reviewerId = blog.getUser().getId();
+        if (reviewerService.isReviewerByUserId(reviewerId)) {
+            Reviewer reviewer = reviewerRepository.findById(reviewerId)
                     .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
 
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
-            if (pricingRule == null) {
+            if (pricingRule == null)
                 throw new PricingRuleNotFound("No active pricing rule");
-            }
 
             BigDecimal weight = pricingRule.getCommentWeight();
-            if (weight == null) {
-                weight = BigDecimal.ZERO;
-            }
-            BigDecimal unitPrice = pricingRule.getUnitPrice();
-            BigDecimal amount = unitPrice.multiply(weight);
+            if (weight == null) weight = BigDecimal.ZERO;
+
+            BigDecimal amount = pricingRule.getUnitPrice().multiply(weight);
 
             EarningEventCreateDTO earningEventCreateDTO = new EarningEventCreateDTO();
             earningEventCreateDTO.setBlogId(dto.getBlogId());
             earningEventCreateDTO.setSourceType("COMMENT");
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
-            earningEventCreateDTO.setReviewerId(userId);
+            earningEventCreateDTO.setReviewerId(reviewerId);
             earningEventCreateDTO.setAmount(amount);
 
             earningEventService.create(earningEventCreateDTO);
-
         }
+
         return commentMapper.toResponse(saved);
     }
 

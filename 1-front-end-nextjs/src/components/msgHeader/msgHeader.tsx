@@ -4,14 +4,30 @@ import { ChevronDown, Pencil, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import styles from "./msgHeader.module.css";
+import { useEffect, useState } from "react";
 
 export function MsgHeader() {
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const raw = localStorage.getItem("user");
+    console.log("raw raw raw", raw);
+    if (raw) {
+      try {
+        const user = JSON.parse(raw); // parse JSON
+        setUsername(user.username || "");
+      } catch (error) {
+        console.error("Failed to parse user:", error);
+      }
+    }
+  }, []);
+  console.log(username);
+
   return (
     <div className={styles.container}>
-      {/* Header top */}
       <div className={styles.headerTop}>
         <div className={styles.username}>
-          <span className={styles.name}>thnhvu_2</span>
+          <span className={styles.name}>{username || "Unknown"}</span>
           <ChevronDown className={styles.iconDown} />
         </div>
 
@@ -20,7 +36,6 @@ export function MsgHeader() {
         </Button>
       </div>
 
-      {/* Search input */}
       <div className={styles.searchWrapper}>
         <Search className={styles.searchIcon} />
         <Input

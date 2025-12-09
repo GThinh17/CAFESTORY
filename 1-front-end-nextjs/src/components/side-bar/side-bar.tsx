@@ -15,7 +15,6 @@ import {
   Crown,
 } from "lucide-react";
 
-
 import { ModeToggle } from "@/components/dark-theme-btn";
 import { NotificationModal } from "../Notification/components/notification-modal";
 import { CreateModal } from "../createModal/createModal";
@@ -38,13 +37,10 @@ export function Sidebar() {
     { href: "/", icon: Home, label: "Home" },
     { href: "/search", icon: Search, label: "Search" },
     { href: "/explore", icon: Compass, label: "Explore" },
-    { href: "/messages", icon: MessageCircle, label: "Messages" },
-
-    // ⚠️ Notifications sẽ handle click => modal
+    { icon: MessageCircle, label: "Messages", modal: true },
     { icon: Heart, label: "Notifications", modal: true },
-
     { icon: PlusSquare, label: "Create", modal: true },
-    { href: `/profile/${user?.id}`, icon: User, label: "Profile" },
+    { icon: User, label: "Profile", modal: true },
   ];
 
   return (
@@ -69,18 +65,42 @@ export function Sidebar() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      if (label === "Notifications") setIsOpenNotice(true);
+
+                      if (label === "Notifications") {
+                        if (!token) {
+                          router.push("/login");
+                          return;
+                        }
+                        setIsOpenNotice(true);
+                        return;
+                      }
+
                       if (label === "Create") {
                         if (!token) {
-
                           router.push("/login");
                           return;
                         }
                         setIsOpenCreate(true);
+                        return;
                       }
 
-                      if (label === "Notifications") setIsOpenNotice(true);
-                      if (label === "Create") setIsOpenCreate(true);
+                      if (label === "Profile") {
+                        if (!token) {
+                          router.push("/login");
+                          return;
+                        }
+                        router.push(`/profile/${user?.id}`);
+                        return;
+                      }
+
+                      if (label === "Messages") {
+                        if (!token) {
+                          router.push("/login");
+                          return;
+                        }
+                        router.push(`/messages`);
+                        return;
+                      }
                     }}
                   >
                     <Icon size={22} />
@@ -109,7 +129,8 @@ export function Sidebar() {
             <Menu size={22} /> <span className="sidebarComp">More</span>
           </li>
           <li onClick={() => setIsOpenPricing(true)}>
-            <Crown size={22} /> <span className="sidebarComp">Go pro</span>
+            <Crown size={22} className="crown"/>{" "}
+            <span className="sidebarComp">Go pro</span>
           </li>
         </div>
       </div>

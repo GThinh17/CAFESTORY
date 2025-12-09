@@ -33,10 +33,36 @@
 
 .PostHeader {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 10px;
   padding: 14px;
   border-bottom: 1px solid var(--border);
+}
+
+.avatarHeader {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.status {
+  display: flex;
+  position: relative;
+  max-width: 400px;
+  max-height: 150px;
+  overflow-y: auto;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+/* Responsive */
+@media screen and (max-width: 798px) {
+  .status {
+    max-width: 230px;
+  }
+  .CommentItem {
+    max-width: 230px;
+  }
 }
 
 .Avatar {
@@ -53,6 +79,7 @@
   flex: 1;
   padding: 10px 14px;
   overflow-y: auto;
+  max-width: 400px;
 }
 
 .CommentItem {
@@ -61,9 +88,21 @@
   margin-bottom: 12px;
 }
 
-.CommentAuthor {
+.Author {
   font-weight: 400;
   font-size: 14px;
+  overflow-y: auto; /* auto đẹp hơn scroll */
+  white-space: normal; /* cho xuống dòng */
+  word-wrap: break-word; /* bắt buộc xuống dòng nếu từ quá dài */
+  max-height: 200px; /* giới hạn để bật scroll */
+}
+
+.CommentGuest {
+  font-weight: 400;
+  font-size: 12px;
+  overflow-y: auto;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .PostActions {
@@ -77,6 +116,7 @@
   align-items: center;
   padding: 12px;
   gap: 10px;
+  border-top: 1px solid var(--border);
 }
 
 .PostInput input {
@@ -100,4 +140,9 @@
 
 .N {
   right: 2;
+}
+
+.LoadMoreBtn {
+  color: var(--muted-foreground);
+  font-size: 11px;
 }

@@ -1,101 +1,142 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { MessageItem } from "./msg";
 import styles from "./msg.module.scss";
+import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
-const messages = [
-  {
-    id: 1,
-    name: "Phạm Thị Kiều Mị",
-    avatar: "/testPost.jpg",
-    lastMessage: "Active 1h ago",
-    active: true,
-    time: "1h ago",
-    you: false,
-  },
-  {
-    id: 2,
-    name: "Thien Ha",
-    avatar: "/testPost.jpg",
-    lastMessage: "You: in đồ lu bu lắm",
-    time: "4w",
-    you: true,
-  },
-  {
-    id: 3,
-    name: "Anh Duy",
-    avatar: "/testPost.jpg",
-    lastMessage: "You: :)))",
-    time: "5w",
-    you: true,
-  },
-  {
-    id: 4,
-    name: "ĐPP",
-    avatar: "/testPost.jpg",
-    lastMessage: "Active 5h ago",
-    active: true,
-  },
-  {
-    id: 5,
-    name: "Nguyễn Duy Khánh",
-    avatar: "/testPost.jpg",
-    lastMessage: "You sent an attachment.",
-    time: "16w",
-    you: true,
-  },
-  {
-    id: 6,
-    name: "Hai Danjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjg",
-    avatar: "/testPost.jpg",
-    lastMessage:
-      "Activvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvve 1h ago",
-    active: true,
-  },
-  {
-    id: 7,
-    name: "Hai Dang",
-    avatar: "/testPost.jpg",
-    lastMessage: "Active 1h ago",
-    active: true,
-  },
-  {
-    id: 8,
-    name: "Hai Dang",
-    avatar: "/testPost.jpg",
-    lastMessage: "Active 1h ago",
-    active: true,
-  },
-  {
-    id: 9,
-    name: "Hai Dang",
-    avatar: "/testPost.jpg",
-    lastMessage: "Active 1h ago",
-    active: true,
-  },
-  {
-    id: 10,
-    name: "Hai Dang",
-    avatar: "/testPost.jpg",
-    lastMessage: "Active 1h ago",
-    active: true,
-  },
-  {
-    id: 11,
-    name: "241324123",
-    avatar: "/testPost.jpg",
-    lastMessage: "Active 1h ago",
-    active: true,
-  },
-];
+// ----- TYPES -----
+interface ChatApi {
+  chatId: string;
+  members: string[];
+  lastMessage: string;
+  lastMessageSender: string;
+  updatedAt: {
+    _seconds: number;
+    _nanoseconds: number;
+  };
+  createdAt: {
+    _seconds: number;
+    _nanoseconds: number;
+  };
+  isGroup: boolean;
+  groupName?: string;
+}
 
+interface MessageUI {
+  id: string;
+  name: string;
+  avatar: string;
+  lastMessage: string;
+  time: string;
+  you: boolean;
+}
+
+// ----- COMPONENT -----
 export function MessageList() {
+  const [messages, setMessages] = useState<MessageUI[]>([]);
+  const { token, user } = useAuth();
+  const router = useRouter();
+  const currentUserId = user?.id;
+
+  const handleClick = (chatId: string) => {
+    router.push(`/messages/${chatId}`);
+  };
+  useEffect(() => {
+    const fetchChats = async () => {
+      if (!token || !currentUserId) return;
+
+      try {
+        const res = await axios.get<ChatApi[]>(
+          "http://localhost:8081/chat/list",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const chats = res.data.filter((c) => c.lastMessage?.trim() !== "");
+
+        const formatted = await Promise.all(
+          chats.map(async (chat) => {
+            // lấy user còn lại
+            const otherId = chat.members.find((id) => id !== currentUserId);
+
+            let userInfo = {
+              name: "Người dùng",
+              avatar: "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
+            };
+
+            // gọi API user info
+            if (otherId) {
+              try {
+                const userRes = await axios.get(
+                  `http://localhost:8080/users/${otherId}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+        
+                userInfo = {
+                  name: userRes.data.data.fullName || "Người dùng",
+                  avatar:
+                    userRes.data.data.avatar ||
+                    "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
+                };
+              } catch (err) {
+                console.log("User fetch failed");
+              }
+            }
+
+            return {
+              id: chat.chatId,
+              name: chat.groupName || userInfo.name,
+              avatar: userInfo.avatar,
+              lastMessage: chat.lastMessage,
+              time: convertTimestamp(chat.updatedAt._seconds),
+              you: chat.lastMessageSender === currentUserId,
+            };
+          })
+        );
+
+        setMessages(formatted);
+      } catch (error: any) {
+        console.error(
+          "Error fetching messages:",
+          error.response?.data || error.message
+        );
+      }
+    };
+
+    fetchChats();
+  }, [token, currentUserId]);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.list}>
-        {messages.map((msg, index) => (
-          <MessageItem key={index} {...msg} />
+        {messages.map((msg) => (
+          <MessageItem
+            key={msg.id}
+            {...msg}
+            onClick={() => handleClick(msg.id)}
+          />
         ))}
       </div>
     </div>
   );
+}
+
+// ----- TIME CONVERTER -----
+function convertTimestamp(seconds: number): string {
+  const now = Math.floor(Date.now() / 1000);
+  const diff = now - seconds;
+
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
 }
