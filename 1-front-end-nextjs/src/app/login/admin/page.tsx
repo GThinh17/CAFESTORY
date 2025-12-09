@@ -14,9 +14,10 @@ import styles from "./page.module.scss";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useState } from "react";
-
+import { useAuth, User } from "@/context/AuthContext";
 
 export default function LoginPage() {
+  const { loading, login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleLogin = async () => {
@@ -25,11 +26,32 @@ export default function LoginPage() {
         email,
         password,
       });
-      const token = res.data.accessToken;
-      if (token) {
+      // console.log(res.data);
+      const token = res.data.data.accessToken;
+      const id = res.data.data.userId;
+      const username = res.data.data.fullname;
+      const avatar = res.data.data.imagePath;
+      const user: User = {
+        id: id,
+        username: username,
+        avatar: avatar,
+      };
+      if (token && user) {
+        const safeUser = {
+          ...user,
+          avatar:
+            user.avatar && user.avatar !== "null" && user.avatar.trim() !== ""
+              ? user.avatar
+              : "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
+        };
+
         localStorage.setItem("token", token);
-        router.push("/");
+        localStorage.setItem("user", JSON.stringify(safeUser));
+
+        login(token, safeUser); // Đưa vào AuthContext
+        router.push("/admin");
       }
+      console.log("token", token);
     } catch (err: any) {
       console.error(err);
       alert(err.response?.data?.message || "Đăng nhập thất bại!");
@@ -61,7 +83,8 @@ export default function LoginPage() {
 
         <CardFooter className={styles.footer}>
           <Button
-            onClick={() => router.push("/admin")}
+            onClick={() => handleLogin()}
+
             className={styles.button}
           >
             Log in

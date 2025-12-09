@@ -18,7 +18,7 @@ public class Page {
 
         @OneToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
-        private User user;
+        private CafeOwner cafeOwner;
 
         @NotBlank
         @Column(name = "page_name", nullable = false, length = 150)
@@ -29,9 +29,6 @@ public class Page {
 
         @Column(name = "post_count", nullable = false)
         private Long postCount = 0L;
-
-        @Column(name = "follower_count", nullable = false)
-        private Long followersCount;
 
         @Column(name = "following_count") // Bo truogn nay
         private Long followingCount;
@@ -67,13 +64,16 @@ public class Page {
         @Column(name = "updated_at", nullable = false)
         private LocalDateTime updatedAt;
 
+        @Column(name = "is_deleted")
+        private Boolean isDeleted;
+
         @PrePersist
         private void prePersist() {
                 createdAt = LocalDateTime.now();
                 updatedAt = LocalDateTime.now();
                 this.postCount = 0L;
-                this.followersCount = 0L;
                 this.followingCount = 0L;
+                this.isDeleted = false;
 
         }
 

@@ -67,7 +67,7 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                         .accessDeniedHandler(new CustomAccessDeniedHandler()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/blogs", "/api/signup", "/users/{id}",
+                        .requestMatchers("/api/login", "/api/blogs", "/api/signup", "/users/{id}","/api/pages/{id}",
                                 "/api/blogs?userId={userId}", "/api/production", "/stripe/webhook", "/")
                         .permitAll()
                         .anyRequest().authenticated())

@@ -16,7 +16,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import vn.gt.__back_end_javaspring.DTO.CafeOwnerDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
+import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.entity.*;
 import vn.gt.__back_end_javaspring.enums.PaymentStatus;
 import vn.gt.__back_end_javaspring.enums.ProductionType;
@@ -24,9 +26,7 @@ import vn.gt.__back_end_javaspring.enums.RoleType;
 import vn.gt.__back_end_javaspring.repository.RoleRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
-import vn.gt.__back_end_javaspring.service.PaymentService;
-import vn.gt.__back_end_javaspring.service.ProductionService;
-import vn.gt.__back_end_javaspring.service.ReviewerService;
+import vn.gt.__back_end_javaspring.service.*;
 import vn.gt.__back_end_javaspring.service.impl.ReviewerStatusScheduler;
 
 @RestController
@@ -39,6 +39,8 @@ public class StripeWebhookController {
     private final UserRoleRepository userRoleRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserRoleService userRoleService;
+    private final CafeOwnerService cafeOwnerService;
     @Value("${stripe.endPointSecret.key}")
     private String endpointSecret;
 
@@ -52,6 +54,22 @@ public class StripeWebhookController {
             System.out.println(" Payment Success: " + intent.getId());
         }
 
+        EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+
+        String rawJson = deserializer.getRawJson(); // RAW STRING JSON
+        JsonObject stripeObject = JsonParser.parseString(rawJson).getAsJsonObject(); // Parse JSON
+
+        JsonObject metadata = stripeObject.getAsJsonObject("metadata");
+
+        String userId = metadata.get("userId").getAsString();
+        User user = userRepository.findById(userId).get();
+
+
+
+
+
+
+
     }
 
     private void handlePaymentFailed(Event event) {
@@ -61,6 +79,13 @@ public class StripeWebhookController {
         if (intent != null) {
             System.out.println(" Payment Failed: " + intent.getId());
         }
+
+        String paymentId = intent.getMetadata().get("paymentId");
+        if (paymentId != null) {
+            paymentService.UpdatePayment(paymentId, PaymentStatus.FAILED);
+        }
+
+
     }
 
     private void handlePaymentExpired(Event event) {
@@ -112,25 +137,23 @@ public class StripeWebhookController {
 
         String userId = metadata.get("userId").getAsString();
         User user = userRepository.findById(userId).get();
+
+
         //Tao Reviewer
-        ReviewerCreateDTO dto = new ReviewerCreateDTO();
-        dto.setUserId(metadata.getAsJsonObject().get("user_id").getAsString());
-        dto.setDuration(production.getTimeExpired());
 
-        reviewerService.registerReviewer(dto);
-
-        //Set Role
-        UserRole userRole = new UserRole();
-        userRole.setUser(user);
         if(production.getProductionType() == ProductionType.REVIEWER){
-            Role role = roleRepository.findByroleName(RoleType.REVIEWER);
-            userRole.setRole(role);
-        } else{
-            Role role = roleRepository.findByroleName(RoleType.CAFEOWNER);
-            userRole.setRole(role);
-        }
-        userRoleRepository.save(userRole);
+            ReviewerCreateDTO dto = new ReviewerCreateDTO();
+            dto.setUserId(userId);
+            dto.setDuration(production.getTimeExpired());
+            ReviewerResponse reviewerResponse = reviewerService.registerReviewer(dto);
 
+        } else{
+            //Thieu cai dang ky
+            CafeOwnerDTO cafeOwnerDTO = new CafeOwnerDTO();
+            cafeOwnerDTO.setUserId(userId);
+            cafeOwnerDTO.setDuration(production.getTimeExpired());
+            cafeOwnerService.createCafeOwner(cafeOwnerDTO);
+        }
 
         //Set payment thanh success
         Payment payment = this.paymentService.UpdatePayment(paymentId, PaymentStatus.SUCCESS);

@@ -1,3 +1,4 @@
 # ignore vs code file
-.vscode/
-2-back-end-javaspring/src/main/resources/application.properties/
+*.env
+**/node_modules
+**/config/serviceAccountKey.json

@@ -10,6 +10,8 @@ import vn.gt.__back_end_javaspring.DTO.PageResponse;
 import vn.gt.__back_end_javaspring.DTO.PageUpdateDTO;
 import vn.gt.__back_end_javaspring.service.PageService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/pages")
 @RequiredArgsConstructor
@@ -22,7 +24,6 @@ public class PageController {
     public ResponseEntity<PageResponse> createPage(
             @Valid @RequestBody PageCreateDTO request) {
         PageResponse data = pageService.createPage(request);
-
         return ResponseEntity.ok().body(data);
     }
 
@@ -34,11 +35,10 @@ public class PageController {
         return ResponseEntity.ok().body(data);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<PageResponse> getPageByUserId(
-            @PathVariable String userId) {
-        PageResponse data = pageService.getPageByUserId(userId);
-
+    @GetMapping("/cafe-owner/{cafeOwnerId}")
+    public ResponseEntity<PageResponse> getPageByCafeOwnerId(
+            @PathVariable String cafeOwnerId) {
+        PageResponse data = pageService.getPageByCafeOwnerId(cafeOwnerId);
         return ResponseEntity.ok().body(data);
     }
 
@@ -58,4 +58,11 @@ public class PageController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/top-followers")
+    public ResponseEntity<List<PageResponse>> getAllPagesOrderByFollowersDesc() {
+        List<PageResponse> data = pageService.getAllPagesOrderByFollowersDesc();
+        return ResponseEntity.ok(data);
+    }
+
 }

@@ -45,11 +45,11 @@ export default function Sidebar() {
               Users
             </Button>
             <Button
-              onClick={() => router.push("/admin/users1")}
+              onClick={() => router.push("/admin/pages")}
               variant="ghost"
               className={styles.navBtn}
             >
-              Users Copy
+              Pages
             </Button>
             <Button
               onClick={() => router.push("/admin")}

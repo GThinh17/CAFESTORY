@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,62 +22,54 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 import styles from "./UsersTable.module.css";
-
-// sample data
-const sampleUsers = [
-  {
-    id: 1,
-    name: "Nguyen Van A",
-    email: "a@example.com",
-    role: "Admin",
-    status: "Active",
-    avatar: "https://i.pravatar.cc/40?img=1",
-  },
-  {
-    id: 2,
-    name: "Le Thi B",
-    email: "b@example.com",
-    role: "Editor",
-    status: "Pending",
-    avatar: "https://i.pravatar.cc/40?img=2",
-  },
-  {
-    id: 3,
-    name: "Tran Van C",
-    email: "c@example.com",
-    role: "Viewer",
-    status: "Inactive",
-    avatar: "https://i.pravatar.cc/40?img=3",
-  },
-  {
-    id: 4,
-    name: "Pham Thi D",
-    email: "d@example.com",
-    role: "Editor",
-    status: "Active",
-    avatar: "https://i.pravatar.cc/40?img=4",
-  },
-];
-
-export default function UsersTable() {
+import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
+interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  avatar: string;
+  address?: string;
+  followerCount: number;
+  vertifiedBank?: string;
+  role?: string; // nếu backend có
+}
+export default function UsersTable({ users = [] }: { users: User[] }) {
   const [query, setQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
-  const [users] = useState(sampleUsers);
-
+  const { token } = useAuth();
   const roles = useMemo(
-    () => ["All", ...Array.from(new Set(users.map((u) => u.role)))],
+    () => ["All", ...Array.from(new Set(users.map((u) => u.role || "User")))],
     [users]
   );
 
   const filtered = useMemo(() => {
     return users.filter((u) => {
-      const matchText = (u.name + u.email)
+      const matchText = (u.fullName + u.email)
         .toLowerCase()
         .includes(query.toLowerCase());
       const matchRole = roleFilter === "All" || u.role === roleFilter;
       return matchText && matchRole;
     });
   }, [users, query, roleFilter]);
+
+  const handleUserById = async (id: string) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/users/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log(">>>>>>>>>>>>>>>>>RES NÈ MẤY BA<<<<<<<<<<<<<<<", res.data.data);
+    } catch (error) {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>> LỖI ĐÂY NÈ <<<<<<<<<<<<<", error);
+    }
+  };
+
+
 
   return (
     <Card>
@@ -117,7 +109,9 @@ export default function UsersTable() {
               <TableHead className={styles.colName}>Name</TableHead>
               <TableHead className={styles.colEmail}>Email</TableHead>
               <TableHead className={styles.colRole}>Role</TableHead>
-              <TableHead className={styles.colStatus}>Status</TableHead>
+              <TableHead className={styles.colStatus}>Followers</TableHead>
+              <TableHead className={styles.colStatus}>Adress</TableHead>
+              <TableHead className={styles.colStatus}>Action</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -127,27 +121,36 @@ export default function UsersTable() {
                 <TableCell className={styles.avatarCell}>
                   <Avatar>
                     <AvatarImage src={u.avatar} />
-                    <AvatarFallback>{u.name[0]}</AvatarFallback>
+                    {/* <AvatarFallback>{u.fullName?.[0] ?? "?"}</AvatarFallback> */}
                   </Avatar>
                 </TableCell>
 
-                <TableCell className={styles.nameCell}>{u.name}</TableCell>
+                <TableCell className={styles.nameCell}>{u.fullName}</TableCell>
                 <TableCell>{u.email}</TableCell>
 
                 <TableCell>
                   <Badge variant="secondary" className={styles.badgeRole}>
-                    {u.role}
+                    {u.role || "User"}
                   </Badge>
                 </TableCell>
 
                 <TableCell>
-                  <Badge className={styles.badgeStatus}>{u.status}</Badge>
+                  <Badge className={styles.badgeStatus}>
+                    {u.followerCount}
+                  </Badge>
+                </TableCell>
+                <TableCell> {u.address}</TableCell>
+                <TableCell>
+                  <Button className={styles.button}>Delete</Button>
+                  <Button className={styles.button}
+                    onClick={() => handleUserById(u.id)}
+                  >View</Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </CardContent>
-    </Card>
+    </Card >
   );
 }

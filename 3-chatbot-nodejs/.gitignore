@@ -130,4 +130,4 @@ dist
 .pnp.*
 
 #ignore .env
-.env
+*.env

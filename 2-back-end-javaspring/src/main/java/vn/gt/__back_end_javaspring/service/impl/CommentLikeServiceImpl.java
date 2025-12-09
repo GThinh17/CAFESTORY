@@ -18,6 +18,7 @@ import vn.gt.__back_end_javaspring.repository.CommentLikeRepository;
 import vn.gt.__back_end_javaspring.repository.CommentRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.service.CommentLikeService;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     private  final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final CommentLikeMapper commentLikeMapper;
+    private final NotificationService notificationService;
 
     @Override
     public CommentLikeResponse likeComment(CommentLikeCreateDTO dto) {
@@ -45,8 +47,12 @@ public class CommentLikeServiceImpl implements CommentLikeService {
         comment.setLikesCount(comment.getLikesCount() + 1);
         commentRepository.save(comment);
 
+        notificationService.notifyLikeComment(user, comment);
+
         CommentLike commentLike = commentLikeMapper.toModel(dto);
         CommentLike saved =  commentLikeRepository.save(commentLike);
+
+
         return commentLikeMapper.toResponse(saved);
     }
 
