@@ -6,6 +6,7 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.*;
+import vn.gt.__back_end_javaspring.enums.RoleType;
 import vn.gt.__back_end_javaspring.enums.Visibility;
 
 @Entity

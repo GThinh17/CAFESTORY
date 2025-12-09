@@ -1,5 +1,6 @@
 package vn.gt.__back_end_javaspring.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -68,4 +69,10 @@ public interface BlogRepository extends JpaRepository<Blog, String> {
 
     // Blog mới nhất toàn hệ thống
     Blog findTopByOrderByCreatedAtDesc();
+
+
+    Page<Blog> findByUser_IdAndPage_IdNullOrderByCreatedAtDescIdDesc(String userId, Pageable pageable);
+    Page<Blog> findByUser_IdAndPage_IdNotNullOrderByCreatedAtDescIdDesc(String userId, Pageable pageable);
+    Page<Blog> findByPage_IdOrderByCreatedAtDescIdDesc(String pageId, Pageable pageable);
+
 }

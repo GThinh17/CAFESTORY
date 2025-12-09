@@ -10,12 +10,14 @@ import vn.gt.__back_end_javaspring.entity.*;
 import vn.gt.__back_end_javaspring.entity.Embedded.UserRoleId;
 import vn.gt.__back_end_javaspring.enums.RoleType;
 import vn.gt.__back_end_javaspring.exception.CafeOwnerNotFound;
+import vn.gt.__back_end_javaspring.exception.ConflictRole;
 import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.CafeOwnerMapper;
 import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.CafeOwnerService;
 import lombok.Data;
 import vn.gt.__back_end_javaspring.service.PageService;
+import vn.gt.__back_end_javaspring.service.ReviewerService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class CafeOwnerServiceImpl implements CafeOwnerService {
     private final UserRoleRepository userRoleRepository;
     private final PageRepository pageRepository;
     private final PageService pageService;
+    private final ReviewerRepository reviewerRepository;
     @Override
     public CafeOwnerResponse createCafeOwner(CafeOwnerDTO dto) {
         // 1. Lấy user
@@ -41,6 +44,7 @@ public class CafeOwnerServiceImpl implements CafeOwnerService {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Role role = roleRepository.findByroleName(RoleType.CAFEOWNER);
+
 
         UserRoleId userRoleId = new UserRoleId(
                 user.getId(),

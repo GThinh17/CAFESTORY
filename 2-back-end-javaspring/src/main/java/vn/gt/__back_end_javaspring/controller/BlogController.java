@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -55,7 +57,6 @@ public class BlogController {
     public ResponseEntity<BlogResponse> createBlog(
             @RequestBody @Valid BlogCreateDTO blogCreateDTO) {
         BlogResponse data = blogService.createBlog(blogCreateDTO);
-
         return ResponseEntity.ok().body(data);
     }
 
@@ -74,5 +75,41 @@ public class BlogController {
 
         return ResponseEntity.ok().body(data);
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<org.springframework.data.domain.Page<BlogResponse>> getBlogsForUser(
+            @PathVariable String userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        org.springframework.data.domain.Page<BlogResponse> blogPage = blogService.getBlogsForUser(userId, pageRequest);
+        return ResponseEntity.ok(blogPage);
+    }
+
+    @GetMapping("/reviewer/{reviewerId}")
+    public ResponseEntity<org.springframework.data.domain.Page<BlogResponse>> getBlogsForReviewer(
+            @PathVariable String reviewerId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        org.springframework.data.domain.Page<BlogResponse> blogPage = blogService.getBlogsForReviewer(reviewerId, pageRequest);
+        return ResponseEntity.ok(blogPage);
+    }
+
+
+    @GetMapping("/page/{pageId}")
+    public ResponseEntity<org.springframework.data.domain.Page<BlogResponse>> getBlogsForPage(
+            @PathVariable String pageId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<BlogResponse> blogPage = blogService.getBlogsForPage(pageId, pageRequest);
+        return ResponseEntity.ok(blogPage);
+    }
+
+
 
 }

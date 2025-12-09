@@ -94,10 +94,6 @@ public class NotificationServiceImpl implements NotificationService {
             return;
         }
 
-        if (receiver.equals(actor)) {
-            throw new OwnerCanNotLikePost("Owner can not like this post");
-        }
-
         Notification notification = notificationHelper(receiver, actor, NotificationType.LIKE_POST);
 
         notification.setTitle(receiver.getFullName() + " liked your post");
@@ -117,9 +113,6 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         User owner = blog.getUser();
-        if (owner.equals(actor)) {
-            throw new OnwerCanNotActionOnTheirs("Owner can not comment this post");
-        }
 
         Notification notification = new Notification();
         notification = notificationHelper(owner, actor,  NotificationType.COMMENT_POST);
@@ -161,9 +154,6 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         User owner = parent.getUser();
-        if (owner.equals(actor)) {
-            throw new OnwerCanNotActionOnTheirs("Owner can not reply their own comment (if you want forbid)");
-        }
 
         Notification notification = notificationHelper(owner, actor, NotificationType.REPLY_COMMENT);
         notification.setTitle(actor.getFullName() + " replied to your comment");
@@ -186,9 +176,7 @@ public class NotificationServiceImpl implements NotificationService {
         if (owner == null) {
             return;
         }
-        if (owner.equals(actor)) {
-            throw new OnwerCanNotActionOnTheirs("Owner can not like this comment");
-        }
+
         Notification notification = new Notification();
         notification = notificationHelper(owner, actor,  NotificationType.LIKE_COMMENT);
 

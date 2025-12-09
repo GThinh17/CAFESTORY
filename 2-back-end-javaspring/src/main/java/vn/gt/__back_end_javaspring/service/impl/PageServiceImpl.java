@@ -78,4 +78,14 @@ public class PageServiceImpl implements PageService {
         pageRepository.save(page);
     }
 
+    @Override
+    public List<PageResponse> getAllPagesOrderByFollowersDesc() {
+        return List.of();
+    }
+
+    @Override
+    public List<PageResponse> getAllPagesByFollwing() {
+        return List.of();
+    }
+
 }
