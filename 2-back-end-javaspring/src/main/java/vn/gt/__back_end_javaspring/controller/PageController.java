@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import vn.gt.__back_end_javaspring.DTO.PageCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.PageResponse;
 import vn.gt.__back_end_javaspring.DTO.PageUpdateDTO;
-import vn.gt.__back_end_javaspring.entity.RestResponse;
 import vn.gt.__back_end_javaspring.service.PageService;
 
 import java.util.List;
@@ -23,47 +22,51 @@ public class PageController {
 
     @PostMapping("")
     public ResponseEntity<PageResponse> createPage(
-            @Valid @RequestBody PageCreateDTO request
-    ) {
+            @Valid @RequestBody PageCreateDTO request) {
         PageResponse data = pageService.createPage(request);
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature
         return ResponseEntity.ok().body(data);
     }
 
     @GetMapping("/{pageId}")
     public ResponseEntity<PageResponse> getPageById(
-            @PathVariable String pageId
-    ) {
+            @PathVariable String pageId) {
         PageResponse data = pageService.getPageById(pageId);
-
-
 
         return ResponseEntity.ok().body(data);
     }
 
+<<<<<<< HEAD
     @GetMapping("/cafe-owner/{cafeOwnerId}")
     public ResponseEntity<PageResponse> getPageByCafeOwnerId(
             @PathVariable String cafeOwnerId
     ) {
         PageResponse data = pageService.getPageByCafeOwnerId(cafeOwnerId);
+=======
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<PageResponse> getPageByUserId(
+            @PathVariable String userId) {
+        PageResponse data = pageService.getPageByUserId(userId);
+
+>>>>>>> feature
         return ResponseEntity.ok().body(data);
     }
 
     @PatchMapping("/{pageId}")
     public ResponseEntity<PageResponse> updatePage(
             @PathVariable String pageId,
-            @Valid @RequestBody PageUpdateDTO request
-    ) {
+            @Valid @RequestBody PageUpdateDTO request) {
         PageResponse data = pageService.updatePage(request, pageId);
-
-
 
         return ResponseEntity.ok().body(data);
     }
 
     @DeleteMapping("/{pageId}")
     public ResponseEntity<Object> deletePage(
-            @PathVariable String pageId
-    ) {
+            @PathVariable String pageId) {
         pageService.deletePage(pageId);
 
         return ResponseEntity.ok().build();

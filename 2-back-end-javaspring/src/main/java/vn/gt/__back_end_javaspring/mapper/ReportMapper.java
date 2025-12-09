@@ -18,7 +18,11 @@ public class ReportMapper {
                 report.getReportType() != null ? report.getReportType().name() : null,
                 report.getProblem(),
                 report.getDescription(),
-                report.getCreatedAt());
+                report.getCreatedAt(),
+                report.getFeedback(),
+                report.getIsFlagged(),
+                report.getIsBanned(),
+                report.getIsDeleted());
     }
 
     public List<ReportResponseDTO> toDTOList(List<Report> reports) {
