@@ -69,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
 
     }
 
-       @Override
+    @Override
     public CommentResponse addComment(CommentCreateDTO dto) {
         Blog blog = blogRepository.findById(dto.getBlogId())
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
