@@ -10,60 +10,56 @@ import vn.gt.__back_end_javaspring.entity.Follow;
 import vn.gt.__back_end_javaspring.entity.Page;
 import vn.gt.__back_end_javaspring.entity.User;
 
-@Generated(
-    value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T16:03:59+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
-)
+@Generated(value = "org.mapstruct.ap.MappingProcessor", date = "2025-12-09T15:55:02+0700", comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)")
 @Component
 public class FollowMapperImpl implements FollowMapper {
 
     @Override
     public Follow toModel(FollowCreateDTO followCreateDTO) {
-        if ( followCreateDTO == null ) {
+        if (followCreateDTO == null) {
             return null;
         }
 
         Follow follow = new Follow();
 
-        follow.setFollowType( followCreateDTO.getFollowType() );
+        follow.setFollowType(followCreateDTO.getFollowType());
 
         return follow;
     }
 
     @Override
     public FollowResponse toResponse(Follow follow) {
-        if ( follow == null ) {
+        if (follow == null) {
             return null;
         }
 
         FollowResponse.FollowResponseBuilder followResponse = FollowResponse.builder();
 
-        followResponse.followId( follow.getId() );
-        followResponse.followerId( followFollowerId( follow ) );
-        followResponse.followerFullName( followFollowerFullName( follow ) );
-        followResponse.followerAvatar( followFollowerAvatar( follow ) );
-        followResponse.userFollowedId( followFollowedUserId( follow ) );
-        followResponse.userFollowedFullName( followFollowedUserFullName( follow ) );
-        followResponse.userFollowedAvatar( followFollowedUserAvatar( follow ) );
-        followResponse.pageFollowedId( followFollowedPageId( follow ) );
-        followResponse.pageFollowedName( followFollowedPagePageName( follow ) );
-        followResponse.pageFollowedAvatar( followFollowedPageAvatarUrl( follow ) );
-        followResponse.createdAt( follow.getCreatedAt() );
-        followResponse.followType( follow.getFollowType() );
+        followResponse.followId(follow.getId());
+        followResponse.followerId(followFollowerId(follow));
+        followResponse.followerFullName(followFollowerFullName(follow));
+        followResponse.followerAvatar(followFollowerAvatar(follow));
+        followResponse.userFollowedId(followFollowedUserId(follow));
+        followResponse.userFollowedFullName(followFollowedUserFullName(follow));
+        followResponse.userFollowedAvatar(followFollowedUserAvatar(follow));
+        followResponse.pageFollowedId(followFollowedPageId(follow));
+        followResponse.pageFollowedName(followFollowedPagePageName(follow));
+        followResponse.pageFollowedAvatar(followFollowedPageAvatarUrl(follow));
+        followResponse.createdAt(follow.getCreatedAt());
+        followResponse.followType(follow.getFollowType());
 
         return followResponse.build();
     }
 
     @Override
     public List<FollowResponse> toResponse(List<Follow> follows) {
-        if ( follows == null ) {
+        if (follows == null) {
             return null;
         }
 
-        List<FollowResponse> list = new ArrayList<FollowResponse>( follows.size() );
-        for ( Follow follow : follows ) {
-            list.add( toResponse( follow ) );
+        List<FollowResponse> list = new ArrayList<FollowResponse>(follows.size());
+        for (Follow follow : follows) {
+            list.add(toResponse(follow));
         }
 
         return list;
@@ -71,7 +67,7 @@ public class FollowMapperImpl implements FollowMapper {
 
     private String followFollowerId(Follow follow) {
         User follower = follow.getFollower();
-        if ( follower == null ) {
+        if (follower == null) {
             return null;
         }
         return follower.getId();
@@ -79,7 +75,7 @@ public class FollowMapperImpl implements FollowMapper {
 
     private String followFollowerFullName(Follow follow) {
         User follower = follow.getFollower();
-        if ( follower == null ) {
+        if (follower == null) {
             return null;
         }
         return follower.getFullName();
@@ -87,7 +83,7 @@ public class FollowMapperImpl implements FollowMapper {
 
     private String followFollowerAvatar(Follow follow) {
         User follower = follow.getFollower();
-        if ( follower == null ) {
+        if (follower == null) {
             return null;
         }
         return follower.getAvatar();
@@ -95,7 +91,7 @@ public class FollowMapperImpl implements FollowMapper {
 
     private String followFollowedUserId(Follow follow) {
         User followedUser = follow.getFollowedUser();
-        if ( followedUser == null ) {
+        if (followedUser == null) {
             return null;
         }
         return followedUser.getId();
@@ -103,7 +99,7 @@ public class FollowMapperImpl implements FollowMapper {
 
     private String followFollowedUserFullName(Follow follow) {
         User followedUser = follow.getFollowedUser();
-        if ( followedUser == null ) {
+        if (followedUser == null) {
             return null;
         }
         return followedUser.getFullName();
@@ -111,7 +107,7 @@ public class FollowMapperImpl implements FollowMapper {
 
     private String followFollowedUserAvatar(Follow follow) {
         User followedUser = follow.getFollowedUser();
-        if ( followedUser == null ) {
+        if (followedUser == null) {
             return null;
         }
         return followedUser.getAvatar();
@@ -119,7 +115,7 @@ public class FollowMapperImpl implements FollowMapper {
 
     private String followFollowedPageId(Follow follow) {
         Page followedPage = follow.getFollowedPage();
-        if ( followedPage == null ) {
+        if (followedPage == null) {
             return null;
         }
         return followedPage.getId();
@@ -127,7 +123,7 @@ public class FollowMapperImpl implements FollowMapper {
 
     private String followFollowedPagePageName(Follow follow) {
         Page followedPage = follow.getFollowedPage();
-        if ( followedPage == null ) {
+        if (followedPage == null) {
             return null;
         }
         return followedPage.getPageName();
@@ -135,7 +131,7 @@ public class FollowMapperImpl implements FollowMapper {
 
     private String followFollowedPageAvatarUrl(Follow follow) {
         Page followedPage = follow.getFollowedPage();
-        if ( followedPage == null ) {
+        if (followedPage == null) {
             return null;
         }
         return followedPage.getAvatarUrl();

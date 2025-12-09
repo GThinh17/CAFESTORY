@@ -14,7 +14,7 @@ import vn.gt.__back_end_javaspring.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T16:11:28+0700",
+    date = "2025-12-09T11:54:39+0700",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
@@ -26,28 +26,28 @@ public class CommentMapperImpl implements CommentMapper {
             return null;
         }
 
-        CommentResponse commentResponse = new CommentResponse();
+        CommentResponse.CommentResponseBuilder commentResponse = CommentResponse.builder();
 
-        commentResponse.setCommentId( comment.getId() );
-        commentResponse.setBlogId( commentBlogId( comment ) );
-        commentResponse.setParentCommentId( commentParentCommentId( comment ) );
-        commentResponse.setUserId( commentUserId( comment ) );
-        commentResponse.setUserFullName( commentUserFullName( comment ) );
-        commentResponse.setUserAvatar( commentUserAvatar( comment ) );
-        commentResponse.setCommentImageId( commentCommentImageId( comment ) );
-        commentResponse.setCommentImageUrl( commentCommentImageImageUrl( comment ) );
-        commentResponse.setContent( comment.getContent() );
-        commentResponse.setLikesCount( comment.getLikesCount() );
-        commentResponse.setReplyCount( comment.getReplyCount() );
-        commentResponse.setIsEdited( comment.getIsEdited() );
-        commentResponse.setIsDeleted( comment.getIsDeleted() );
-        commentResponse.setIsPin( comment.getIsPin() );
-        commentResponse.setCreatedAt( comment.getCreatedAt() );
-        commentResponse.setUpdatedAt( comment.getUpdatedAt() );
-        commentResponse.setDeletedAt( comment.getDeletedAt() );
-        commentResponse.setReplies( toResponseList( comment.getReplies() ) );
+        commentResponse.commentId( comment.getId() );
+        commentResponse.blogId( commentBlogId( comment ) );
+        commentResponse.parentCommentId( commentParentCommentId( comment ) );
+        commentResponse.userId( commentUserId( comment ) );
+        commentResponse.userFullName( commentUserFullName( comment ) );
+        commentResponse.userAvatar( commentUserAvatar( comment ) );
+        commentResponse.commentImageId( commentCommentImageId( comment ) );
+        commentResponse.commentImageUrl( commentCommentImageImageUrl( comment ) );
+        commentResponse.content( comment.getContent() );
+        commentResponse.createdAt( comment.getCreatedAt() );
+        commentResponse.deletedAt( comment.getDeletedAt() );
+        commentResponse.isDeleted( comment.getIsDeleted() );
+        commentResponse.isEdited( comment.getIsEdited() );
+        commentResponse.isPin( comment.getIsPin() );
+        commentResponse.likesCount( comment.getLikesCount() );
+        commentResponse.replies( toResponseList( comment.getReplies() ) );
+        commentResponse.replyCount( comment.getReplyCount() );
+        commentResponse.updatedAt( comment.getUpdatedAt() );
 
-        return commentResponse;
+        return commentResponse.build();
     }
 
     @Override

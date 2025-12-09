@@ -80,8 +80,7 @@ public class BlogController {
     public ResponseEntity<org.springframework.data.domain.Page<BlogResponse>> getBlogsForUser(
             @PathVariable String userId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         org.springframework.data.domain.Page<BlogResponse> blogPage = blogService.getBlogsForUser(userId, pageRequest);
         return ResponseEntity.ok(blogPage);
@@ -91,25 +90,20 @@ public class BlogController {
     public ResponseEntity<org.springframework.data.domain.Page<BlogResponse>> getBlogsForReviewer(
             @PathVariable String reviewerId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        org.springframework.data.domain.Page<BlogResponse> blogPage = blogService.getBlogsForReviewer(reviewerId, pageRequest);
+        org.springframework.data.domain.Page<BlogResponse> blogPage = blogService.getBlogsForReviewer(reviewerId,
+                pageRequest);
         return ResponseEntity.ok(blogPage);
     }
-
 
     @GetMapping("/page/{pageId}")
     public ResponseEntity<org.springframework.data.domain.Page<BlogResponse>> getBlogsForPage(
             @PathVariable String pageId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<BlogResponse> blogPage = blogService.getBlogsForPage(pageId, pageRequest);
         return ResponseEntity.ok(blogPage);
     }
-
-
-
 }

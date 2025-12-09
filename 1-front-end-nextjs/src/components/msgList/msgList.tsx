@@ -44,6 +44,7 @@ export function MessageList() {
   const handleClick = (chatId: string) => {
     router.push(`/messages/${chatId}`);
   };
+  
   useEffect(() => {
     const fetchChats = async () => {
       if (!token || !currentUserId) return;

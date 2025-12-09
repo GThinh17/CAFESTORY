@@ -12,7 +12,7 @@ import vn.gt.__back_end_javaspring.entity.Page;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T16:11:28+0700",
+    date = "2025-12-09T18:46:34+0700",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
@@ -26,14 +26,14 @@ public class PageMapperImpl implements PageMapper {
 
         Page page = new Page();
 
-        page.setAvatarUrl( request.getAvatarUrl() );
-        page.setContactEmail( request.getContactEmail() );
-        page.setContactPhone( request.getContactPhone() );
-        page.setCoverUrl( request.getCoverUrl() );
-        page.setDescription( request.getDescription() );
-        page.setOpenHours( map( request.getOpenHours() ) );
         page.setPageName( request.getPageName() );
         page.setSlug( request.getSlug() );
+        page.setDescription( request.getDescription() );
+        page.setAvatarUrl( request.getAvatarUrl() );
+        page.setCoverUrl( request.getCoverUrl() );
+        page.setContactPhone( request.getContactPhone() );
+        page.setContactEmail( request.getContactEmail() );
+        page.setOpenHours( map( request.getOpenHours() ) );
 
         return page;
     }
@@ -60,6 +60,7 @@ public class PageMapperImpl implements PageMapper {
         pageResponse.openHours( page.getOpenHours() );
         pageResponse.pageName( page.getPageName() );
         pageResponse.postCount( page.getPostCount() );
+        pageResponse.slug( page.getSlug() );
         pageResponse.updatedAt( page.getUpdatedAt() );
         pageResponse.verifiedAt( page.getVerifiedAt() );
 
@@ -86,26 +87,26 @@ public class PageMapperImpl implements PageMapper {
             return;
         }
 
-        if ( request.getAvatarUrl() != null ) {
-            page.setAvatarUrl( request.getAvatarUrl() );
-        }
-        if ( request.getContactEmail() != null ) {
-            page.setContactEmail( request.getContactEmail() );
-        }
-        if ( request.getContactPhone() != null ) {
-            page.setContactPhone( request.getContactPhone() );
-        }
-        if ( request.getCoverUrl() != null ) {
-            page.setCoverUrl( request.getCoverUrl() );
+        if ( request.getPageName() != null ) {
+            page.setPageName( request.getPageName() );
         }
         if ( request.getDescription() != null ) {
             page.setDescription( request.getDescription() );
         }
+        if ( request.getAvatarUrl() != null ) {
+            page.setAvatarUrl( request.getAvatarUrl() );
+        }
+        if ( request.getCoverUrl() != null ) {
+            page.setCoverUrl( request.getCoverUrl() );
+        }
+        if ( request.getContactPhone() != null ) {
+            page.setContactPhone( request.getContactPhone() );
+        }
+        if ( request.getContactEmail() != null ) {
+            page.setContactEmail( request.getContactEmail() );
+        }
         if ( request.getOpenHours() != null ) {
             page.setOpenHours( map( request.getOpenHours() ) );
-        }
-        if ( request.getPageName() != null ) {
-            page.setPageName( request.getPageName() );
         }
     }
 

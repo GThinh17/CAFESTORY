@@ -15,8 +15,8 @@ import vn.gt.__back_end_javaspring.enums.Visibility;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T16:04:00+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-12-09T15:55:02+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
 public class PageAlbumMapperImpl implements PageAlbumMapper {
@@ -34,10 +34,10 @@ public class PageAlbumMapperImpl implements PageAlbumMapper {
         if ( album.getVisibility() != null ) {
             pageAlbumResponse.visibility( album.getVisibility().name() );
         }
-        pageAlbumResponse.images( pageImageListToPageImageResponseDTOList( album.getImages() ) );
-        pageAlbumResponse.isDeleted( album.getIsDeleted() );
         pageAlbumResponse.title( album.getTitle() );
+        pageAlbumResponse.images( pageImageListToPageImageResponseDTOList( album.getImages() ) );
         pageAlbumResponse.totalPhoto( album.getTotalPhoto() );
+        pageAlbumResponse.isDeleted( album.getIsDeleted() );
 
         return pageAlbumResponse.build();
     }
@@ -92,14 +92,14 @@ public class PageAlbumMapperImpl implements PageAlbumMapper {
             return;
         }
 
-        if ( dto.getIsDeleted() != null ) {
-            album.setIsDeleted( dto.getIsDeleted() );
-        }
         if ( dto.getTitle() != null ) {
             album.setTitle( dto.getTitle() );
         }
         if ( dto.getVisibility() != null ) {
             album.setVisibility( Enum.valueOf( Visibility.class, dto.getVisibility() ) );
+        }
+        if ( dto.getIsDeleted() != null ) {
+            album.setIsDeleted( dto.getIsDeleted() );
         }
     }
 

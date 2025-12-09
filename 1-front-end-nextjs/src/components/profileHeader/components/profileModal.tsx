@@ -9,6 +9,8 @@ import {
 import "./profileModal.css";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 interface ProfileModalProps {
   open: boolean;
@@ -17,19 +19,70 @@ interface ProfileModalProps {
 
 export function ProfileModal({ open, onClose }: ProfileModalProps) {
   const router = useRouter();
-  const { logout, loading } = useAuth();
+  const { logout, loading, user, token } = useAuth();
+  const [isCfOwner, setIsCfOwner] = useState(false);
+  const [cfOwnerId, setCfOwnerId] = useState("");
 
   const options: string[] = [
     "Apps and websites",
     "Settings and privacy",
     "Meta Verified",
-    "Supervision",
+    "Cafe Page",
     "Dashboard",
     "Log Out",
     "Cancel",
   ];
 
+  useEffect(() => {
+    const fetchstatus = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/cafe-owners/user/${user?.id}/exists`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        setIsCfOwner(res.data.data);
+      } catch (err) {
+        console.log("fetch status fail");
+      }
+    };
+
+    fetchstatus();
+  }, [open, user?.id, token]);
+
+
+  useEffect(() => {
+    const fetchCfOwnerId = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/cafe-owners/user/${user?.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        setCfOwnerId(res.data.data.id);
+      } catch (err) {
+        console.log("fetch status fail");
+      }
+    };
+
+    fetchCfOwnerId();
+  }, [open, user?.id, token]);
+
   const handleClick = (item: string) => {
+    if (item === "Cafe Page") {
+      router.push(`/cafe/${cfOwnerId}`);
+      return;
+    }
     if (item === "Dashboard") {
       router.push("/reviewer");
       return;
@@ -44,6 +97,12 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
     onClose();
   };
 
+  const filteredOptions = options.filter((item) => {
+    if (!isCfOwner && (item === "Cafe Page" || item === "Dashboard")) {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -53,7 +112,7 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
         </DialogHeader>
 
         <div className="ProfileList">
-          {options.map((item) => (
+          {filteredOptions.map((item) => (
             <button
               key={item}
               className={`ProfileItem ${item === "Cancel" ? "CancelItem" : ""}`}
