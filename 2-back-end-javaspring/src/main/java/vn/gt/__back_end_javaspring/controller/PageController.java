@@ -32,9 +32,6 @@ public class PageController {
             @PathVariable String pageId
     ) {
         PageResponse data = pageService.getPageById(pageId);
-
-
-
         return ResponseEntity.ok().body(data);
     }
 

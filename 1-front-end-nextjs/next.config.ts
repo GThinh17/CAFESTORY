@@ -11,6 +11,18 @@ const nextConfig = {
       { protocol: "https", hostname: "cdn.pixabay.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "cdn.example.com" },
+      {
+        protocol: "https",
+        hostname: "scontent.fsgn2-9.fna.fbcdn.net",
+      },
+      {
+        protocol: "https",
+        hostname: "scontent.xx.fbcdn.net",
+      },
+      {
+        protocol: "https",
+        hostname: "**.fbcdn.net",
+      },
     ],
   },
   devIndicators: false,

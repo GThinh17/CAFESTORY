@@ -22,22 +22,53 @@ export function PostList() {
       const res = await axios.get(`http://localhost:8080/api/blogs`, {
         params: {
           size: 10,
-          cursor: cursor ?? undefined, // không gửi cursor ở lần đầu
+          cursor: cursor ?? undefined,
         },
       });
 
-      const newData = res.data?.data?.data ?? [];
-      console.log(newData);
+      let newData = res.data?.data?.data ?? [];
       const nextCursor = res.data?.data?.nextCursor ?? null;
+
+      // ====== 🔥 Fetch Page Info nếu có pageId ======
+      const postsWithPageInfo = await Promise.all(
+        newData.map(async (post: any) => {
+          if (post.pageId) {
+            try {
+              const pageRes = await axios.get(
+                `http://localhost:8080/api/pages/${post.pageId}`
+              );
+              const page = pageRes.data.data;
+
+              return {
+                ...post,
+                displayName: page.pageName,
+                displayAvatar: page.avatarUrl,
+              };
+            } catch (err) {
+              console.error("Failed to fetch page info", err);
+              return post;
+            }
+          }
+
+          // nếu là post user thường
+          return {
+            ...post,
+            displayName: post.userFullName,
+            displayAvatar:
+              post.userAvatar ??
+              "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
+          };
+        })
+      );
 
       // append posts, tránh trùng
       setPosts((prev) => [
         ...prev,
-        ...newData.filter((p) => !prev.some((x) => x.id === p.id)),
+        ...postsWithPageInfo.filter((p) => !prev.some((x) => x.id === p.id)),
       ]);
 
       setCursor(nextCursor);
-      if (!nextCursor) setHasMore(false); // hết bài
+      if (!nextCursor) setHasMore(false);
     } catch (err) {
       console.error("Failed to fetch posts:", err);
     } finally {
@@ -68,10 +99,8 @@ export function PostList() {
   const openPost = (post: any) => {
     setSelectedPost({
       ...post,
-      username: post.userFullName,
-      avatar:
-        post.userAvatar ??
-        "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
+      username: post.displayName,
+      avatar: post.displayAvatar,
       images: post.mediaUrls ?? [],
       likes: post.likeCount,
     });
@@ -84,18 +113,15 @@ export function PostList() {
         <Post
           key={p.id}
           userId={p.userId}
-          postId={p.id} // 👈 thêm blogId
-          username={p.userFullName}
-          avatar={
-            p.userAvatar ??
-            "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
-          }
+          postId={p.id}
+          username={p.displayName}
+          avatar={p.displayAvatar}
           images={p.mediaUrls ?? []}
           likes={p.likeCount}
           caption={p.caption}
           time={new Date(p.createdAt).toLocaleString()}
           onOpenPost={() => openPost(p)}
-          userIdLogin={user?.id} // 👈 id user login
+          userIdLogin={user?.id}
           onLikeUpdate={(id) => {
             setPosts((prev) =>
               prev.map((pp) =>

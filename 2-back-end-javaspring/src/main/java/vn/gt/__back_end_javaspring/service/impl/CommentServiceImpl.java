@@ -71,7 +71,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentResponse addComment(CommentCreateDTO dto) {
+public CommentResponse addComment(CommentCreateDTO dto) {
         Blog blog = blogRepository.findById(dto.getBlogId())
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
 
@@ -83,31 +83,20 @@ public class CommentServiceImpl implements CommentService {
             parent = commentRepository.findById(dto.getCommentParentId())
                     .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
         }
-        //Neu co comment Anh thi comment
+
         CommentImage commentImage = null;
         if (dto.getCommentImageUrl() != null && !dto.getCommentImageUrl().isBlank()) {
-            CommentImage image = new CommentImage();
-            image.setImageUrl(dto.getCommentImageUrl());
-            image.setDescription("Image Comment");
-            commentImage = commentImageRepository.save(image);
+            commentImage = commentImageRepository.findById(dto.getCommentImageUrl())
+                    .orElseThrow(() -> new CommentNotFoundException("Comment image not found"));
         }
 
         blog.setCommentsCount(blog.getCommentsCount() + 1);
 
-        //Xet xem
         if (parent != null) {
             if (parent.getReplyCount() == null)
                 parent.setReplyCount(0L);
             parent.setReplyCount(parent.getReplyCount() + 1);
-            notificationService.notifyReplyComment(user, parent);
         }
-
-        Comment comment = commentMapper.toModel(dto);
-
-        comment.setParentComment(parent);
-        comment.setCommentImage(commentImage);
-        comment.setBlog(blog);
-        comment.setUser(user);
 
         Comment comment = new Comment();
         comment.setBlog(blog);
@@ -141,8 +130,8 @@ public class CommentServiceImpl implements CommentService {
             earningEventCreateDTO.setAmount(amount);
 
             earningEventService.create(earningEventCreateDTO);
-
         }
+
         return commentMapper.toResponse(saved);
     }
 

@@ -68,7 +68,7 @@ public class SecurityConfiguration {
                         .accessDeniedHandler(new CustomAccessDeniedHandler()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login", "/api/blogs", "/api/signup", "/users/{id}","/api/pages/{id}",
-                                "/api/blogs?userId={userId}", "/api/production", "/stripe/webhook", "/")
+                                "/api/blogs?userId={userId}", "/api/production", "/stripe/webhook", "/","/api/pages/cafe-owner/{id}")
                         .permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth

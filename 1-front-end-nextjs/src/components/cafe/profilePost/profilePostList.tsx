@@ -4,7 +4,7 @@ import { ProfilePost } from "./profilePost";
 import styles from "./profilePost.module.scss";
 import { useAuth } from "@/context/AuthContext";
 import { useParams } from "next/navigation";
-import { PostModal } from "../PostCf/components/postModal";
+import { PostModal } from "../../PostCf/components/postModal";
 
 interface Post {
   id: string;
@@ -44,11 +44,8 @@ export function ProfilePostList() {
         setPosts((prev) => {
           // lọc post mới không trùng với các post đã có
           const newPosts = postData.filter(
-            (p: any) =>
-              !p.pageId && // ❌ bỏ post có pageId
-              !prev.some((prevP) => prevP.id === p.id)
+            (p: Post) => !prev.some((prevP) => prevP.id === p.id)
           );
-
           return [...prev, ...newPosts];
         });
 
@@ -103,11 +100,8 @@ export function ProfilePostList() {
               const postData = data.data?.data || [];
               setPosts((prev) => {
                 const newPosts = postData.filter(
-                  (p: any) =>
-                    !p.pageId && // ❌ bỏ post có pageId
-                    !prev.some((prevP) => prevP.id === p.id)
+                  (p: Post) => !prev.some((prevP) => prevP.id === p.id)
                 );
-
                 return [...prev, ...newPosts];
               });
               setNextCursor(data.data?.nextCursor || null);

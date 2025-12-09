@@ -42,8 +42,6 @@ export function ProfileHeader({
   const { token, user } = useAuth();
   const [isProfile, setIsProfile] = useState(false);
   const [localFollow, setLocalFollow] = useState(false);
-console.log(profileUserId)
-console.log("current",currentUserId)
 
   useEffect(() => {
     if (!token || !currentUserId || !profileUserId) return;
@@ -66,7 +64,7 @@ console.log("current",currentUserId)
 
     fetchIsFollowed();
   }, [profileUserId]);
-  console.log(localFollow)
+  console.log(localFollow);
 
   async function handleFollow() {
     try {
