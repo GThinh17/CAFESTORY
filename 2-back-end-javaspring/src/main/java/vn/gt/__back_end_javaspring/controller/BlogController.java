@@ -109,7 +109,4 @@ public class BlogController {
         Page<BlogResponse> blogPage = blogService.getBlogsForPage(pageId, pageRequest);
         return ResponseEntity.ok(blogPage);
     }
-
-
-
 }

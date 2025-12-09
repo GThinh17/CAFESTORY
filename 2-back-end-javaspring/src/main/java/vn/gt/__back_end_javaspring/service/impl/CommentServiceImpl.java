@@ -67,7 +67,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-public CommentResponse addComment(CommentCreateDTO dto) {
+    public CommentResponse addComment(CommentCreateDTO dto) {
         Blog blog = blogRepository.findById(dto.getBlogId())
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
 
@@ -79,7 +79,6 @@ public CommentResponse addComment(CommentCreateDTO dto) {
             parent = commentRepository.findById(dto.getCommentParentId())
                     .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
         }
-
 
         CommentImage commentImage = null;
         if (dto.getCommentImageUrl() != null && !dto.getCommentImageUrl().isBlank()) {
@@ -93,8 +92,6 @@ public CommentResponse addComment(CommentCreateDTO dto) {
             if (parent.getReplyCount() == null)
                 parent.setReplyCount(0L);
             parent.setReplyCount(parent.getReplyCount() + 1);
-        }
-
         }
 
         Comment comment = new Comment();
@@ -117,12 +114,8 @@ public CommentResponse addComment(CommentCreateDTO dto) {
                 throw new PricingRuleNotFound("No active pricing rule");
 
             BigDecimal weight = pricingRule.getCommentWeight();
-<<<<<<< HEAD
-            if (weight == null) weight = BigDecimal.ZERO;
-=======
             if (weight == null)
                 weight = BigDecimal.ZERO;
->>>>>>> feature
 
             BigDecimal amount = pricingRule.getUnitPrice().multiply(weight);
 
@@ -135,7 +128,6 @@ public CommentResponse addComment(CommentCreateDTO dto) {
 
             earningEventService.create(earningEventCreateDTO);
         }
-
 
         return commentMapper.toResponse(saved);
     }

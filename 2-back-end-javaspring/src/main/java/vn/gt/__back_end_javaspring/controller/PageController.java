@@ -24,10 +24,6 @@ public class PageController {
     public ResponseEntity<PageResponse> createPage(
             @Valid @RequestBody PageCreateDTO request) {
         PageResponse data = pageService.createPage(request);
-<<<<<<< HEAD
-=======
-
->>>>>>> feature
         return ResponseEntity.ok().body(data);
     }
 
@@ -39,19 +35,11 @@ public class PageController {
         return ResponseEntity.ok().body(data);
     }
 
-<<<<<<< HEAD
-    @GetMapping("/cafe-owner/{cafeOwnerId}")
+   @GetMapping("/cafe-owner/{cafeOwnerId}")
     public ResponseEntity<PageResponse> getPageByCafeOwnerId(
             @PathVariable String cafeOwnerId
     ) {
         PageResponse data = pageService.getPageByCafeOwnerId(cafeOwnerId);
-=======
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<PageResponse> getPageByUserId(
-            @PathVariable String userId) {
-        PageResponse data = pageService.getPageByUserId(userId);
-
->>>>>>> feature
         return ResponseEntity.ok().body(data);
     }
 
