@@ -12,6 +12,7 @@ import vn.gt.__back_end_javaspring.mapper.BlogLikeMapper;
 import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.BlogLikeService;
 import vn.gt.__back_end_javaspring.service.EarningEventService;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 
 import java.math.BigDecimal;
@@ -29,6 +30,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
     private final ReviewerRepository reviewerRepository;
     private final PricingRuleRepository pricingRuleRepository;
     private final EarningEventService earningEventService;
+    private final NotificationService notificationService;
 
     @Override
     public BlogLikeResponse like(BlogLikeCreateDTO request) {
@@ -39,7 +41,6 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         if(blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
             throw new LikeExist("Like already exists");
         }
-
 
 
         User user = userRepository.findById(userId)
@@ -77,6 +78,10 @@ public class BlogLikeServiceImpl implements BlogLikeService {
 
         BlogLike bloglike = blogLikeMapper.toModel(request);
         BlogLike saved =  blogLikeRepository.save(bloglike);
+
+        //Notification
+        notificationService.notifyLikePost(user, blog);
+
 
         return blogLikeMapper.toResponse(saved);
 

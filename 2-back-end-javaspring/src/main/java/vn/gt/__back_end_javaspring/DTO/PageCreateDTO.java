@@ -16,7 +16,7 @@ import org.checkerframework.checker.units.qual.A;
 public class PageCreateDTO {
 
     @NotBlank
-    private String userId;
+    private String cafeOwnerId;
 
     @NotBlank
     private String pageName;

@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import vn.gt.__back_end_javaspring.DTO.CafeOwnerDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.entity.*;
@@ -25,9 +26,7 @@ import vn.gt.__back_end_javaspring.enums.RoleType;
 import vn.gt.__back_end_javaspring.repository.RoleRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
-import vn.gt.__back_end_javaspring.service.PaymentService;
-import vn.gt.__back_end_javaspring.service.ProductionService;
-import vn.gt.__back_end_javaspring.service.ReviewerService;
+import vn.gt.__back_end_javaspring.service.*;
 import vn.gt.__back_end_javaspring.service.impl.ReviewerStatusScheduler;
 
 @RestController
@@ -40,6 +39,8 @@ public class StripeWebhookController {
     private final UserRoleRepository userRoleRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserRoleService userRoleService;
+    private final CafeOwnerService cafeOwnerService;
     @Value("${stripe.endPointSecret.key}")
     private String endpointSecret;
 
@@ -136,28 +137,23 @@ public class StripeWebhookController {
 
         String userId = metadata.get("userId").getAsString();
         User user = userRepository.findById(userId).get();
-        System.out.println("Log ra user: "+ user.toString());
-        System.out.println("Log ra production: "+ production.toString());
+
+
         //Tao Reviewer
-        ReviewerCreateDTO dto = new ReviewerCreateDTO();
-        dto.setUserId(metadata.getAsJsonObject().get("user_id").getAsString());
-        dto.setDuration(production.getTimeExpired());
-        ReviewerResponse reviewerResponse = reviewerService.registerReviewer(dto);
 
-        System.out.println("Log ra  reviewer: "+ reviewerResponse);
-        //Set Role
-        UserRole userRole = new UserRole();
-        userRole.setUser(user);
         if(production.getProductionType() == ProductionType.REVIEWER){
-            Role role = roleRepository.findByroleName(RoleType.REVIEWER);
-            userRole.setRole(role);
-        } else{
-            Role role = roleRepository.findByroleName(RoleType.CAFEOWNER);
-            userRole.setRole(role);
-        }
-        userRoleRepository.save(userRole);
+            ReviewerCreateDTO dto = new ReviewerCreateDTO();
+            dto.setUserId(userId);
+            dto.setDuration(production.getTimeExpired());
+            ReviewerResponse reviewerResponse = reviewerService.registerReviewer(dto);
 
-        System.out.println(" User Role: " + userRole);
+        } else{
+            //Thieu cai dang ky
+            CafeOwnerDTO cafeOwnerDTO = new CafeOwnerDTO();
+            cafeOwnerDTO.setUserId(userId);
+            cafeOwnerDTO.setDuration(production.getTimeExpired());
+            cafeOwnerService.createCafeOwner(cafeOwnerDTO);
+        }
 
         //Set payment thanh success
         Payment payment = this.paymentService.UpdatePayment(paymentId, PaymentStatus.SUCCESS);

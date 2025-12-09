@@ -17,13 +17,13 @@ public class Role { //Check
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	@Column(name = "role_id")
-	String id;
+	private String id;
 
     @Enumerated(EnumType.STRING)
 	@Column(name = "role_name")
 	private RoleType roleName;
 
     @Column(name = "description")
-    String description;
+    private String description;
 
 }

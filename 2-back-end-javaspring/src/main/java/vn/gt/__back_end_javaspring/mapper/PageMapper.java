@@ -10,14 +10,12 @@ import vn.gt.__back_end_javaspring.entity.Page;
 @Mapper(componentModel = "spring")
 public interface PageMapper {
 
-    @Mapping(source = "userId", target = "user.id")
-    @Mapping(target = "openHours", source = "openHours")
+//    @Mapping(source = "cafeOwnerId", target = "cafeOwner.id")
+//    @Mapping(target = "openHours", source = "openHours")
     Page toModel(PageCreateDTO request);
 
     @Mapping(source = "id", target = "pageId")
-    @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "user.fullName", target = "userName")
-    @Mapping(source = "user.avatar", target = "userAvatarUrl")
+    @Mapping(source = "cafeOwner.businessName", target = "businessName")
     PageResponse toResponse(Page page);
 
     default String map(JsonNode node) {

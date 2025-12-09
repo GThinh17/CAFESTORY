@@ -153,6 +153,16 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
 
+    @ExceptionHandler(CafeOwnerNotFound.class)
+    public ResponseEntity<RestResponse<Object>> handleBadgeNotFound(CafeOwnerNotFound ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setMessage(ex.getMessage());
+        res.setErrors("Cafe owner not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
+
     @ExceptionHandler(ReviewerNotFound.class)
     public ResponseEntity<RestResponse<Object>> handlePageAlbumNotFound(ReviewerNotFound ex) {
         RestResponse<Object> res = new RestResponse<>();

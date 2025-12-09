@@ -9,15 +9,13 @@ import vn.gt.__back_end_javaspring.DTO.BlogCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.BlogResponse;
 import vn.gt.__back_end_javaspring.DTO.BlogUpdateDTO;
 import vn.gt.__back_end_javaspring.DTO.CursorPage;
-import vn.gt.__back_end_javaspring.entity.Blog;
-import vn.gt.__back_end_javaspring.entity.Media;
+import vn.gt.__back_end_javaspring.entity.*;
 import vn.gt.__back_end_javaspring.exception.BlogNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.BlogMapper;
-import vn.gt.__back_end_javaspring.repository.BlogRepository;
-import vn.gt.__back_end_javaspring.repository.PageRepository;
-import vn.gt.__back_end_javaspring.repository.UserRepository;
-import vn.gt.__back_end_javaspring.repository.locationRepository;
+import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.BlogService;
+import vn.gt.__back_end_javaspring.service.CafeOwnerService;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
 import java.util.List;
@@ -32,17 +30,22 @@ public class BlogServiceImpl implements BlogService {
     private final UserRepository userRepository;
     private final PageRepository pageRepository;
     private final locationRepository locationRepository;
+    private final UserRoleRepository userRoleRepository;
+    private final NotificationService notificationService;
+    private final CafeOwnerService cafeOwnerService;
 
     @Override
     public BlogResponse createBlog(BlogCreateDTO dto) {
         Blog blog = blogMapper.toModel(dto);
 
-        var user = userRepository.findById(dto.getUserId())
+
+        User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getUserId()));
         blog.setUser(user);
 
+        Page page = null;
         if (dto.getPageId() != null) {
-            var page = pageRepository.findById(dto.getPageId())
+            page = pageRepository.findById(dto.getPageId())
                     .orElseThrow(() -> new RuntimeException("Page not found with id: " + dto.getPageId()));
             blog.setPage(page);
         }
@@ -65,7 +68,12 @@ public class BlogServiceImpl implements BlogService {
             blog.setMediaList(mediaList);
         }
 
+
         Blog saved = blogRepository.save(blog);
+
+        if (page != null && cafeOwnerService.isCafeOwner(dto.getUserId())) {
+            notificationService.notifyPageNewPost(page, saved);
+        }
 
         return blogMapper.toResponse(saved);
     }
