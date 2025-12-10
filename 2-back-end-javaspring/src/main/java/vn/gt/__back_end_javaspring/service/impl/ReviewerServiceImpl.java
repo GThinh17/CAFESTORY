@@ -166,6 +166,11 @@ public class ReviewerServiceImpl implements ReviewerService {
 
         Role role = roleRepository.findByroleName(RoleType.REVIEWER);
 
+        Reviewer reviewer1 = reviewerRepository.findByUser_Id(user.getId());
+        if(isReviewerByUserId(dto.getUserId())) {
+            extendReviewer(reviewer1.getId(), dto);
+            return reviewerMapper.toResponse(reviewer1);
+        }
 
         UserRoleId userRoleId = new UserRoleId(user.getId(), role.getId());
         UserRole userRole = new UserRole();

@@ -45,6 +45,11 @@ public class CafeOwnerServiceImpl implements CafeOwnerService {
 
         Role role = roleRepository.findByroleName(RoleType.CAFEOWNER);
 
+        CafeOwner cafeOwner1 = cafeOwnerRepository.findByUser_Id(dto.getUserId());
+        if(isCafeOwner(dto.getUserId())){
+            extendCafeOwner(getByUserId(dto.getUserId()).getId(), dto);
+            return cafeOwnerMapper.toResponse(cafeOwner1);
+        }
 
         UserRoleId userRoleId = new UserRoleId(
                 user.getId(),
