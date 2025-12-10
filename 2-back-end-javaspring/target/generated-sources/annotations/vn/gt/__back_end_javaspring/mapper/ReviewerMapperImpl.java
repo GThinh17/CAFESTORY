@@ -12,7 +12,7 @@ import vn.gt.__back_end_javaspring.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-10T05:31:33+0700",
+    date = "2025-12-10T16:55:23+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
@@ -43,6 +43,7 @@ public class ReviewerMapperImpl implements ReviewerMapper {
         reviewerResponse.userEmail( reviewerUserEmail( reviewer ) );
         reviewerResponse.id( reviewer.getId() );
         reviewerResponse.bio( reviewer.getBio() );
+        reviewerResponse.followerCount( reviewer.getFollowerCount() );
         reviewerResponse.totalScore( reviewer.getTotalScore() );
         reviewerResponse.joinAt( reviewer.getJoinAt() );
         reviewerResponse.expiredAt( reviewer.getExpiredAt() );
