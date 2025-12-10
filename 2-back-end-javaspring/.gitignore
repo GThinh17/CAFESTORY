@@ -16,4 +16,5 @@ build/
 .env/
 **/src/main/resources/application.properties
 **/application.properties
+target/
 ./idea

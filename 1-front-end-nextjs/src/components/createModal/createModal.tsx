@@ -8,10 +8,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import "./createModal.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 export function CreateModal({
   open,
@@ -20,7 +22,7 @@ export function CreateModal({
   open: boolean;
   onClose: () => void;
 }) {
-
+  const [isCfOwner, setIsCfOwner] = useState(false);
   const [isImg, setIsImg] = useState(false);
   const [caption, setcaption] = useState("");
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
@@ -29,7 +31,9 @@ export function CreateModal({
   const [isPin, setisPin] = useState(false);
   const [locationId, setlocationId] = useState(null);
   const [loadingUp, setLoadingUp] = useState(false);
-
+  const [isPostCf, setIsPostCf] = useState(false);
+  const [pageId, setPageId] = useState("");
+  const [cfOwnerId, setCfOwnerId] = useState("");
   const { user, token } = useAuth();
   const username = user?.username;
   const avatar = user?.avatar;
@@ -54,7 +58,6 @@ export function CreateModal({
 
     return urls;
   };
-
 
   const handlehandleCreateBlog = async () => {
     try {
@@ -86,6 +89,49 @@ export function CreateModal({
         }
       );
 
+      console.log("Created Blog:", res.data.data);
+
+      // Reset
+      setcaption("");
+      setMediaFiles([]);
+      onClose();
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoadingUp(false);
+    }
+  };
+
+  const handleCreateBlogCF = async () => {
+    try {
+      setLoadingUp(true);
+
+      // 1. Upload ảnh -> nhận URL
+      let mediaUrls: string[] = [];
+      if (mediaFiles.length > 0) {
+        mediaUrls = await uploadImages();
+      }
+
+      // 2. Gửi bài viết về API backend
+      const res = await axios.post(
+        "http://localhost:8080/api/blogs",
+        {
+          caption: caption,
+          mediaUrls: mediaUrls,
+          visibility: "PUBLIC",
+          allowComment: true,
+          isPin: false,
+          locationId: null,
+          userId: userId,
+          pageId: pageId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       console.log("Created Blog:", res.data.data);
 
@@ -100,6 +146,72 @@ export function CreateModal({
     }
   };
 
+  useEffect(() => {
+    const fetchstatus = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/cafe-owners/user/${user?.id}/exists`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        setIsCfOwner(res.data.data);
+      } catch (err) {
+        console.log("fetch status fail");
+      }
+    };
+
+    fetchstatus();
+  }, [open, user?.id, token]);
+
+  useEffect(() => {
+    const fetchCfOwnerId = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/cafe-owners/user/${user?.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        setCfOwnerId(res.data.data.id);
+      } catch (err) {
+        console.log("fetch status fail");
+      }
+    };
+
+    fetchCfOwnerId();
+  }, [open, user?.id, token]);
+
+  useEffect(() => {
+    const fetchstatus = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/pages/cafe-owner/${cfOwnerId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(res);
+        setPageId(res.data.data.pageId);
+      } catch (err) {
+        console.log("fetch status fail");
+      }
+    };
+
+    fetchstatus();
+  }, [open, user?.id, token]);
+
   const router = useRouter();
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -112,16 +224,19 @@ export function CreateModal({
           {/* LEFT */}
           <div className="createLeft">
             {/* ✅ Ảnh preview */}
-            {!isImg && <input className="button11"
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={(e) => {
-                const files = Array.from(e.target.files || []);
-                setMediaFiles(files);
-                setIsImg(true);
-              }}
-            />}
+            {!isImg && (
+              <input
+                className="button11"
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={(e) => {
+                  const files = Array.from(e.target.files || []);
+                  setMediaFiles(files);
+                  setIsImg(true);
+                }}
+              />
+            )}
             {isImg && (
               <div className="imgGrid">
                 {mediaFiles.map((file, idx) => (
@@ -162,8 +277,26 @@ export function CreateModal({
             <div className="optionRow">
               <span>Add collaborators</span>
             </div>
+            {/* Switch: Đăng bài cho cafe */}
+            {isCfOwner && (
+              <div className="optionRow switchRow">
+                <Label htmlFor="post-cf">Cafe Post</Label>
+                <Switch
+                  id="post-cf"
+                  checked={isPostCf}
+                  onCheckedChange={(v) => setIsPostCf(v)}
+                />
+              </div>
+            )}
+
             <div className="btnShare">
-              <Button disabled={loadingUp} onClick={handlehandleCreateBlog} className="button">{loadingUp ? "Sharing..." : "Share"}</Button>
+              <Button
+                disabled={loadingUp}
+                onClick={isPostCf ? handleCreateBlogCF : handlehandleCreateBlog}
+                className="btnShare"
+              >
+                {loadingUp ? "Sharing..." : "Share"}
+              </Button>
             </div>
           </div>
         </div>

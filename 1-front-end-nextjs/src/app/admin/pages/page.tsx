@@ -7,16 +7,15 @@ import { useEffect, useState } from "react";
 import PagesTable from "@/components/admin/PagesTable";
 
 interface Page {
-  page_id: string;
-  page_name: string;
-  avatar_url: string;
-  contact_email: string;
-  contact_phone: string;
+  pageId: string;
+  pageName: string;
+  avatarUrl: string;
+  contactEmail: string;
+  contactPhone: string;
   slug: string;
   description: string;
-  post_count: number;
-  followerCount: number;
-
+  postCount: number;
+  followingCount: number;
 }
 
 export default function DashboardPage() {
@@ -26,7 +25,7 @@ export default function DashboardPage() {
 
   const handleGetAllPage = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/`, {
+      const response = await axios.get(`http://localhost:8080/api/pages/top-followers`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

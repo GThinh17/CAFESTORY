@@ -31,15 +31,20 @@ export function ProfileInfo() {
         const res = await axios.get(
           `http://localhost:8080/api/blogs?userId=${userId}`
         );
+
         const posts = res.data?.data?.data ?? [];
-        setCount(posts.length);
+
+        // 🔥 Lọc các post có pageId === null
+        const filteredPosts = posts.filter((p: any) => p.pageId === null);
+
+        setCount(filteredPosts.length);
       } catch (err) {
         console.error("Failed to fetch posts:", err);
       }
     };
 
     fetchPosts();
-  }, [me?.id, userId]);
+  }, [userId]);
 
   if (loading) return null;
 

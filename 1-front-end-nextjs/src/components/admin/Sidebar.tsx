@@ -5,9 +5,40 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import styles from "./Sidebar.module.css";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { User } from "lucide-react";
 
 export default function Sidebar() {
   const router = useRouter();
+  const { logout, token } = useAuth();
+  const [fullName, setfullName] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const fetchGetMe = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/users/getme", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log('>>>>>>>>>>>>>>>>>DATA NÈ<<<<<<<<<<<<<', response.data.data);
+      const UserData = response.data.data;
+      const userAvatar = UserData?.data?.data?.avatar
+        ? `http://localhost:8080/${UserData.data.data.avatar}`
+        : "https://i.pravatar.cc/40?img=12";
+
+      setAvatar(userAvatar);
+      setfullName(UserData.fullName);
+    } catch (error) {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>LỖI NÈ<<<<<<<<<<<<<<<<<<<<<<", error);
+    }
+  }
+  useEffect(() => {
+    if (token) {
+      fetchGetMe();
+    }
+  }, [token]);
 
   return (
     <div className={styles.wrapper}>
@@ -20,11 +51,11 @@ export default function Sidebar() {
           <div className={styles.userInfo}>
             <Avatar>
               <AvatarImage src="https://i.pravatar.cc/40?img=12" />
-              <AvatarFallback>AD</AvatarFallback>
+              <AvatarFallback>ADm,i</AvatarFallback>
             </Avatar>
 
             <div>
-              <p className={styles.userName}>Pham Thanh Vu</p>
+              <p className={styles.userName}>{fullName}</p>
               <p className={styles.userRole}>Super Admin</p>
             </div>
           </div>
@@ -59,7 +90,7 @@ export default function Sidebar() {
               Settings
             </Button>
             <Button
-              onClick={() => router.push("/login/admin")}
+              onClick={() => (logout(), router.push("/login/admin"))}
               variant="ghost"
               className={styles.navBtn}
             >

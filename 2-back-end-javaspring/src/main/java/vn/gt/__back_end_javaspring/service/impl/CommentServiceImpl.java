@@ -82,9 +82,8 @@ public class CommentServiceImpl implements CommentService {
 
         CommentImage commentImage = null;
         if (dto.getCommentImageUrl() != null && !dto.getCommentImageUrl().isBlank()) {
-            commentImage.setImageUrl(dto.getCommentImageUrl());
-            commentImage.setDescription("Image for Comment");
-            commentImage = commentImageRepository.save(commentImage);
+            commentImage = commentImageRepository.findById(dto.getCommentImageUrl())
+                    .orElseThrow(() -> new CommentNotFoundException("Comment image not found"));
         }
 
         blog.setCommentsCount(blog.getCommentsCount() + 1);
