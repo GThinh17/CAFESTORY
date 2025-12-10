@@ -6,6 +6,8 @@ import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.DTO.ReviewerUpdateDTO;
 import vn.gt.__back_end_javaspring.entity.Reviewer;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface ReviewerMapper {
 
@@ -16,6 +18,8 @@ public interface ReviewerMapper {
     @Mapping(source = "user.avatar", target = "userAvatarUrl")
     @Mapping(source = "user.email", target = "userEmail")
     ReviewerResponse toResponse(Reviewer reviewer);
+
+    List<ReviewerResponse> toResponseList(List<Reviewer> reviewers);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntity(ReviewerUpdateDTO dto, @MappingTarget Reviewer entity);

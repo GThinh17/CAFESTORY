@@ -148,5 +148,15 @@ public class CafeOwnerServiceImpl implements CafeOwnerService {
         return cafeOwnerMapper.toResponse(cafeOwner);
     }
 
+    @Override
+    public String getUserId(String cafeOwnerId) {
+        CafeOwner cafeOwner = cafeOwnerRepository.findById(cafeOwnerId)
+                .orElseThrow(() -> new CafeOwnerNotFound("CafeOwner not found"));
+
+        String userId = cafeOwner.getUser().getId();
+        return userId;
+    }
+
+
 
 }

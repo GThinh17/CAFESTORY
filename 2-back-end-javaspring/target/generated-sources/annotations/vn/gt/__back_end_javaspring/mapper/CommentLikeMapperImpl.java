@@ -12,8 +12,8 @@ import vn.gt.__back_end_javaspring.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T16:04:00+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-12-09T18:36:44+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
 public class CommentLikeMapperImpl implements CommentLikeMapper {
@@ -41,8 +41,8 @@ public class CommentLikeMapperImpl implements CommentLikeMapper {
         commentLikeResponse.commentId( commentLikeCommentId( commentLike ) );
         commentLikeResponse.userFullName( commentLikeUserFullName( commentLike ) );
         commentLikeResponse.userAvatar( commentLikeUserAvatar( commentLike ) );
-        commentLikeResponse.createdAt( commentLike.getCreatedAt() );
         commentLikeResponse.id( commentLike.getId() );
+        commentLikeResponse.createdAt( commentLike.getCreatedAt() );
 
         return commentLikeResponse.build();
     }

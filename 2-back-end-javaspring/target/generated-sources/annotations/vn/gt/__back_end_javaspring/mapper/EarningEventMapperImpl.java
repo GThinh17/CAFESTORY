@@ -12,8 +12,8 @@ import vn.gt.__back_end_javaspring.enums.SourceType;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T16:04:00+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-12-09T18:36:44+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
 public class EarningEventMapperImpl implements EarningEventMapper {
@@ -49,10 +49,10 @@ public class EarningEventMapperImpl implements EarningEventMapper {
         earningEventResponse.shareWeight( earningEventPricingRuleShareWeight( earningEvent ) );
         earningEventResponse.unitPrice( earningEventPricingRuleUnitPrice( earningEvent ) );
         earningEventResponse.amount( earningEvent.getAmount() );
-        earningEventResponse.createdAt( earningEvent.getCreatedAt() );
         if ( earningEvent.getSourceType() != null ) {
             earningEventResponse.sourceType( earningEvent.getSourceType().name() );
         }
+        earningEventResponse.createdAt( earningEvent.getCreatedAt() );
 
         return earningEventResponse.build();
     }

@@ -12,8 +12,8 @@ import vn.gt.__back_end_javaspring.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T16:11:28+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-12-09T18:36:43+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
 public class CafeOwnerMapperImpl implements CafeOwnerMapper {
@@ -40,15 +40,15 @@ public class CafeOwnerMapperImpl implements CafeOwnerMapper {
         cafeOwnerResponse.userId( entityUserId( entity ) );
         cafeOwnerResponse.userName( entityUserFullName( entity ) );
         cafeOwnerResponse.userAvatar( entityUserAvatar( entity ) );
-        cafeOwnerResponse.averageRating( entity.getAverageRating() );
+        cafeOwnerResponse.id( entity.getId() );
         cafeOwnerResponse.businessName( entity.getBusinessName() );
+        cafeOwnerResponse.totalReview( entity.getTotalReview() );
+        cafeOwnerResponse.averageRating( entity.getAverageRating() );
         cafeOwnerResponse.contactEmail( entity.getContactEmail() );
         cafeOwnerResponse.contactPhone( entity.getContactPhone() );
-        cafeOwnerResponse.createdAt( entity.getCreatedAt() );
         cafeOwnerResponse.expiredAt( entity.getExpiredAt() );
-        cafeOwnerResponse.id( entity.getId() );
         cafeOwnerResponse.joinAt( entity.getJoinAt() );
-        cafeOwnerResponse.totalReview( entity.getTotalReview() );
+        cafeOwnerResponse.createdAt( entity.getCreatedAt() );
 
         return cafeOwnerResponse.build();
     }
@@ -73,20 +73,20 @@ public class CafeOwnerMapperImpl implements CafeOwnerMapper {
             return;
         }
 
-        if ( dto.getAverageRating() != null ) {
-            entity.setAverageRating( dto.getAverageRating() );
-        }
         if ( dto.getBusinessName() != null ) {
             entity.setBusinessName( dto.getBusinessName() );
+        }
+        if ( dto.getTotalReview() != null ) {
+            entity.setTotalReview( dto.getTotalReview() );
+        }
+        if ( dto.getAverageRating() != null ) {
+            entity.setAverageRating( dto.getAverageRating() );
         }
         if ( dto.getContactEmail() != null ) {
             entity.setContactEmail( dto.getContactEmail() );
         }
         if ( dto.getContactPhone() != null ) {
             entity.setContactPhone( dto.getContactPhone() );
-        }
-        if ( dto.getTotalReview() != null ) {
-            entity.setTotalReview( dto.getTotalReview() );
         }
     }
 

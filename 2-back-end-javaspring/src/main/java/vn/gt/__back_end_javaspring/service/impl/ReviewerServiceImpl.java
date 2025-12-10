@@ -1,3 +1,4 @@
+
 package vn.gt.__back_end_javaspring.service.impl;
 
 import jakarta.transaction.Transactional;
@@ -6,26 +7,23 @@ import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.DTO.ReviewerUpdateDTO;
+import vn.gt.__back_end_javaspring.entity.*;
 import vn.gt.__back_end_javaspring.entity.Embedded.UserRoleId;
-import vn.gt.__back_end_javaspring.entity.Reviewer;
-import vn.gt.__back_end_javaspring.entity.Role;
-import vn.gt.__back_end_javaspring.entity.User;
-
-import vn.gt.__back_end_javaspring.entity.UserRole;
+import vn.gt.__back_end_javaspring.enums.FollowType;
 import vn.gt.__back_end_javaspring.enums.ReviewerStatus;
 import vn.gt.__back_end_javaspring.enums.RoleType;
-import vn.gt.__back_end_javaspring.exception.ConflictRole;
 import vn.gt.__back_end_javaspring.exception.ReviewerNotFound;
 import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
+import vn.gt.__back_end_javaspring.mapper.PageMapper;
 import vn.gt.__back_end_javaspring.mapper.ReviewerMapper;
-import vn.gt.__back_end_javaspring.repository.ReviewerRepository;
-import vn.gt.__back_end_javaspring.repository.RoleRepository;
-import vn.gt.__back_end_javaspring.repository.UserRepository;
-import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
-import vn.gt.__back_end_javaspring.service.CafeOwnerService;
+import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
@@ -36,6 +34,9 @@ public class ReviewerServiceImpl implements ReviewerService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
+    private final FollowRepository followRepository;
+    private final PageMapper pageMapper;
+
     @Override
     public void addScore(String reviewerId, Integer score) {
         Reviewer reviewer = reviewerRepository.findById(reviewerId)
@@ -99,6 +100,55 @@ public class ReviewerServiceImpl implements ReviewerService {
         return reviewerMapper.toResponse(reviewer);
     }
 
+    @Override
+    public List<ReviewerResponse> getReviewersFollowedByUser(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new UserNotFoundException("User not found"));
+
+        List<Follow> follows = followRepository.findAllByFollower_IdAndFollowType(userId, FollowType.USER);
+
+        return follows.stream()
+                .map(Follow::getFollowedUser)
+                .filter(Objects::nonNull)
+                .map(userFollowed -> reviewerRepository.findByUser_Id(userFollowed.getId()))
+                .filter(Objects::nonNull)
+                .map(reviewerMapper::toResponse)
+                .collect(Collectors.toList());
+
+
+    }
+
+    @Override
+    public List<ReviewerResponse> getReviewersFollowedByUserOrderByFollowerCountDesc(String userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        List<ReviewerResponse> reviewerResponses = this.getReviewersFollowedByUser(userId);
+
+        return reviewerResponses.stream()
+                .sorted(Comparator.comparing(ReviewerResponse::getFollowerCount).reversed())
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<ReviewerResponse> getAllReviewersOrderByFollowerCountDesc() {
+        List<Reviewer> reviewers = reviewerRepository.findAllOrderByFollowerCountDesc();
+        if (reviewers.isEmpty()) {
+            throw new ReviewerNotFound("Reviewer not found");
+        }
+        return reviewerMapper.toResponseList(reviewers);
+    }
+
+    @Override
+    public String getUserId(String reviewerId) {
+        Reviewer reviewer = reviewerRepository.findById(reviewerId)
+                .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
+
+        String userId =  reviewer.getUser().getId();
+        return userId;
+    }
+
 
     @Override
     public boolean isReviewerByUserId(String userId) {
@@ -148,4 +198,9 @@ public class ReviewerServiceImpl implements ReviewerService {
 
 
 
+
+
 }
+
+
+

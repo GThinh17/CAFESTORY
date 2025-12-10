@@ -41,6 +41,9 @@ public class CafeOwner {
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
+    @Column(name = "follower_count")
+    private Long followerCount;
+
     @Column(name = "join_at")
     private LocalDateTime joinAt;
 

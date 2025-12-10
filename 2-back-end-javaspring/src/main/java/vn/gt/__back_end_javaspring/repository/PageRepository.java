@@ -11,6 +11,5 @@ public interface PageRepository extends JpaRepository<Page, String> {
     Page findPageByCafeOwner_Id(String cafeOwnerId);
 
     @Query("SELECT p FROM Page p ORDER BY p.followingCount DESC")
-    List<Page> findAllOrderByFollowersDesc();
-
+    List<Page> findAllOrderByFollowingCountDesc();
 }

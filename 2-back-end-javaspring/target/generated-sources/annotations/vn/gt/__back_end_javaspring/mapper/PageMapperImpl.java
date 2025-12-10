@@ -12,8 +12,8 @@ import vn.gt.__back_end_javaspring.entity.Page;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T16:11:28+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-12-09T18:36:43+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
 public class PageMapperImpl implements PageMapper {
@@ -26,14 +26,14 @@ public class PageMapperImpl implements PageMapper {
 
         Page page = new Page();
 
-        page.setAvatarUrl( request.getAvatarUrl() );
-        page.setContactEmail( request.getContactEmail() );
-        page.setContactPhone( request.getContactPhone() );
-        page.setCoverUrl( request.getCoverUrl() );
-        page.setDescription( request.getDescription() );
-        page.setOpenHours( map( request.getOpenHours() ) );
         page.setPageName( request.getPageName() );
         page.setSlug( request.getSlug() );
+        page.setDescription( request.getDescription() );
+        page.setAvatarUrl( request.getAvatarUrl() );
+        page.setCoverUrl( request.getCoverUrl() );
+        page.setContactPhone( request.getContactPhone() );
+        page.setContactEmail( request.getContactEmail() );
+        page.setOpenHours( map( request.getOpenHours() ) );
 
         return page;
     }
@@ -49,19 +49,19 @@ public class PageMapperImpl implements PageMapper {
         pageResponse.pageId( page.getId() );
         pageResponse.businessName( pageCafeOwnerBusinessName( page ) );
         pageResponse.cafeOwnerId( pageCafeOwnerId( page ) );
-        pageResponse.avatarUrl( page.getAvatarUrl() );
-        pageResponse.contactEmail( page.getContactEmail() );
-        pageResponse.contactPhone( page.getContactPhone() );
-        pageResponse.coverUrl( page.getCoverUrl() );
-        pageResponse.createdAt( page.getCreatedAt() );
-        pageResponse.description( page.getDescription() );
-        pageResponse.followingCount( page.getFollowingCount() );
-        pageResponse.isVerified( page.getIsVerified() );
-        pageResponse.openHours( page.getOpenHours() );
         pageResponse.pageName( page.getPageName() );
         pageResponse.postCount( page.getPostCount() );
-        pageResponse.updatedAt( page.getUpdatedAt() );
+        pageResponse.followingCount( page.getFollowingCount() );
+        pageResponse.description( page.getDescription() );
+        pageResponse.avatarUrl( page.getAvatarUrl() );
+        pageResponse.coverUrl( page.getCoverUrl() );
+        pageResponse.contactPhone( page.getContactPhone() );
+        pageResponse.contactEmail( page.getContactEmail() );
+        pageResponse.isVerified( page.getIsVerified() );
         pageResponse.verifiedAt( page.getVerifiedAt() );
+        pageResponse.openHours( page.getOpenHours() );
+        pageResponse.createdAt( page.getCreatedAt() );
+        pageResponse.updatedAt( page.getUpdatedAt() );
 
         return pageResponse.build();
     }
@@ -86,26 +86,26 @@ public class PageMapperImpl implements PageMapper {
             return;
         }
 
-        if ( request.getAvatarUrl() != null ) {
-            page.setAvatarUrl( request.getAvatarUrl() );
-        }
-        if ( request.getContactEmail() != null ) {
-            page.setContactEmail( request.getContactEmail() );
-        }
-        if ( request.getContactPhone() != null ) {
-            page.setContactPhone( request.getContactPhone() );
-        }
-        if ( request.getCoverUrl() != null ) {
-            page.setCoverUrl( request.getCoverUrl() );
+        if ( request.getPageName() != null ) {
+            page.setPageName( request.getPageName() );
         }
         if ( request.getDescription() != null ) {
             page.setDescription( request.getDescription() );
         }
+        if ( request.getAvatarUrl() != null ) {
+            page.setAvatarUrl( request.getAvatarUrl() );
+        }
+        if ( request.getCoverUrl() != null ) {
+            page.setCoverUrl( request.getCoverUrl() );
+        }
+        if ( request.getContactPhone() != null ) {
+            page.setContactPhone( request.getContactPhone() );
+        }
+        if ( request.getContactEmail() != null ) {
+            page.setContactEmail( request.getContactEmail() );
+        }
         if ( request.getOpenHours() != null ) {
             page.setOpenHours( map( request.getOpenHours() ) );
-        }
-        if ( request.getPageName() != null ) {
-            page.setPageName( request.getPageName() );
         }
     }
 

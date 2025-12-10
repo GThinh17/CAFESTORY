@@ -8,6 +8,8 @@ import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/reviewers")
 @RequiredArgsConstructor
@@ -63,6 +65,30 @@ public class ReviewerController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/user/{userId}/followed")
+    public ResponseEntity<List<ReviewerResponse>> getReviewersFollowedByUser(
+            @PathVariable String userId
+    ) {
+        List<ReviewerResponse> responses = reviewerService.getReviewersFollowedByUser(userId);
+        return ResponseEntity.ok(responses);
+    }
+
+
+    @GetMapping("/user/{userId}/followed/sort-follower-desc")
+    public ResponseEntity<List<ReviewerResponse>> getReviewersFollowedByUserOrderByFollowerCountDesc(
+            @PathVariable String userId
+    ) {
+        List<ReviewerResponse> responses =
+                reviewerService.getReviewersFollowedByUserOrderByFollowerCountDesc(userId);
+        return ResponseEntity.ok(responses);
+    }
+
+
+    @GetMapping("/top/follower-desc")
+    public ResponseEntity<List<ReviewerResponse>> getAllReviewersOrderByFollowerCountDesc() {
+        List<ReviewerResponse> responses = reviewerService.getAllReviewersOrderByFollowerCountDesc();
+        return ResponseEntity.ok(responses);
+    }
 
 
 

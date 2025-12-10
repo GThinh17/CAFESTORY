@@ -25,6 +25,7 @@ public class FollowCreateDTO {
     @NotNull(message = "Type is required")
     private FollowType followType; // User /page
 
+
     private String followedUserId;
 
     private String followedPageId;

@@ -10,8 +10,8 @@ import vn.gt.__back_end_javaspring.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T16:16:18+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-12-09T18:36:44+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
 public class NotificationMapperImpl implements NotificationMapper {
@@ -22,24 +22,24 @@ public class NotificationMapperImpl implements NotificationMapper {
             return null;
         }
 
-        NotificationResponse notificationResponse = new NotificationResponse();
+        NotificationResponse.NotificationResponseBuilder notificationResponse = NotificationResponse.builder();
 
-        notificationResponse.setUserId( notificationReceiverId( notification ) );
-        notificationResponse.setUserName( notificationReceiverFullName( notification ) );
-        notificationResponse.setActorId( notificationActorId( notification ) );
-        notificationResponse.setActorName( notificationActorFullName( notification ) );
-        notificationResponse.setActorAvatarUrl( notificationActorAvatar( notification ) );
-        notificationResponse.setId( notification.getId() );
-        notificationResponse.setType( notification.getType() );
-        notificationResponse.setTitle( notification.getTitle() );
-        notificationResponse.setContent( notification.getContent() );
-        notificationResponse.setRedirectUrl( notification.getRedirectUrl() );
+        notificationResponse.userId( notificationReceiverId( notification ) );
+        notificationResponse.userName( notificationReceiverFullName( notification ) );
+        notificationResponse.actorId( notificationActorId( notification ) );
+        notificationResponse.actorName( notificationActorFullName( notification ) );
+        notificationResponse.actorAvatarUrl( notificationActorAvatar( notification ) );
+        notificationResponse.id( notification.getId() );
+        notificationResponse.type( notification.getType() );
+        notificationResponse.title( notification.getTitle() );
+        notificationResponse.content( notification.getContent() );
+        notificationResponse.redirectUrl( notification.getRedirectUrl() );
         if ( notification.getRead() != null ) {
-            notificationResponse.setRead( notification.getRead() );
+            notificationResponse.read( notification.getRead() );
         }
-        notificationResponse.setCreatedAt( notification.getCreatedAt() );
+        notificationResponse.createdAt( notification.getCreatedAt() );
 
-        return notificationResponse;
+        return notificationResponse.build();
     }
 
     @Override

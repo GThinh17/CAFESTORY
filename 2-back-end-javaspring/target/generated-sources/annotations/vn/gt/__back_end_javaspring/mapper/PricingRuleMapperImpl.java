@@ -10,8 +10,8 @@ import vn.gt.__back_end_javaspring.entity.PricingRule;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T16:04:00+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-12-09T18:36:43+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
 public class PricingRuleMapperImpl implements PricingRuleMapper {
@@ -24,14 +24,14 @@ public class PricingRuleMapperImpl implements PricingRuleMapper {
 
         PricingRule pricingRule = new PricingRule();
 
-        pricingRule.setCommentWeight( pricingRuleCreateDTO.getCommentWeight() );
-        pricingRule.setDescription( pricingRuleCreateDTO.getDescription() );
-        pricingRule.setEffectiveFrom( pricingRuleCreateDTO.getEffectiveFrom() );
-        pricingRule.setEffectiveTo( pricingRuleCreateDTO.getEffectiveTo() );
-        pricingRule.setLikeWeight( pricingRuleCreateDTO.getLikeWeight() );
         pricingRule.setName( pricingRuleCreateDTO.getName() );
+        pricingRule.setDescription( pricingRuleCreateDTO.getDescription() );
+        pricingRule.setLikeWeight( pricingRuleCreateDTO.getLikeWeight() );
+        pricingRule.setCommentWeight( pricingRuleCreateDTO.getCommentWeight() );
         pricingRule.setShareWeight( pricingRuleCreateDTO.getShareWeight() );
         pricingRule.setUnitPrice( pricingRuleCreateDTO.getUnitPrice() );
+        pricingRule.setEffectiveFrom( pricingRuleCreateDTO.getEffectiveFrom() );
+        pricingRule.setEffectiveTo( pricingRuleCreateDTO.getEffectiveTo() );
 
         return pricingRule;
     }
@@ -45,17 +45,17 @@ public class PricingRuleMapperImpl implements PricingRuleMapper {
         PricingRuleResponse.PricingRuleResponseBuilder pricingRuleResponse = PricingRuleResponse.builder();
 
         pricingRuleResponse.pricingRuleResponseId( pricingRule.getId() );
-        pricingRuleResponse.commentWeight( pricingRule.getCommentWeight() );
-        pricingRuleResponse.createdAt( pricingRule.getCreatedAt() );
-        pricingRuleResponse.currency( pricingRule.getCurrency() );
+        pricingRuleResponse.name( pricingRule.getName() );
         pricingRuleResponse.description( pricingRule.getDescription() );
+        pricingRuleResponse.likeWeight( pricingRule.getLikeWeight() );
+        pricingRuleResponse.commentWeight( pricingRule.getCommentWeight() );
+        pricingRuleResponse.shareWeight( pricingRule.getShareWeight() );
+        pricingRuleResponse.unitPrice( pricingRule.getUnitPrice() );
+        pricingRuleResponse.currency( pricingRule.getCurrency() );
         pricingRuleResponse.effectiveFrom( pricingRule.getEffectiveFrom() );
         pricingRuleResponse.effectiveTo( pricingRule.getEffectiveTo() );
         pricingRuleResponse.isActive( pricingRule.getIsActive() );
-        pricingRuleResponse.likeWeight( pricingRule.getLikeWeight() );
-        pricingRuleResponse.name( pricingRule.getName() );
-        pricingRuleResponse.shareWeight( pricingRule.getShareWeight() );
-        pricingRuleResponse.unitPrice( pricingRule.getUnitPrice() );
+        pricingRuleResponse.createdAt( pricingRule.getCreatedAt() );
 
         return pricingRuleResponse.build();
     }

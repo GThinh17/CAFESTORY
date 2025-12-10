@@ -14,8 +14,8 @@ import vn.gt.__back_end_javaspring.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T16:03:59+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-12-09T18:36:43+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
 public class BlogMapperImpl implements BlogMapper {
@@ -37,14 +37,14 @@ public class BlogMapperImpl implements BlogMapper {
         blogResponse.commentCount( blog.getCommentsCount() );
         blogResponse.likeCount( blog.getLikesCount() );
         blogResponse.shareCount( blog.getSharesCount() );
-        blogResponse.allowComment( blog.getAllowComment() );
-        blogResponse.caption( blog.getCaption() );
-        blogResponse.createdAt( blog.getCreatedAt() );
         blogResponse.id( blog.getId() );
-        blogResponse.isDeleted( blog.getIsDeleted() );
-        blogResponse.isPin( blog.getIsPin() );
-        blogResponse.updatedAt( blog.getUpdatedAt() );
+        blogResponse.caption( blog.getCaption() );
         blogResponse.visibility( blog.getVisibility() );
+        blogResponse.isPin( blog.getIsPin() );
+        blogResponse.allowComment( blog.getAllowComment() );
+        blogResponse.isDeleted( blog.getIsDeleted() );
+        blogResponse.createdAt( blog.getCreatedAt() );
+        blogResponse.updatedAt( blog.getUpdatedAt() );
 
         blogResponse.mediaUrls( blog.getMediaList() == null ? null : blog.getMediaList().stream().map(m -> m.getMediaUrl()).collect(java.util.stream.Collectors.toList()) );
 
@@ -85,20 +85,20 @@ public class BlogMapperImpl implements BlogMapper {
             return;
         }
 
-        if ( dto.getAllowComment() != null ) {
-            entity.setAllowComment( dto.getAllowComment() );
-        }
         if ( dto.getCaption() != null ) {
             entity.setCaption( dto.getCaption() );
-        }
-        if ( dto.getIsDeleted() != null ) {
-            entity.setIsDeleted( dto.getIsDeleted() );
         }
         if ( dto.getIsPin() != null ) {
             entity.setIsPin( dto.getIsPin() );
         }
+        if ( dto.getAllowComment() != null ) {
+            entity.setAllowComment( dto.getAllowComment() );
+        }
         if ( dto.getVisibility() != null ) {
             entity.setVisibility( dto.getVisibility() );
+        }
+        if ( dto.getIsDeleted() != null ) {
+            entity.setIsDeleted( dto.getIsDeleted() );
         }
     }
 
