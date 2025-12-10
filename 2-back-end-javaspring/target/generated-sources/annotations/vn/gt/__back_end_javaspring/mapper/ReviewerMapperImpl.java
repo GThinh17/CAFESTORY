@@ -10,8 +10,8 @@ import vn.gt.__back_end_javaspring.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-09T19:09:10+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-12-10T16:50:52+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
 public class ReviewerMapperImpl implements ReviewerMapper {
@@ -33,23 +33,23 @@ public class ReviewerMapperImpl implements ReviewerMapper {
             return null;
         }
 
-        ReviewerResponse reviewerResponse = new ReviewerResponse();
+        ReviewerResponse.ReviewerResponseBuilder reviewerResponse = ReviewerResponse.builder();
 
-        reviewerResponse.setUserId( reviewerUserId( reviewer ) );
-        reviewerResponse.setUserName( reviewerUserFullName( reviewer ) );
-        reviewerResponse.setUserAvatarUrl( reviewerUserAvatar( reviewer ) );
-        reviewerResponse.setUserEmail( reviewerUserEmail( reviewer ) );
-        reviewerResponse.setId( reviewer.getId() );
-        reviewerResponse.setBio( reviewer.getBio() );
-        reviewerResponse.setTotalScore( reviewer.getTotalScore() );
-        reviewerResponse.setJoinAt( reviewer.getJoinAt() );
-        reviewerResponse.setExpiredAt( reviewer.getExpiredAt() );
-        reviewerResponse.setIsDeleted( reviewer.getIsDeleted() );
+        reviewerResponse.userId( reviewerUserId( reviewer ) );
+        reviewerResponse.userName( reviewerUserFullName( reviewer ) );
+        reviewerResponse.userAvatarUrl( reviewerUserAvatar( reviewer ) );
+        reviewerResponse.userEmail( reviewerUserEmail( reviewer ) );
+        reviewerResponse.id( reviewer.getId() );
+        reviewerResponse.bio( reviewer.getBio() );
+        reviewerResponse.totalScore( reviewer.getTotalScore() );
+        reviewerResponse.joinAt( reviewer.getJoinAt() );
+        reviewerResponse.expiredAt( reviewer.getExpiredAt() );
+        reviewerResponse.isDeleted( reviewer.getIsDeleted() );
         if ( reviewer.getStatus() != null ) {
-            reviewerResponse.setStatus( reviewer.getStatus().name() );
+            reviewerResponse.status( reviewer.getStatus().name() );
         }
 
-        return reviewerResponse;
+        return reviewerResponse.build();
     }
 
     @Override
