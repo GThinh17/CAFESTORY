@@ -40,7 +40,7 @@ public class Follow {
     private User followedUser; //Thang duoc follow
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "followed_user_id")
+    @JoinColumn(name = "followed_reviewer_id")
     private Reviewer followedReviewer; //Thang duoc follow
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -47,11 +47,6 @@ public class FollowServiceImpl implements FollowService {
             throw new RuntimeException("Cafe owner can not follow anyone");
         }
 
-        if (reviewerService.isReviewerByUserId(request.getFollowerId())
-                && request.getFollowType() != FollowType.PAGE) {
-            throw new RuntimeException("Reviewer can only follow pages");
-        }
-
         Follow follow = new Follow();
 
         follow.setFollower(follower);

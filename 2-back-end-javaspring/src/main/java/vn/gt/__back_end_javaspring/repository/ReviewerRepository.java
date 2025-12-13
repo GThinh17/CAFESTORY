@@ -10,9 +10,8 @@
 
     public interface  ReviewerRepository extends JpaRepository<Reviewer, String> {
 
-        Boolean findByUser(User user);
         boolean existsByUser_Id(String userId);
         Reviewer findByUser_Id(String userId);
+        List<Reviewer> findAllByOrderByFollowerCountDesc();
 
-        List<Reviewer> findAllOrderByFollowerCountDesc();
     }

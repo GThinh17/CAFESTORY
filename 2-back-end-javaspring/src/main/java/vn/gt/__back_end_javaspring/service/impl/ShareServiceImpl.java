@@ -42,16 +42,20 @@ public class ShareServiceImpl implements ShareService {
         Blog blog = blogRepository.findById(dto.getBlogId())
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
 
+        //tang share 1
         blog.setSharesCount(blog.getSharesCount() + 1);
         blogRepository.save(blog);
 
+
         Share share = shareMapper.toEntity(dto);
+        share.setBlog(blog);
+        share.setUser(user);
         Share saved = shareRepository.save(share);
 
-        String reviewerId = blog.getUser().getId();
-        if(reviewerService.isReviewerByUserId(reviewerId)){
-            Reviewer reviewer = reviewerRepository.findById(reviewerId)
-                    .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
+
+        String userId = blog.getUser().getId();
+        if(reviewerService.isReviewerByUserId(userId)){
+            Reviewer reviewer = reviewerRepository.findByUser_Id(userId);
 
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
             if (pricingRule == null) {
@@ -69,7 +73,7 @@ public class ShareServiceImpl implements ShareService {
             earningEventCreateDTO.setBlogId(dto.getBlogId());
             earningEventCreateDTO.setSourceType("SHARE");
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
-            earningEventCreateDTO.setReviewerId(reviewerId);
+            earningEventCreateDTO.setReviewerId(reviewer.getId());
             earningEventCreateDTO.setAmount(amount);
 
             earningEventService.create(earningEventCreateDTO);

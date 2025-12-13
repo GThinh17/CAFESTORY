@@ -35,11 +35,9 @@ public class CafeOwnerServiceImpl implements CafeOwnerService {
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
     private final PageRepository pageRepository;
-    private final PageService pageService;
     private final ReviewerRepository reviewerRepository;
     @Override
     public CafeOwnerResponse createCafeOwner(CafeOwnerDTO dto) {
-        // 1. Lấy user
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
