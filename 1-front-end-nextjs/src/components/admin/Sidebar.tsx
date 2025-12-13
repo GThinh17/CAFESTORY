@@ -83,11 +83,18 @@ export default function Sidebar() {
               Pages
             </Button>
             <Button
-              onClick={() => router.push("/admin")}
+              onClick={() => router.push("/admin/reviewers")}
               variant="ghost"
               className={styles.navBtn}
             >
-              Settings
+              Reviewers
+            </Button>
+            <Button
+              onClick={() => router.push("/admin/reports")}
+              variant="ghost"
+              className={styles.navBtn}
+            >
+              Reports
             </Button>
             <Button
               onClick={() => (logout(), router.push("/login/admin"))}

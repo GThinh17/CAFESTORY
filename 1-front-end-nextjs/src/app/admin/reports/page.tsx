@@ -4,16 +4,18 @@ import UsersTable from "@/components/admin/PagesTable";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import ReviewersTable from "@/components/admin/ReviewersTable";
+import ReportsTable from "@/components/admin/ReportsTable";
 
-interface Reviewers {
+interface Reports {
   id: string;
-  userName: string;
-  userAvatarUrl: string;
-  userEmail: string;
-  followerCount: string;
-  totalScore: string;
-  status: string;
+  reportingUserId: string;
+  reportType: string;
+  problem: string;
+  description: string;
+  isFlagged: string;
+  isBanned: string;
+  isDeleted: string;
+  feedback: string;
   // postCount: number;
   // followingCount: number;
 }
@@ -21,17 +23,17 @@ interface Reviewers {
 export default function DashboardPage() {
   const { token } = useAuth();
 
-  const [reviewersData, setReviewersData] = useState<Reviewers[]>([]);
+  const [reportsData, setReportsData] = useState<Reports[]>([]);
 
   const handleGetAllReviewers = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/reviewers`, {
+      const response = await axios.get(`http://localhost:8080/api/report`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       console.log("DATA NÈ:", response.data.data);
 
-      setReviewersData(response.data.data ?? []);
+      setReportsData(response.data.data ?? []);
     } catch (error) {
       console.log("Lỗi nằm ở:", error);
     }
@@ -52,7 +54,7 @@ export default function DashboardPage() {
 
       <Stats total={4} active={2} editors={2} pending={1} />
 
-      <ReviewersTable reviewers={reviewersData} />
+      <ReportsTable reports={reportsData} />
     </div>
   );
 }

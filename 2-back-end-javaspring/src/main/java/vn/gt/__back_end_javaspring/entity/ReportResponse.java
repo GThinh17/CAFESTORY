@@ -15,7 +15,7 @@ public class ReportResponse {
 
     private User reportedUser; // Thang bị report
 
-    private User reportedBlog; // Thang bị report
+    private Blog reportedBlog; // Thang bị report
 
     private Page reportedPage;
 
