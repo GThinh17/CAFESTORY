@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-
-import jakarta.persistence.Embedded;
 import vn.gt.__back_end_javaspring.entity.Role;
 import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.entity.UserRole;
 import vn.gt.__back_end_javaspring.entity.Embedded.UserRoleId;
 import vn.gt.__back_end_javaspring.enums.RoleType;
 import vn.gt.__back_end_javaspring.DTO.SignupDTO;
+import vn.gt.__back_end_javaspring.DTO.UserResponseDTO;
 import vn.gt.__back_end_javaspring.repository.RoleRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
@@ -29,6 +28,20 @@ public class UserService {
 		this.userRepository = userRepository;
 		this.userRoleRepository = userRoleRepository;
 		this.roleRepository = roleRepository;
+	}
+
+	public List<UserResponseDTO> GetAllUsersDTO() {
+		return this.userRepository.findAll()
+				.stream()
+				.map(user -> new UserResponseDTO(
+						user.getAvatar(),
+						user.getFullName(),
+						user.getEmail(),
+						user.getId(),
+						user.getAddress(),
+						user.getFollowerCount(),
+						user.getVertifiedBank()))
+				.toList();
 	}
 
 	public User createUser(User newUser) {

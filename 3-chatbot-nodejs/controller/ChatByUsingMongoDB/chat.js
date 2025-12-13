@@ -1,13 +1,13 @@
 const { OpenAI } = require("openai");
-const Knowledge = require("../models/Knowledge");
-const cosineSimilarity = require("../utils/cosine");
+const Knowledge = require("../../models/Knowledge");
+const cosineSimilarity = require("../../utils/cosine");
 require("dotenv").config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const chat = async (req, res) => {
   try {
-    const assistantId = process.env.OPENAI_ASSISTANT_ID;
+    const assistantId = process.env.OPENAI_CHATBOT_ASSISTANT_ID;
     const threadId = req.body.thread_id;
     const message = req.body.message;
 

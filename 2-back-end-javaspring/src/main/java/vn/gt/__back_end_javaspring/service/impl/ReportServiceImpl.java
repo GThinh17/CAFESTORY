@@ -1,5 +1,6 @@
 package vn.gt.__back_end_javaspring.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +38,8 @@ public class ReportServiceImpl implements ReportService {
     private final ReportMapper reportMapper;
 
     @Override
-    public List<?> GetAllReport() {
-        return this.reportRepository.findAll();
+    public List<ReportResponseDTO> GetAllReport() {
+        return reportMapper.toDTOList(reportRepository.findAll());
     }
 
     @Override
@@ -105,6 +106,23 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<ReportResponseDTO> GetListReportByPageId(String pageId) {
         return reportMapper.toDTOList(reportRepository.findAllByReportedPage_Id(pageId));
+    }
+
+    @Override
+    public ReportResponseDTO UpdateReportByIdFromChatBot(String reportId, ReportDTO reportDTO) {
+
+        Report updateReport = reportRepository.findById(reportId)
+                .orElseThrow(() -> new RuntimeException("Report not found"));
+
+        updateReport.setFeedback(reportDTO.getFeedback());
+        updateReport.setIsBanned(reportDTO.getIsBanned());
+        updateReport.setIsDeleted(reportDTO.getIsDeleted());
+        updateReport.setIsFlagged(reportDTO.getIsFlagged());
+        updateReport.setHandledAt(LocalDateTime.now());
+
+        Report saved = reportRepository.save(updateReport);
+
+        return reportMapper.toDTO(saved);
     }
 
 }

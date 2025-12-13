@@ -23,6 +23,26 @@ const nextConfig = {
         protocol: "https",
         hostname: "**.fbcdn.net",
       },
+      {
+        protocol: "https",
+        hostname: "th.bing.com",
+      },
+      {
+        protocol: "https",
+        hostname: "hdwpro.com",
+      },
+      {
+        protocol: "https",
+        hostname: "scontent.fsgn2-9.fna.fbcdn.net",
+      },
+      {
+        protocol: "https",
+        hostname: "scontent.fsgn2-8.fna.fbcdn.net",
+      },
+      {
+        protocol: "https",
+        hostname: "www.facebook.com",
+      },
     ],
   },
   devIndicators: false,

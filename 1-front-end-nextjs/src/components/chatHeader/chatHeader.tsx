@@ -54,7 +54,7 @@ export function ChatHeader() {
           }
         );
 
-        setOtherUser(userRes.data?.data);
+        setOtherUser(userRes.data.data);
       } catch (err) {
         console.error(err);
       }
@@ -62,7 +62,6 @@ export function ChatHeader() {
 
     fetchChatInfo();
   }, [chatId, token, user]);
-  console.log(otherUser);
 
   return (
     <>

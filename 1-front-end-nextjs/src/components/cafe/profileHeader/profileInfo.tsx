@@ -9,10 +9,29 @@ export function ProfileInfo() {
   const { pageId } = useParams();
   const { user, loading, token } = useAuth();
   const [cfOwnerId, setCfOwnerId] = useState("");
+  const [userId, setUserId] = useState("");
+  const [username, setUserName] = useState("");
+  const [realPageId, setRealPageId] = useState("");
   const [me, setMe] = useState<any>(null);
   const [count, setCount] = useState<number>(0);
-  
-  console.log(pageId);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/cafe-owners/${pageId}`
+        );
+
+        setUserId(res.data.data.userId);
+        setUserName(res.data.data.userName);
+      } catch (err: any) {
+        console.error("API error:", err.response?.status, err.message);
+      }
+    };
+
+    fetchUserId();
+  }, [pageId]);
+
   useEffect(() => {
     const fetchMe = async () => {
       try {
@@ -48,28 +67,45 @@ export function ProfileInfo() {
     };
 
     fetchCfOwnerId();
-  }, [open, user?.id, token]);
+  }, [user?.id, token]);
+  
+  useEffect(() => {
+    const fetchPage = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/pages/cafe-owner/${pageId}`
+        );
+        setRealPageId(res.data.data.pageId);
+      } catch (err: any) {
+        console.error("API error:", err.response?.status, err.message);
+      }
+    };
+    fetchPage();
+  }, [pageId]);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/blogs?userpageId=${pageId}`
+          `http://localhost:8080/api/blogs/page/${realPageId}`
         );
-        const posts = res.data?.data?.data ?? [];
-        setCount(posts.length);
+        console.log("ressss", res);
+
+        setCount(res.data?.data?.totalElements);
       } catch (err) {
         console.error("Failed to fetch posts:", err);
       }
     };
 
     fetchPosts();
-  }, [me?.pageid, pageId]);
+  }, [realPageId]);
 
   if (loading) return null;
 
   return (
     <ProfileHeader
+      cfOwnerName={username}
+      userId={userId}
       username={me?.pageName ?? "Unknown"}
       following={me?.isFollowing ?? false}
       posts={count}
@@ -82,8 +118,6 @@ export function ProfileInfo() {
       description={me?.description}
       address={me?.slug}
       backgroundImg={me?.coverUrl}
-      currentUserpageId={cfOwnerId}
-      profileUserpageId={pageId}
     />
   );
 }

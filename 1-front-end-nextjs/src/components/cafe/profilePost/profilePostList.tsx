@@ -5,6 +5,7 @@ import styles from "./profilePost.module.scss";
 import { useAuth } from "@/context/AuthContext";
 import { useParams } from "next/navigation";
 import { PostModal } from "../../PostCf/components/postModal";
+import axios from "axios";
 
 interface Post {
   id: string;
@@ -21,35 +22,42 @@ export function ProfilePostList() {
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [isOpenPost, setIsOpenPost] = useState(false);
   const [selectedPost, setSelectedPost] = useState<any>(null);
+  const [realPageId, setRealPageId] = useState("");
+  const { pageId } = useParams();
+  const [pageInfo, setPageInfo] = useState<any>(null);
 
-  const { userId } = useParams();
   const { token, loading: authLoading } = useAuth();
 
   const observerRef = useRef<HTMLDivElement>(null);
 
-  // Fetch initial posts
   useEffect(() => {
-    async function fetchPosts(cursor: string | null = null) {
+    const fetchPage = async () => {
       try {
-        const url = new URL("http://localhost:8080/api/blogs");
-        url.searchParams.append("size", "9");
-        url.searchParams.append("userId", userId);
-        if (cursor) url.searchParams.append("cursor", cursor);
+        const res = await axios.get(
+          `http://localhost:8080/api/pages/cafe-owner/${pageId}`
+        );
+        setRealPageId(res.data.data.pageId);
+        setPageInfo(res.data.data);
+      } catch (err: any) {
+        console.error("API error:", err.response?.status, err.message);
+      }
+    };
+    fetchPage();
+  }, [pageId]);
 
-        const res = await fetch(url.toString(), {
-          method: "GET",
-        });
-        const data = await res.json();
-        const postData = data.data?.data || [];
-        setPosts((prev) => {
-          // lọc post mới không trùng với các post đã có
-          const newPosts = postData.filter(
-            (p: Post) => !prev.some((prevP) => prevP.id === p.id)
-          );
-          return [...prev, ...newPosts];
-        });
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/blogs/page/${realPageId}`
+        );
 
-        setNextCursor(data.data?.nextCursor || null);
+        console.log("Response:", res);
+
+        const postData = res.data?.data?.content || [];
+
+        // Lưu posts (lọc trùng nếu cần)
+        setPosts(postData);
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {
@@ -59,18 +67,21 @@ export function ProfilePostList() {
     }
 
     fetchPosts();
-  }, [userId, token]);
+  }, [realPageId, token]);
 
   const openPost = (post: any) => {
+    if (!pageInfo) return;
+
     setSelectedPost({
       ...post,
-      username: post.userFullName,
+      username: pageInfo.pageName,
       avatar:
-        post.userAvatar ??
+        pageInfo.avatarUrl ??
         "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
       images: post.mediaUrls ?? [],
       likes: post.likeCount,
     });
+
     setIsOpenPost(true);
   };
 
@@ -87,7 +98,7 @@ export function ProfilePostList() {
             try {
               const url = new URL("http://localhost:8080/api/blogs");
               url.searchParams.append("size", "9");
-              url.searchParams.append("userId", userId);
+              url.searchParams.append("userId", pageId);
               url.searchParams.append("cursor", nextCursor);
 
               const res = await fetch(url.toString(), {
@@ -120,7 +131,7 @@ export function ProfilePostList() {
     observer.observe(observerRef.current);
 
     return () => observer.disconnect();
-  }, [nextCursor, userId, token]);
+  }, [nextCursor, pageId, token]);
 
   if (authLoading || loading) return <div>Loading...</div>;
   if (posts.length === 0) return <div>No post</div>;

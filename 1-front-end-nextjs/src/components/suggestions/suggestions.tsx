@@ -1,15 +1,35 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import "./suggestions.css";
 import Image from "next/image";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export function Suggestions() {
-  const users = [
-    { name: "imkir", followers: "2.5M", image: "/testPost.jpg" },
-    { name: "organic__al", followers: "2M", image: "/testPost.jpg" },
-    { name: "im_gr", followers: "1.4M", image: "/testPost.jpg" },
-    { name: "abh952", followers: "1M", image: "/testPost.jpg" },
-    { name: "sakbrl", followers: "209.2k", image: "/testPost.jpg" },
-  ];
+  const router = useRouter();
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    async function fetchTopFollowers() {
+      try {
+        const res = await axios.get(
+          "http://localhost:8080/api/pages/top-followers"
+        );
+        if (res.data?.data) {
+          setUsers(res.data.data);
+        }
+      } catch (err) {
+        console.error("API Error:", err);
+      }
+    }
+
+    fetchTopFollowers();
+  }, []);
+
+  function goToCafe(cafeOwnerId: string) {
+    router.push(`/cafe/${cafeOwnerId}`);
+  }
 
   return (
     <div className="suggestions">
@@ -21,21 +41,30 @@ export function Suggestions() {
       </div>
 
       <ul className="user-list">
-        {users.map((user, index) => (
-          <li key={index} className="user-item">
+        {users.map((user: any) => (
+          <li
+            key={user.pageId}
+            className="user-item"
+            onClick={() => goToCafe(user.cafeOwnerId)}
+            style={{ cursor: "pointer" }}
+          >
             <div className="user-left">
               <Image
-                src={user.image}
+                src={user.avatarUrl || "/default-avatar.png"}
                 alt="avatar"
                 width={30}
                 height={30}
                 className="avatar-suggest"
               />
+
               <div>
-                <div className="username-suggest">{user.name}</div>
-                <div className="followers">{user.followers} follows</div>
+                <div className="username-suggest">{user.pageName}</div>
+                <div className="followers">
+                  {user.followersCount ?? 0} followers
+                </div>
               </div>
             </div>
+
             <button className="follow-btn">Follow</button>
           </li>
         ))}

@@ -130,4 +130,7 @@ dist
 .pnp.*
 
 #ignore .env
-.env
+
+*.env
+**/node_modules
+**/config/serviceAccountKey.json

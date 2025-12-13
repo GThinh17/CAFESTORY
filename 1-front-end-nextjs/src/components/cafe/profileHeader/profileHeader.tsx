@@ -23,10 +23,14 @@ interface ProfileHeaderProps {
   currentUserId: string;
   profileUserId: string;
   backgroundImg: string;
+  userId: string;
+  cfOwnerName: String;
 }
 
 export default function ProfileHeader({
   username,
+  userId,
+  cfOwnerName,
   verified,
   following,
   description,
@@ -35,8 +39,6 @@ export default function ProfileHeader({
   followingCount,
   avatar,
   isMe,
-  currentUserId,
-  profileUserId,
   backgroundImg,
 }: ProfileHeaderProps) {
   return (
@@ -68,7 +70,6 @@ export default function ProfileHeader({
             <p className={styles.subInfo}>
               {posts} post • {followingCount} followers
             </p>
-            
 
             {address && (
               <Link
@@ -84,6 +85,11 @@ export default function ProfileHeader({
             )}
 
             {description && <p className={styles.description}>{description}</p>}
+            {userId && cfOwnerName && (
+              <Link href={`/profile/${userId}`} className={styles.owner}>
+                Owner: {cfOwnerName}
+              </Link>
+            )}
           </div>
         </div>
 

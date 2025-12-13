@@ -21,7 +21,9 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
   const router = useRouter();
   const { logout, loading, user, token } = useAuth();
   const [isCfOwner, setIsCfOwner] = useState(false);
+  const [isReviewer, setIsReviewer] = useState(false);
   const [cfOwnerId, setCfOwnerId] = useState("");
+  const [page, setPage] = useState<any>(null);
 
   const options: string[] = [
     "Apps and websites",
@@ -55,6 +57,26 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
     fetchstatus();
   }, [open, user?.id, token]);
 
+  useEffect(() => {
+    const fetchstatus = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/reviewers/${user?.id}/exists`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setIsReviewer(res.data.data);
+      } catch (err) {
+        console.log("fetch status fail");
+      }
+    };
+
+    fetchstatus();
+  }, [open, user?.id, token]);
 
   useEffect(() => {
     const fetchCfOwnerId = async () => {
@@ -74,12 +96,30 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
         console.log("fetch status fail");
       }
     };
-
     fetchCfOwnerId();
   }, [open, user?.id, token]);
 
+  useEffect(() => {
+    const fetchPageInf = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/pages/cafe-owner/${cfOwnerId}`
+        );
+
+        setPage(res.data.data);
+      } catch (err) {
+        console.log("fetch status fail");
+      }
+    };
+    fetchPageInf();
+  }, [open, cfOwnerId]);
+
   const handleClick = (item: string) => {
     if (item === "Cafe Page") {
+      if (page === null) {
+        router.push("/createPage");
+        return;
+      }
       router.push(`/cafe/${cfOwnerId}`);
       return;
     }
@@ -98,7 +138,10 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
   };
 
   const filteredOptions = options.filter((item) => {
-    if (!isCfOwner && (item === "Cafe Page" || item === "Dashboard")) {
+    if (!isCfOwner && item === "Cafe Page") {
+      return false;
+    }
+    if (!isReviewer && item === "Dashboard") {
       return false;
     }
     return true;

@@ -1,6 +1,7 @@
 const { OpenAI } = require("openai");
-const Knowledge = require("../models/Knowledge");
+const Knowledge = require("../../models/Knowledge");
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+require("dotenv").config();
 
 const saveKnowledge = async (req, res) => {
   try {

@@ -132,7 +132,7 @@ public class StripeWebhookController {
 
         // Cập nhật lại trạng thái payment nếu thành công
 
-        String productId = metadata.get("productId").getAsString();
+        String productId = metadata.get("productionId").getAsString();
         Production production = productionService.GetProduction(productId);
 
         String userId = metadata.get("userId").getAsString();
@@ -157,9 +157,6 @@ public class StripeWebhookController {
 
         //Set payment thanh success
         Payment payment = this.paymentService.UpdatePayment(paymentId, PaymentStatus.SUCCESS);
-        //System.out.println(" Checkout Session Completed thanh toi day2: " + paymentId);
-
-        //System.out.println(payment);
     }
 
     @PostMapping("/webhook")

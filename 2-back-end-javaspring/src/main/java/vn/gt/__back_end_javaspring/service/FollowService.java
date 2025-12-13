@@ -21,4 +21,5 @@ public interface FollowService {
     Boolean isFollowPage(String userId, String pageId);
 
     Boolean isFollowUser(String userId, String userFollowingId);
+
 }
