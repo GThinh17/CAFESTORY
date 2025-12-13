@@ -6,8 +6,8 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const processReports = async (req, res) => {
     try {
-        // const token = req.token;
-        // console.log(token);
+        const token = req.token;
+        console.log(">>>>>>>>>>>>>>TOKEN<<<<<<<<<<", token);
         const { reports, thread_id } = req.body;
 
         if (!thread_id) return res.status(400).json({ error: "Missing thread_id" });
@@ -28,8 +28,9 @@ const processReports = async (req, res) => {
                 continue;
             }
             console.log(">>>>>>>>>>>>Blog id<<<<<<<<<", r.reportedBlogId);
-            console.log(">>>>>>>>>>>>Blog id<<<<<<<<<", r.reportedUserId);
-            console.log(">>>>>>>>>>>>Blog id<<<<<<<<<", r.reportedPageId);
+            console.log(">>>>>>>>>>>>User id<<<<<<<<<", r.reportedUserId);
+            console.log("TYPE REPORT LÀ", r.reportType);
+            // console.log(">>>>>>>>>>>>Blog id<<<<<<<<<", r.reportedPageId);
             switch (r.reportType) {
                 case "BLOG":
                     url = `http://localhost:8080/api/blogs/${r.reportedBlogId}`;
@@ -38,7 +39,7 @@ const processReports = async (req, res) => {
                     url = `http://localhost:8080/api/pages/${r.reportedPageId}`;
                     break;
                 case "USER":
-                    url = `http://localhost:8080/api/users/${r.reportedUserId}`;
+                    url = `http://localhost:8080/users/${r.reportedUserId}`;
                     break;
                 default:
                     console.log("Unknown reportType:", r.reportType);
@@ -48,10 +49,10 @@ const processReports = async (req, res) => {
             if (url) {
                 try {
                     const response = await axios.get(url, {
-                        headers: { Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEyM0BnbWFpbC5jb20iLCJpZCI6ImM4MmExM2Y5LTgwNzItNGMxOS1hZWRjLTFjNDNiMjAwNmVjOSIsImV4cCI6MTc2NjM2OTQ4NywiaWF0IjoxNzY1MzY5NDg3LCJlbWFpbCI6ImFkbWluMTIzQGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1JFVklFV0VSIiwiUk9MRV9VU0VSIl19.yWlOU5hxSbK8k8enu4UHpi2tgbiexK0GfgEWNahZJ1qzCBunWX_z90SGNUxGaTbPhIKdw-dV4z1KQiAofx5RbA` }
+                        headers: { Authorization: `Bearer ${token}` }
                     });
-                    console.log("RESPONSE", response.data)
-                    detail = response.data.data || response.data;
+                    console.log("RESPONSE", response.data.data)
+                    detail = response.data.data;
                 } catch (err) {
                     console.error("❌ Failed to fetch detail for report:", r.id);
                 }
@@ -108,8 +109,9 @@ const processReports = async (req, res) => {
 
         for (const d of decisions) {
             try {
+                console.log(">>>>>>>>>>>>>>>>>>ID <<<<<<<<<<", d.reportId)
                 const response = await axios.patch(
-                    `http://localhost:8080/api/report/${d.id}`,
+                    `http://localhost:8080/api/report/${d.reportId}`,
                     {
                         feedback: d.Feedback,
                         isFlagged: d.isFlagged,
@@ -117,7 +119,7 @@ const processReports = async (req, res) => {
                         isBanned: d.isBanned
                     },
                     {
-                        headers: { Authorization: `Bearer ${eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEyM0BnbWFpbC5jb20iLCJpZCI6ImM4MmExM2Y5LTgwNzItNGMxOS1hZWRjLTFjNDNiMjAwNmVjOSIsImV4cCI6MTc2NjM2OTQ4NywiaWF0IjoxNzY1MzY5NDg3LCJlbWFpbCI6ImFkbWluMTIzQGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1JFVklFV0VSIiwiUk9MRV9VU0VSIl19.yWlOU5hxSbK8k8enu4UHpi2tgbiexK0GfgEWNahZJ1qzCBunWX_z90SGNUxGaTbPhIKdw - dV4z1KQiAofx5RbA}` }
+                        headers: { Authorization: `Bearer ${token}` }
                     }
                 );
 
