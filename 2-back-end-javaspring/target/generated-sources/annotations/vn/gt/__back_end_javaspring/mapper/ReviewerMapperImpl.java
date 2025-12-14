@@ -1,5 +1,7 @@
 package vn.gt.__back_end_javaspring.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
@@ -10,7 +12,7 @@ import vn.gt.__back_end_javaspring.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-14T22:08:19+0700",
+    date = "2025-12-14T22:19:10+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
@@ -41,6 +43,7 @@ public class ReviewerMapperImpl implements ReviewerMapper {
         reviewerResponse.userEmail( reviewerUserEmail( reviewer ) );
         reviewerResponse.id( reviewer.getId() );
         reviewerResponse.bio( reviewer.getBio() );
+        reviewerResponse.followerCount( reviewer.getFollowerCount() );
         reviewerResponse.totalScore( reviewer.getTotalScore() );
         reviewerResponse.joinAt( reviewer.getJoinAt() );
         reviewerResponse.expiredAt( reviewer.getExpiredAt() );
@@ -50,6 +53,20 @@ public class ReviewerMapperImpl implements ReviewerMapper {
         }
 
         return reviewerResponse.build();
+    }
+
+    @Override
+    public List<ReviewerResponse> toResponseList(List<Reviewer> reviewers) {
+        if ( reviewers == null ) {
+            return null;
+        }
+
+        List<ReviewerResponse> list = new ArrayList<ReviewerResponse>( reviewers.size() );
+        for ( Reviewer reviewer : reviewers ) {
+            list.add( toResponse( reviewer ) );
+        }
+
+        return list;
     }
 
     @Override
