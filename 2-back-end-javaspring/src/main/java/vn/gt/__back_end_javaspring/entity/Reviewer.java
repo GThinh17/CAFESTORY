@@ -12,6 +12,7 @@ import vn.gt.__back_end_javaspring.mapper.PageMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "reviewer")
 @NoArgsConstructor
@@ -40,18 +41,11 @@ public class Reviewer {
     @Column(name = "following_count")
     Integer followingCount;
 
-
     @Column(name = "join_at")
     private LocalDateTime joinAt;
 
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
-
-    @Column(name = "follower_count")
-    Integer followerCount;
-
-    @Column(name = "following_count")
-    Integer followingCount;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
@@ -59,8 +53,6 @@ public class Reviewer {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ReviewerStatus status;
-
-
 
     @PrePersist
     public void prePersist() {
@@ -74,9 +66,8 @@ public class Reviewer {
             totalScore = 0;
         }
         this.isDeleted = false;
-        followerCount=0;
-        followingCount=0;
+        followerCount = 0;
+        followingCount = 0;
     }
-
 
 }

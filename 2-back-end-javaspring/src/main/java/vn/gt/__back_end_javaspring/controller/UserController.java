@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import vn.gt.__back_end_javaspring.DTO.UserDTO;
 import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.service.UserService;
 
@@ -22,11 +24,6 @@ public class UserController {
 	public UserController(UserService userService, PasswordEncoder passwordEncoder) {
 		this.userService = userService;
 		this.passwordEncoder = passwordEncoder;
-	}
-
-	@GetMapping("/users/admin")
-	public ResponseEntity<?> GetAllUserFormat() {
-		return ResponseEntity.ok().body(this.userService.GetAllUsersDTO());
 	}
 
 	@GetMapping("/users/admin")

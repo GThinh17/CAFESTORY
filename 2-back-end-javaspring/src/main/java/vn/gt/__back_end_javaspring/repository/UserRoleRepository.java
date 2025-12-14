@@ -9,4 +9,6 @@ import vn.gt.__back_end_javaspring.entity.Embedded.UserRoleId;
 
 public interface UserRoleRepository extends JpaRepository<UserRole, UserRoleId> {
     List<UserRole> findByUser_Id(String userId);
+
+    UserRole findByUser_IdAndRole_Id(String id, String roleId);
 }

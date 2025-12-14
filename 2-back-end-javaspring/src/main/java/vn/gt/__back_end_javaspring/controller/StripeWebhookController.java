@@ -43,8 +43,7 @@ public class StripeWebhookController {
     private final RoleRepository roleRepository;
     private final UserRoleService userRoleService;
     private final CafeOwnerService cafeOwnerService;
-    private final UserRoleService userRoleService;
-    private final CafeOwnerService cafeOwnerService;
+
     @Value("${stripe.endPointSecret.key}")
     private String endpointSecret;
 
