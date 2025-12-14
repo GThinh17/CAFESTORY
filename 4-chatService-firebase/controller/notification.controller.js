@@ -1,4 +1,4 @@
- const NotifcationService = require("../services/notification.service");
+const NotifcationService = require("../services/notification.service");
 const express = require("express");
 const router = express.Router();
 
@@ -15,4 +15,4 @@ router.post("/send", async (req, res) => {
 });
 
 
-module.exports = router;f
+module.exports = router;

@@ -1,7 +1,7 @@
 const admin = require("../../4-chatService-firebase/config/admin-firebase");
 
 class NotifcationService {
-    async sendToToken(token, title, body, data = {}, link = null) {
+    async sendToToken(token, title, body, data , link ) {
         const message = {
             token, // token cua 1 thiet bi
             notification: {
