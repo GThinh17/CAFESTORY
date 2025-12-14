@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
+import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 
 import java.util.List;
@@ -89,7 +90,4 @@ public class ReviewerController {
         List<ReviewerResponse> responses = reviewerService.getAllReviewersOrderByFollowerCountDesc();
         return ResponseEntity.ok(responses);
     }
-
-
-
 }

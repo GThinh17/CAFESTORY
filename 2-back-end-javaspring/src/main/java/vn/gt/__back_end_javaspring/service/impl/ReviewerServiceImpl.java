@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.DTO.ReviewerUpdateDTO;
+import vn.gt.__back_end_javaspring.DTO.UserResponseDTO;
 import vn.gt.__back_end_javaspring.entity.*;
 import vn.gt.__back_end_javaspring.entity.Embedded.UserRoleId;
 import vn.gt.__back_end_javaspring.enums.FollowType;
@@ -38,7 +39,6 @@ public class ReviewerServiceImpl implements ReviewerService {
     private final UserRoleRepository userRoleRepository;
     private final FollowRepository followRepository;
     private final PageMapper pageMapper;
-
     private final CafeOwnerRepository cafeOwnerRepository;
 
     @Override
@@ -153,6 +153,8 @@ public class ReviewerServiceImpl implements ReviewerService {
         return userId;
     }
 
+  
+
 
     @Override
     public boolean isReviewerByUserId(String userId) {
@@ -198,9 +200,6 @@ public class ReviewerServiceImpl implements ReviewerService {
         Reviewer saved = reviewerRepository.save(reviewer);
         return reviewerMapper.toResponse(saved);
     }
-
-
-
 }
 
 

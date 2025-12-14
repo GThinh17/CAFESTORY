@@ -5,25 +5,60 @@ import "./suggestionsReviewer.css";
 import Image from "next/image";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export function SuggestionsReviewers() {
   const router = useRouter();
-  const [reviewers, setReviewers] = useState<Reviewer[]>([]);
+  const [reviewers, setReviewers] = useState<any[]>([]);
+  const { token } = useAuth();
 
   useEffect(() => {
     async function fetchReviewers() {
       try {
-        const res = await axios.get("http://localhost:8080/api/reviewers");
-        setReviewers(res.data.data);
+        // 1️⃣ Lấy top reviewers
+        const res = await axios.get(
+          "http://localhost:8080/api/reviewers/top/follower-desc",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const reviewersData = res.data.data;
+
+        // 2️⃣ Fetch followerCount theo userId
+        const reviewersWithFollowers = await Promise.all(
+          reviewersData.map(async (reviewer: any) => {
+            try {
+              const userRes = await axios.get(
+                `http://localhost:8080/users/${reviewer.userId}`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              );
+
+              return {
+                ...reviewer,
+                followerCount: userRes.data.data.followerCount ?? 0,
+              };
+            } catch (err) {
+              console.error("Fetch user failed:", err);
+              return {
+                ...reviewer,
+                followerCount: 0,
+              };
+            }
+          })
+        );
+
+        setReviewers(reviewersWithFollowers);
       } catch (error) {
         console.error("Fetch reviewers failed:", error);
       }
     }
 
-    fetchReviewers();
-  }, []);
+    if (token) fetchReviewers();
+  }, [token]);
 
-  console.log(reviewers);
   return (
     <div className="suggestions">
       <div className="suggestions-header">
@@ -34,7 +69,7 @@ export function SuggestionsReviewers() {
       </div>
 
       <ul className="user-list">
-        {reviewers.map((user: any) => (
+        {reviewers.map((user) => (
           <li
             key={user.userId}
             className="user-item"
@@ -55,9 +90,7 @@ export function SuggestionsReviewers() {
 
               <div>
                 <div className="username-suggest">{user.userName}</div>
-                <div className="followers">
-                  {user.followerCount ?? 0} followers
-                </div>
+                <div className="followers">{user.followerCount} followers</div>
               </div>
             </div>
 

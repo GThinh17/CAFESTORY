@@ -65,5 +65,7 @@ public class Reviewer {
             totalScore = 0;
         }
         this.isDeleted = false;
+        followerCount=0;
+        followingCount=0;
     }
 }

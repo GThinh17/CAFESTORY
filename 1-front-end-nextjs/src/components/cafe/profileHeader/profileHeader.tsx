@@ -108,10 +108,6 @@ export default function ProfileHeader({
     }
   }
 
-  console.log("user:", user);
-  console.log("userId:", user?.id);
-  console.log("realPageId:", realPageId);
-
   async function handleUnfollow() {
     try {
       await axios.delete(

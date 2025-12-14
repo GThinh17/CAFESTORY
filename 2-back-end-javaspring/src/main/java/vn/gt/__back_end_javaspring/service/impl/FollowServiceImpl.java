@@ -38,7 +38,7 @@ public class FollowServiceImpl implements FollowService {
     private final ReviewerService reviewerService;
     private final ReviewerRepository reviewerRepository;
 
-     @Override
+    @Override
     public FollowResponse follow(FollowCreateDTO request) {
         User follower = userRepository.findById(request.getFollowerId())
                 .orElseThrow(() -> new UserNotFoundException("Follower not found"));
@@ -112,11 +112,15 @@ public class FollowServiceImpl implements FollowService {
 
 
             follower.setFollowingCount(follower.getFollowingCount() + 1);
+            reviewer.getUser().setFollowerCount(reviewer.getUser().getFollowerCount()+1);;
             reviewer.setFollowerCount(reviewer.getFollowerCount() + 1);
+            System.out.print("Hello");
+            reviewerRepository.save(reviewer);
+            System.out.print("Hello1");
 
             follow.setFollowedReviewer(reviewer);
             follow.setFollowedPage(null);
-            follow.setFollowedUser(null);
+            follow.setFollowedUser(reviewer.getUser());
 
             //Thieu notification
         }

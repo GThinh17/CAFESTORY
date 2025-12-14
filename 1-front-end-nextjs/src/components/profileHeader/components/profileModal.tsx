@@ -208,21 +208,6 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
     onClose();
   };
 
-  const createWallet = async () => {
-    await axios.post(
-      "http://localhost:8080/api/wallets",
-      {
-        userId: user?.id,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-  };
-
   const filteredOptions = options.filter((item) => {
     if (!isCfOwner && item === "Cafe Page") {
       return false;
