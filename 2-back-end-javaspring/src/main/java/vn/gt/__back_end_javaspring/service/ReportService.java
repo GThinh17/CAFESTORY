@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import vn.gt.__back_end_javaspring.DTO.ReportDTO;
+import vn.gt.__back_end_javaspring.DTO.ReportResponseDTO;
 import vn.gt.__back_end_javaspring.entity.Report;
+import vn.gt.__back_end_javaspring.entity.ReportResponse;
 
 public interface ReportService {
     public List<?> GetAllReport();
@@ -14,6 +16,8 @@ public interface ReportService {
     public Report CreateReport(ReportDTO report);
 
     public Report UpdateReportById(String reportId, Report report);
+
+    public ReportResponseDTO UpdateReportByIdFromChatBot(String reportId, ReportDTO report);
 
     public List<?> GetListReportByUserId(String userId);
 

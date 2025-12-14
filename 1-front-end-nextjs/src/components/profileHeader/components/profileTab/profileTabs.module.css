@@ -1,0 +1,41 @@
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 64px;
+  height: 52px;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #8e8e8e;
+  position: relative;
+  height: 100%;
+  width: 40px;
+}
+
+.tab svg {
+  stroke-width: 1.6;
+}
+
+.active {
+  color: #000;
+}
+
+/* 🔥 GẠCH ĐEN ĐÈ LÊN BORDER (INSTAGRAM STYLE) */
+.active::before {
+  content: "";
+  position: absolute;
+  top: 52px; /* đè đúng lên border */
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #000;
+}

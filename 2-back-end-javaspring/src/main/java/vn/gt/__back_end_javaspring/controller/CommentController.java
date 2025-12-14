@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import vn.gt.__back_end_javaspring.DTO.CommentCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.CommentResponse;
@@ -15,6 +16,7 @@ import vn.gt.__back_end_javaspring.entity.RestResponse;
 import vn.gt.__back_end_javaspring.service.CommentService;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/comments")
@@ -44,7 +46,7 @@ public class CommentController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<CommentResponse> createComment(
-            @RequestBody @Validated CommentCreateDTO commentCreateDTO) {
+            @RequestBody @Valid CommentCreateDTO commentCreateDTO) {
         RestResponse<CommentResponse> restResponse = new RestResponse<>();
         CommentResponse commentResponse = commentService.addComment(commentCreateDTO);
 

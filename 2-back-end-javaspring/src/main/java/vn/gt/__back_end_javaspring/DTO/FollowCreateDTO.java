@@ -1,3 +1,4 @@
+
 package vn.gt.__back_end_javaspring.DTO;
 
 import jakarta.persistence.Column;
@@ -25,7 +26,9 @@ public class FollowCreateDTO {
     @NotNull(message = "Type is required")
     private FollowType followType; // User /page
 
+
     private String followedUserId;
 
     private String followedPageId;
+   
 }

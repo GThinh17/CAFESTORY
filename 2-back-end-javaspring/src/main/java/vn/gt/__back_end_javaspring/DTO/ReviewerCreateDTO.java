@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import jakarta.validation.constraints.*;
 
 
 @Data
@@ -17,7 +17,7 @@ public class ReviewerCreateDTO {
     @NotBlank(message = "UserId is required")
     private String userId;
 
-    private String bio;
-
+    @Min(1)
+    @Max(20)
     private Integer duration;
 }

@@ -18,6 +18,7 @@ import vn.gt.__back_end_javaspring.repository.CommentLikeRepository;
 import vn.gt.__back_end_javaspring.repository.CommentRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.service.CommentLikeService;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 
 import java.util.List;
 
@@ -30,11 +31,12 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     private  final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final CommentLikeMapper commentLikeMapper;
+    private final NotificationService notificationService;
 
     @Override
     public CommentLikeResponse likeComment(CommentLikeCreateDTO dto) {
         boolean exists = commentLikeRepository.existsById(dto.getCommentId());
-        if (!exists) {
+       if(commentLikeRepository.existsByUser_IdAndComment_Id(dto.getUserId(), dto.getCommentId())) {
             throw new LikeExist("Like exists alreadyy");
         }
         User user = userRepository.findById(dto.getUserId())
@@ -43,10 +45,16 @@ public class CommentLikeServiceImpl implements CommentLikeService {
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found!"));
 
         comment.setLikesCount(comment.getLikesCount() + 1);
-        commentRepository.save(comment);
+       commentRepository.save(comment);
+
+        notificationService.notifyLikeComment(user, comment);
 
         CommentLike commentLike = commentLikeMapper.toModel(dto);
+        commentLike.setComment(comment);
+        commentLike.setUser(user);
         CommentLike saved =  commentLikeRepository.save(commentLike);
+
+
         return commentLikeMapper.toResponse(saved);
     }
 
@@ -64,7 +72,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
             throw new LikeNotFoundException("Like not exists alreadyy");
         }
 
-        commentLikeRepository.deleteByUserAndComment(userId, commentId);
+        commentLikeRepository.deleteByUser_IdAndComment_Id(userId, commentId);
 
     }
 

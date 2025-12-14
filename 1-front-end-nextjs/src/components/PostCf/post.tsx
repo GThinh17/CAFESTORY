@@ -17,6 +17,7 @@ import {
 
 import "./post.css";
 import { useAuth } from "@/context/AuthContext";
+import { ShareModal } from "./components/shareModal/ShareModal";
 
 export interface PostProps {
   userId: string;
@@ -48,6 +49,8 @@ export function Post({
   const [localLikes, setLocalLikes] = useState(likes);
   const { token, user } = useAuth();
   const [isLiked, setIsLiked] = useState(false);
+  const [openShare, setOpenShare] = useState(false);
+  const [isMe, setIsMe] = useState(user?.id === userId);
 
   ////////////////////////////// LIKE ////////////////////////////////////////////
   const handleLike = async () => {
@@ -59,7 +62,7 @@ export function Post({
 
       try {
         await axios.delete("http://localhost:8080/api/blog-likes", {
-          params: { blogId: postId, userId: userIdLogin },
+          params: { blogId: postId, userId: user?.id },
           headers: { Authorization: `Bearer ${token}` },
         });
       } catch (error) {
@@ -81,7 +84,7 @@ export function Post({
       await axios.post(
         "http://localhost:8080/api/blog-likes",
         {
-          userId: userIdLogin,
+          userId: user?.id,
           blogId: postId,
         },
         {
@@ -125,82 +128,95 @@ export function Post({
   //////////////////////////////////////////////////////////////////////////////
 
   return (
-    <div className="post">
-      {/* Header */}
-      <div className="post-header">
-        <div className="user-info">
-          <Link href={`/profile/${userId}`}>
-            <Image
-              src={avatar}
-              alt="avatar"
-              width={30}
-              height={30}
-              className="avatar cursor-pointer"
+    <>
+      <div className="post">
+        {/* Header */}
+        <div className="post-header">
+          <div className="user-info">
+            <Link href={`/profile/${userId}`}>
+              <Image
+                src={avatar}
+                alt="avatar"
+                width={30}
+                height={30}
+                className="avatar1 cursor-pointer"
+              />
+            </Link>
+            <span className="username-post">{username}</span>
+            <span className="dot">•</span>
+            <span className="time">{time}</span>
+          </div>
+          <MoreHorizontal size={20} className="more-icon" />
+        </div>
+
+        {/* Carousel */}
+        <div className="post-image relative">
+          <Carousel className="w-full max-w-[470px] mx-auto">
+            <CarouselContent>
+              {images.map((img, i) => (
+                <CarouselItem
+                  key={i}
+                  className="flex items-center justify-center"
+                >
+                  <Image
+                    src={img}
+                    alt={`${username} image ${i + 1}`}
+                    width={470}
+                    height={470}
+                    className="max-h-[470px] object-contain"
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+
+            {images.length > 1 && (
+              <>
+                <CarouselPrevious className="P" />
+                <CarouselNext className="N" />
+              </>
+            )}
+          </Carousel>
+        </div>
+
+        {/* Actions */}
+        <div className="post-actions">
+          <div className="left-actions">
+            <Heart
+              size={24}
+              className={`icon ${isLiked ? "fill-red-500 text-red-500" : ""}`}
+              onClick={handleLike} // 👈 LIKE HERE
             />
-          </Link>
-          <span className="username-post">{username}</span>
-          <span className="dot">•</span>
-          <span className="time">{time}</span>
+            <MessageCircle size={24} className="icon" onClick={onOpenPost} />
+            {!isMe && (
+              <Send
+                size={24}
+                className="icon"
+                onClick={() => setOpenShare(true)}
+              />
+            )}
+          </div>
         </div>
-        <MoreHorizontal size={20} className="more-icon" />
-      </div>
 
-      {/* Carousel */}
-      <div className="post-image relative">
-        <Carousel className="w-full max-w-[470px] mx-auto">
-          <CarouselContent>
-            {images.map((img, i) => (
-              <CarouselItem
-                key={i}
-                className="flex items-center justify-center"
-              >
-                <Image
-                  src={img}
-                  alt={`${username} image ${i + 1}`}
-                  width={470}
-                  height={470}
-                  className="max-h-[470px] object-contain"
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
+        {/* Likes */}
+        <div className="likes">{localLikes} likes</div>
 
-          {images.length > 1 && (
-            <>
-              <CarouselPrevious className="P" />
-              <CarouselNext className="N" />
-            </>
-          )}
-        </Carousel>
-      </div>
+        {/* Caption */}
+        <div className="caption-container">
+          <div className="caption">
+            <strong>{username}</strong> {caption}
+          </div>
+        </div>
 
-      {/* Actions */}
-      <div className="post-actions">
-        <div className="left-actions">
-          <Heart
-            size={24}
-            className={`icon ${isLiked ? "fill-red-500 text-red-500" : ""}`}
-            onClick={handleLike} // 👈 LIKE HERE
-          />
-          <MessageCircle size={24} className="icon" onClick={onOpenPost} />
-          <Send size={24} className="icon" />
+        {/* Comment input */}
+        <div className="add-comment">
+          <Input placeholder="Add a comment" onClick={onOpenPost} />
         </div>
       </div>
-
-      {/* Likes */}
-      <div className="likes">{localLikes} likes</div>
-
-      {/* Caption */}
-      <div className="caption-container">
-        <div className="caption">
-          <strong>{username}</strong> {caption}
-        </div>
-      </div>
-
-      {/* Comment input */}
-      <div className="add-comment">
-        <Input placeholder="Add a comment" onClick={onOpenPost} />
-      </div>
-    </div>
+      <ShareModal
+        open={openShare}
+        onClose={() => setOpenShare(false)}
+        blogId={postId}
+      />
+    </>
   );
 }

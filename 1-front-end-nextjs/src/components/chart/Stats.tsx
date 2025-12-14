@@ -8,15 +8,20 @@ type Props = {
   total: number;
   active: number;
   editors: number;
-  pending: number;
+  walletBalance: string;
 };
 
-export default function Stats({ total, active, editors, pending }: Props) {
+export default function Stats({
+  total,
+  active,
+  editors,
+  walletBalance,
+}: Props) {
   const items = [
     { label: "Total users", value: total, delay: 0 },
     { label: "Active", value: active, delay: 0.05 },
     { label: "Editors", value: editors, delay: 0.1 },
-    { label: "Pending", value: pending, delay: 0.15 },
+    { label: "wallet balance", value: walletBalance, delay: 0.15 },
   ];
 
   return (

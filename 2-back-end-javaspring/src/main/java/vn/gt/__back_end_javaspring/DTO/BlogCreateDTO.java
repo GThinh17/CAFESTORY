@@ -33,4 +33,6 @@ public class BlogCreateDTO {
     @NotNull(message = "userId is required")
     private String userId;
 
+
+
 }

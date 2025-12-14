@@ -38,15 +38,28 @@ public class CafeOwner {
     @Column(name = "contact_phone")
     private String contactPhone;
 
+    @Column(name = "expired_at")
+    private LocalDateTime expiredAt;
+
+    @Column(name = "follower_count")
+    private Long followerCount;
+
+    @Column(name = "join_at")
+    private LocalDateTime joinAt;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
         averageRating = BigDecimal.ZERO;
         totalReview = 0;
+        joinAt = LocalDateTime.now();
+        isDeleted = false;
     }
 
 }

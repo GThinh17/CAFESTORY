@@ -5,30 +5,44 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.Embedded;
+import lombok.RequiredArgsConstructor;
 import vn.gt.__back_end_javaspring.entity.Role;
 import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.entity.UserRole;
 import vn.gt.__back_end_javaspring.entity.Embedded.UserRoleId;
 import vn.gt.__back_end_javaspring.enums.RoleType;
+import vn.gt.__back_end_javaspring.mapper.UserMapper;
 import vn.gt.__back_end_javaspring.DTO.SignupDTO;
+import vn.gt.__back_end_javaspring.DTO.UserDTO;
+import vn.gt.__back_end_javaspring.DTO.UserResponseDTO;
 import vn.gt.__back_end_javaspring.repository.RoleRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 	private final UserRepository userRepository;
 	private final UserRoleRepository userRoleRepository;
 	private final RoleRepository roleRepository;
+	private final  UserMapper userMapper;
 
-	public UserService(UserRepository userRepository, UserRoleRepository userRoleRepository,
-			RoleRepository roleRepository) {
-		this.userRepository = userRepository;
-		this.userRoleRepository = userRoleRepository;
-		this.roleRepository = roleRepository;
+
+	public List<UserResponseDTO> GetAllUsersDTO() {
+		return this.userRepository.findAll()
+				.stream()
+				.map(user -> new UserResponseDTO(
+						user.getAvatar(),
+						user.getFullName(),
+						user.getEmail(),
+						user.getId(),
+						user.getAddress(),
+						user.getFollowerCount(),
+						user.getVertifiedBank()))
+				.toList();
 	}
 
 	public User createUser(User newUser) {
@@ -51,13 +65,17 @@ public class UserService {
 		return this.userRepository.findByEmail(username);
 	}
 
-	public User updateUserById(String id, User user) {
-		User updateUser = this.userRepository.findByEmail(id);
-		updateUser = user;
-		this.userRepository.save(updateUser);
-		return updateUser;
-	}
 
+
+public User updateUserById(String id, UserDTO dto) {
+    User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    // Cập nhật partial bằng mapper
+    userMapper.partialUpdate(dto, user);
+
+    return userRepository.save(user);
+}
 	public UserRole handleUpdateRoleUser(String userId) {
 
 		// 1. Lấy User

@@ -32,7 +32,6 @@
   border: none;
   border-bottom: 1px solid var(--border);
   cursor: pointer;
- 
 }
 
 .ProfileItem:hover {

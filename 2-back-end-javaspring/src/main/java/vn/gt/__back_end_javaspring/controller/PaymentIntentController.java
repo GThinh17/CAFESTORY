@@ -91,8 +91,8 @@ public class PaymentIntentController {
 
                 Stripe.apiKey = secretKey;
 
-                String successUrl = "http://localhost:3000/payment-success";
-                String cancelUrl = "http://localhost:3000/payment-cancel";
+                String successUrl = "http://localhost:3000/";
+                String cancelUrl = "http://localhost:3000/";
 
                 String productionId = paymentCreateDTO.getProductionId();
                 String paymentMethodId = paymentCreateDTO.getPaymentMethodId();
@@ -110,7 +110,7 @@ public class PaymentIntentController {
                 payment.setUser(user);
                 payment.setPaymentMethod(paymentMethod);
                 payment.setProduction(production);
-                payment = this.paymentService.CreatePayment(payment, timeExpired);
+                payment = this.paymentService.CreatePayment(payment, timeExpired); // pending
 
                 Long Amount = Long.valueOf(amount) * Long.valueOf(production.getTotal());
 

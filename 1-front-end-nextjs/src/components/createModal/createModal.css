@@ -24,7 +24,6 @@
   align-items: center;
 }
 
-
 .createRight {
   flex: 2;
   border-left: 1px solid var(--border);
@@ -75,15 +74,16 @@
   right: 12px;
   bottom: 12px;
   cursor: pointer;
+  padding: 8px 12px;
 }
 
 .button11 {
   background-color: var(--primary);
   border-radius: 0.5rem;
-  color: var(--muted-foreground);
   padding: 0.5rem;
   width: 107px;
   text-align: center;
+  color: var(--primary-foreground);
 }
 
 .imgGrid {

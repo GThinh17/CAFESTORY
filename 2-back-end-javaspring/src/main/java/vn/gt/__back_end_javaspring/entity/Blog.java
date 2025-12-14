@@ -6,6 +6,7 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.*;
+import vn.gt.__back_end_javaspring.enums.RoleType;
 import vn.gt.__back_end_javaspring.enums.Visibility;
 
 @Entity
@@ -67,6 +68,7 @@ public class Blog { //Check
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
         private User user;
+
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "like_id")

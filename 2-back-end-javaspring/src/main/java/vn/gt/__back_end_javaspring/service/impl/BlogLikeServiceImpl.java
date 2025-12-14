@@ -12,6 +12,7 @@ import vn.gt.__back_end_javaspring.mapper.BlogLikeMapper;
 import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.BlogLikeService;
 import vn.gt.__back_end_javaspring.service.EarningEventService;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 
 import java.math.BigDecimal;
@@ -29,6 +30,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
     private final ReviewerRepository reviewerRepository;
     private final PricingRuleRepository pricingRuleRepository;
     private final EarningEventService earningEventService;
+    private final NotificationService notificationService;
 
     @Override
     public BlogLikeResponse like(BlogLikeCreateDTO request) {
@@ -39,7 +41,6 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         if(blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
             throw new LikeExist("Like already exists");
         }
-
 
 
         User user = userRepository.findById(userId)
@@ -53,9 +54,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         System.out.println("ReviewerId: " + userId);
         System.out.println("Boolean: "+ reviewerService.isReviewerByUserId(userId));
         if(reviewerService.isReviewerByUserId(userId)){
-            Reviewer reviewer = reviewerRepository.findById(userId)
-                    .orElseThrow(()-> new ReviewerNotFound("Reviewer not found"));
-
+            Reviewer reviewer = reviewerRepository.findByUser_Id(userId);
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
             System.out.println("pricingRule = " + pricingRule.toString());
 
@@ -67,7 +66,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
             earningEventCreateDTO.setBlogId(blogId);
             earningEventCreateDTO.setSourceType("LIKE");
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
-            earningEventCreateDTO.setReviewerId(userId);
+            earningEventCreateDTO.setReviewerId(reviewer.getId());
             earningEventCreateDTO.setAmount(weight.multiply(unitPrice));
             earningEventService.create(earningEventCreateDTO);
         }
@@ -77,6 +76,10 @@ public class BlogLikeServiceImpl implements BlogLikeService {
 
         BlogLike bloglike = blogLikeMapper.toModel(request);
         BlogLike saved =  blogLikeRepository.save(bloglike);
+
+        //Notification
+        notificationService.notifyLikePost(user, blog);
+
 
         return blogLikeMapper.toResponse(saved);
 

@@ -9,15 +9,16 @@ import vn.gt.__back_end_javaspring.DTO.BlogCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.BlogResponse;
 import vn.gt.__back_end_javaspring.DTO.BlogUpdateDTO;
 import vn.gt.__back_end_javaspring.DTO.CursorPage;
-import vn.gt.__back_end_javaspring.entity.Blog;
-import vn.gt.__back_end_javaspring.entity.Media;
+import vn.gt.__back_end_javaspring.entity.*;
 import vn.gt.__back_end_javaspring.exception.BlogNotFoundException;
+import vn.gt.__back_end_javaspring.exception.PageNotFoundException;
+import vn.gt.__back_end_javaspring.exception.ReviewerNotFound;
+import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.BlogMapper;
-import vn.gt.__back_end_javaspring.repository.BlogRepository;
-import vn.gt.__back_end_javaspring.repository.PageRepository;
-import vn.gt.__back_end_javaspring.repository.UserRepository;
-import vn.gt.__back_end_javaspring.repository.locationRepository;
+import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.BlogService;
+import vn.gt.__back_end_javaspring.service.CafeOwnerService;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
 import java.util.List;
@@ -32,17 +33,23 @@ public class BlogServiceImpl implements BlogService {
     private final UserRepository userRepository;
     private final PageRepository pageRepository;
     private final locationRepository locationRepository;
+    private final UserRoleRepository userRoleRepository;
+    private final NotificationService notificationService;
+    private final CafeOwnerService cafeOwnerService;
+    private final ReviewerRepository reviewerRepository;
 
     @Override
     public BlogResponse createBlog(BlogCreateDTO dto) {
         Blog blog = blogMapper.toModel(dto);
 
-        var user = userRepository.findById(dto.getUserId())
+
+        User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getUserId()));
         blog.setUser(user);
 
+        Page page = null;
         if (dto.getPageId() != null) {
-            var page = pageRepository.findById(dto.getPageId())
+            page = pageRepository.findById(dto.getPageId())
                     .orElseThrow(() -> new RuntimeException("Page not found with id: " + dto.getPageId()));
             blog.setPage(page);
         }
@@ -65,7 +72,12 @@ public class BlogServiceImpl implements BlogService {
             blog.setMediaList(mediaList);
         }
 
+
         Blog saved = blogRepository.save(blog);
+
+        if (page != null && cafeOwnerService.isCafeOwner(dto.getUserId())) {
+            notificationService.notifyPageNewPost(page, saved);
+        }
 
         return blogMapper.toResponse(saved);
     }
@@ -111,6 +123,40 @@ public class BlogServiceImpl implements BlogService {
         Blog saved = blogRepository.save(blog);
         return blogMapper.toResponse(saved);
     }
+
+    @Override
+    public org.springframework.data.domain.Page<BlogResponse> getBlogsForUser(String userId, PageRequest pageRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+
+        org.springframework.data.domain.Page<Blog> blogResponses = blogRepository.
+                findByUser_IdAndPage_IdNullOrderByCreatedAtDescIdDesc(userId, pageRequest);
+
+        return  blogResponses.map(blogMapper::toResponse);
+    }
+
+    @Override
+    public org.springframework.data.domain.Page<BlogResponse> getBlogsForReviewer(String reviewerId, PageRequest  pageRequest) {
+        Reviewer reviewer = reviewerRepository.findById(reviewerId)
+                .orElseThrow(()-> new ReviewerNotFound("Reviewer Not found"));
+        String userId = reviewer.getUser().getId();
+
+        org.springframework.data.domain.Page<Blog> blogResponsePage = blogRepository.
+                findByUser_IdAndPage_IdNullOrderByCreatedAtDescIdDesc(userId, pageRequest);
+
+        return blogResponsePage.map(blogMapper::toResponse);
+
+    }
+
+    @Override
+    public org.springframework.data.domain.Page<BlogResponse> getBlogsForPage(String pageId, PageRequest pageRequest) {
+        Page page = pageRepository.findById(pageId)
+                .orElseThrow(()-> new PageNotFoundException("Page not found"));
+
+        org.springframework.data.domain.Page<Blog>blogPage = blogRepository.findByPage_IdOrderByCreatedAtDescIdDesc(pageId, pageRequest);
+        return blogPage.map(blogMapper::toResponse);
+    }
+
 
     @Override
     @Transactional(readOnly = true)

@@ -33,6 +33,13 @@ public class Reviewer {
     @Column(name = "total_score")
     private Integer totalScore;
 
+    @Column(name = "follower_count")
+    Integer followerCount;
+
+    @Column(name = "following_count")
+    Integer followingCount;
+
+
     @Column(name = "join_at")
     private LocalDateTime joinAt;
 

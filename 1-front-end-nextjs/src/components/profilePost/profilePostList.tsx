@@ -4,8 +4,18 @@ import { ProfilePost } from "./profilePost";
 import styles from "./profilePost.module.scss";
 import { useAuth } from "@/context/AuthContext";
 import { useParams } from "next/navigation";
+import { PostModal } from "../PostCf/components/postModal";
 
-interface Post {
+interface Share {
+  shareId: string;
+  blogId: string;
+  caption: string;
+  createdAt: string;
+  userFullName: string;
+  userAvatarUrl: string;
+}
+
+interface Blog {
   id: string;
   caption: string;
   mediaUrls: string[];
@@ -13,11 +23,14 @@ interface Post {
   createdAt: string;
 }
 
+
 export function ProfilePostList() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [isOpenPost, setIsOpenPost] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<any>(null);
 
   const { userId } = useParams();
   const { token, loading: authLoading } = useAuth();
@@ -41,8 +54,11 @@ export function ProfilePostList() {
         setPosts((prev) => {
           // lọc post mới không trùng với các post đã có
           const newPosts = postData.filter(
-            (p: Post) => !prev.some((prevP) => prevP.id === p.id)
+            (p: any) =>
+              !p.pageId && // ❌ bỏ post có pageId
+              !prev.some((prevP) => prevP.id === p.id)
           );
+
           return [...prev, ...newPosts];
         });
 
@@ -57,6 +73,19 @@ export function ProfilePostList() {
 
     fetchPosts();
   }, [userId, token]);
+
+  const openPost = (post: any) => {
+    setSelectedPost({
+      ...post,
+      username: post.userFullName,
+      avatar:
+        post.userAvatar ??
+        "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
+      images: post.mediaUrls ?? [],
+      likes: post.likeCount,
+    });
+    setIsOpenPost(true);
+  };
 
   // Infinite scroll
   useEffect(() => {
@@ -84,8 +113,11 @@ export function ProfilePostList() {
               const postData = data.data?.data || [];
               setPosts((prev) => {
                 const newPosts = postData.filter(
-                  (p: Post) => !prev.some((prevP) => prevP.id === p.id)
+                  (p: any) =>
+                    !p.pageId && // ❌ bỏ post có pageId
+                    !prev.some((prevP) => prevP.id === p.id)
                 );
+
                 return [...prev, ...newPosts];
               });
               setNextCursor(data.data?.nextCursor || null);
@@ -119,11 +151,19 @@ export function ProfilePostList() {
             caption={p.caption}
             likes={p.likeCount}
             time={new Date(p.createdAt).toLocaleDateString()}
+            onClick={() => openPost(p)}
           />
         ))}
       </div>
       {nextCursor && <div ref={observerRef} style={{ height: 1 }}></div>}
       {loadingMore && <div>Loading more posts...</div>}
+
+      <PostModal
+        blogId={selectedPost?.id}
+        open={isOpenPost}
+        onClose={() => setIsOpenPost(false)}
+        post={selectedPost}
+      />
     </>
   );
 }

@@ -10,8 +10,38 @@ export function ProfileInfo() {
   const { user, loading } = useAuth();
   const [me, setMe] = useState<any>(null);
   const [count, setCount] = useState<number>(0);
-
+  const [cfOwnerId, setCfOwnerId] = useState("");
+  const [cfName, setCfName] = useState("");
   console.log(userId);
+
+  useEffect(() => {
+    const fetchCfOwnerId = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/cafe-owners/user/${userId}`
+        );
+        setCfOwnerId(res.data.data.id);
+      } catch (err) {
+        console.log("fetch status fail");
+      }
+    };
+    fetchCfOwnerId();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchCfName = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/pages/cafe-owner/${cfOwnerId}`
+        );
+        setCfName(res.data.data.pageName);
+      } catch (err) {
+        console.log("fetch status fail");
+      }
+    };
+    fetchCfName();
+  }, [cfOwnerId]);
+
   useEffect(() => {
     const fetchMe = async () => {
       try {
@@ -31,20 +61,27 @@ export function ProfileInfo() {
         const res = await axios.get(
           `http://localhost:8080/api/blogs?userId=${userId}`
         );
+
         const posts = res.data?.data?.data ?? [];
-        setCount(posts.length);
+
+        // 🔥 Lọc các post có pageId === null
+        const filteredPosts = posts.filter((p: any) => p.pageId === null);
+
+        setCount(filteredPosts.length);
       } catch (err) {
         console.error("Failed to fetch posts:", err);
       }
     };
 
     fetchPosts();
-  }, [me?.id, userId]);
+  }, [userId]);
 
   if (loading) return null;
 
   return (
     <ProfileHeader
+      pageName={cfName}
+      cfOwnerId={cfOwnerId}
       username={me?.fullName ?? "Unknown"}
       verified
       following={me?.isFollowing ?? false}

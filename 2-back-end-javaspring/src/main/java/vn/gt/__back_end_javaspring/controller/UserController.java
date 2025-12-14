@@ -1,13 +1,7 @@
 package vn.gt.__back_end_javaspring.controller;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -18,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import vn.gt.__back_end_javaspring.DTO.UserDTO;
 import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.service.UserService;
 
@@ -31,14 +26,10 @@ public class UserController {
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	// public static boolean hasRole(Jwt jwt, String role) {
-	// List<Map<String, Object>> roles = jwt.getClaim("roles");
-	// if (roles == null)
-	// return false;
-
-	// return roles.stream()
-	// .anyMatch(r -> role.equals(r.get("role")));
-	// }
+	@GetMapping("/users/admin")
+	public ResponseEntity<?> GetAllUserFormat() {
+		return ResponseEntity.ok().body(this.userService.GetAllUsersDTO());
+	}
 
 	@GetMapping("/users")
 
@@ -68,8 +59,7 @@ public class UserController {
 	}
 
 	@PutMapping("/users/{id}")
-	@PreAuthorize("@auth.hasRole('ADMIN')")
-	public ResponseEntity<?> updateUser(@RequestBody User updateUser, @PathVariable("id") String id,
+	public ResponseEntity<?> updateUser(@RequestBody UserDTO updateUser, @PathVariable("id") String id,
 			@AuthenticationPrincipal Jwt jwt) {
 		User user = this.userService.updateUserById(id, updateUser);
 

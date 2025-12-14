@@ -29,14 +29,8 @@ public interface NotificationService {
 
     void notifyNewFollower(User follower, User followedUser);
 
-    void notifyNewPageFollower(User follower, Page page);
+    void notifyNewPageFollower(User follower, vn.gt.__back_end_javaspring.entity.Page page);
 
-    void notifyPageNewPost(Page page, Blog blog);
+    void notifyPageNewPost(vn.gt.__back_end_javaspring.entity.Page page, Blog blog);
 
-    void notifyWalletTransaction(WalletTransaction transaction);
-
-    void notifyBadgeGranted(User user, Badge badge);
-
-    // Optional: notify suggestion
-    void notifyConnectionSuggestion(User receiver, User suggestedUser, String reason);
 }

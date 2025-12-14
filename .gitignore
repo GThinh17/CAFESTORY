@@ -1,2 +1,8 @@
 # ignore vs code file
+<<<<<<<<< Temporary merge branch 1
+*.env
+=========
 .vscode/
+2-back-end-javaspring/src/main/resources/application.properties/
+**/node_modules
+**/config/serviceAccountKey.json

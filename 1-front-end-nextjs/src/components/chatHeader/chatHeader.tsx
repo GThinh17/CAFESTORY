@@ -25,7 +25,7 @@ export function ChatHeader() {
   const params = useParams();
   const chatId = params.chatId as string;
   const [otherUser, setOtherUser] = useState<UserInfo | null>(null);
-  console.log("day la chat Id", chatId);
+  
   // ---- FETCH CHAT INFO ----
   useEffect(() => {
     const fetchChatInfo = async () => {
@@ -54,7 +54,7 @@ export function ChatHeader() {
           }
         );
 
-        setOtherUser(userRes.data?.data);
+        setOtherUser(userRes.data.data);
       } catch (err) {
         console.error(err);
       }
@@ -62,7 +62,6 @@ export function ChatHeader() {
 
     fetchChatInfo();
   }, [chatId, token, user]);
-  console.log(otherUser);
 
   return (
     <>
