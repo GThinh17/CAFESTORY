@@ -2,24 +2,29 @@ package vn.gt.__back_end_javaspring.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.PageCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.PageResponse;
 import vn.gt.__back_end_javaspring.DTO.PageUpdateDTO;
 import vn.gt.__back_end_javaspring.entity.CafeOwner;
+import vn.gt.__back_end_javaspring.entity.Follow;
 import vn.gt.__back_end_javaspring.entity.Page;
-import vn.gt.__back_end_javaspring.entity.User;
+import vn.gt.__back_end_javaspring.enums.FollowType;
 import vn.gt.__back_end_javaspring.exception.CafeOwnerNotFound;
 import vn.gt.__back_end_javaspring.exception.PageNotFoundException;
 import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.PageMapper;
 import vn.gt.__back_end_javaspring.repository.CafeOwnerRepository;
+import vn.gt.__back_end_javaspring.repository.FollowRepository;
 import vn.gt.__back_end_javaspring.repository.PageRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
+import vn.gt.__back_end_javaspring.service.FollowService;
 import vn.gt.__back_end_javaspring.service.PageService;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +35,9 @@ public class PageServiceImpl implements PageService {
     private  final UserRepository userRepository;
     private final PageMapper pageMapper;
     private final CafeOwnerRepository cafeOwnerRepository;
+    private final FollowService followService;
+    private final FollowRepository followRepository;
+
     @Override
     public PageResponse createPage(PageCreateDTO request) {
 
@@ -80,7 +88,7 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public List<PageResponse> getAllPagesOrderByFollowersDesc() {
-        List<Page> pages = pageRepository.findAllOrderByFollowersDesc();
+        List<Page> pages = pageRepository.findAllOrderByFollowingCountDesc();
         if(pages.isEmpty()){
             throw new PageNotFoundException("Page not found");
         }
@@ -89,8 +97,32 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    public List<PageResponse> getAllPagesByFollwing() {
-        return null;
+    public List<PageResponse> getAllPagesFollowedByUser(String userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        List<Follow> follows = followRepository.findAllByFollower_IdAndFollowType(userId, FollowType.PAGE);
+
+        return follows.stream()
+                .map(Follow::getFollowedPage)
+                .filter(Objects::nonNull)
+                .map(pageMapper::toResponse)
+                .collect(Collectors.toList());
     }
+
+
+    @Override
+    public List<PageResponse> getAllPagesFollowedByUserSortedAsc(String userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        List<PageResponse> pageResponses = getAllPagesFollowedByUser(userId);
+
+        return pageResponses.stream()
+                .sorted(Comparator.comparing(PageResponse::getFollowingCount).reversed())
+                .collect(Collectors.toList());
+    }
+
+
 
 }

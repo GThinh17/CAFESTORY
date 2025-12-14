@@ -8,6 +8,8 @@ import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/reviewers")
 @RequiredArgsConstructor
@@ -15,15 +17,13 @@ public class ReviewerController {
 
     private final ReviewerService reviewerService;
 
-
     @PostMapping
     public ResponseEntity<ReviewerResponse> registerReviewer(
-            @Valid @RequestBody ReviewerCreateDTO dto
-    ) {
+            @Valid @RequestBody ReviewerCreateDTO dto) {
         ReviewerResponse response = reviewerService.registerReviewer(dto);
+        System.out.println(">>>>>>>>>>>>>>>>RESPONSE NÈ<<<<<<<<<<<<<" + response);
         return ResponseEntity.ok(response);
     }
-
 
     @GetMapping("/{userId}/exists")
     public ResponseEntity<Boolean> isReviewer(@PathVariable String userId) {
@@ -31,12 +31,10 @@ public class ReviewerController {
         return ResponseEntity.ok(exists);
     }
 
-
     @PostMapping("/{userId}/score")
     public ResponseEntity<Void> addScore(
             @PathVariable String userId,
-            @RequestParam Integer score
-    ) {
+            @RequestParam Integer score) {
         reviewerService.addScore(userId, score);
         return ResponseEntity.noContent().build();
     }
@@ -53,17 +51,32 @@ public class ReviewerController {
         return ResponseEntity.noContent().build();
     }
 
-
     @PostMapping("/{reviewerId}/extend")
     public ResponseEntity<ReviewerResponse> extendReviewer(
             @PathVariable String reviewerId,
-            @RequestBody ReviewerCreateDTO dto
-    ) {
+            @RequestBody ReviewerCreateDTO dto) {
         ReviewerResponse response = reviewerService.extendReviewer(reviewerId, dto);
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/user/{userId}/followed")
+    public ResponseEntity<List<ReviewerResponse>> getReviewersFollowedByUser(
+            @PathVariable String userId) {
+        List<ReviewerResponse> responses = reviewerService.getReviewersFollowedByUser(userId);
+        return ResponseEntity.ok(responses);
+    }
 
+    @GetMapping("/user/{userId}/followed/sort-follower-desc")
+    public ResponseEntity<List<ReviewerResponse>> getReviewersFollowedByUserOrderByFollowerCountDesc(
+            @PathVariable String userId) {
+        List<ReviewerResponse> responses = reviewerService.getReviewersFollowedByUserOrderByFollowerCountDesc(userId);
+        return ResponseEntity.ok(responses);
+    }
 
+    @GetMapping("/top/follower-desc")
+    public ResponseEntity<List<ReviewerResponse>> getAllReviewersOrderByFollowerCountDesc() {
+        List<ReviewerResponse> responses = reviewerService.getAllReviewersOrderByFollowerCountDesc();
+        return ResponseEntity.ok(responses);
+    }
 
 }

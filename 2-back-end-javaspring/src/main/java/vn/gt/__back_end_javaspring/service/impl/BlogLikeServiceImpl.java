@@ -51,14 +51,10 @@ public class BlogLikeServiceImpl implements BlogLikeService {
 
 
         String useId = blog.getUser().getId();
-        System.out.println("ReviewerId: " + userId);
-        System.out.println("Boolean: "+ reviewerService.isReviewerByUserId(userId));
         if(reviewerService.isReviewerByUserId(userId)){
-            Reviewer reviewer = reviewerRepository.findById(userId)
-                    .orElseThrow(()-> new ReviewerNotFound("Reviewer not found"));
-
+            Reviewer reviewer = reviewerRepository.findByUser_Id(userId);
+            System.out.println("Reviewer:  " + reviewer);
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
-            System.out.println("pricingRule = " + pricingRule.toString());
 
             EarningEventCreateDTO earningEventCreateDTO = new EarningEventCreateDTO();
 
@@ -68,8 +64,9 @@ public class BlogLikeServiceImpl implements BlogLikeService {
             earningEventCreateDTO.setBlogId(blogId);
             earningEventCreateDTO.setSourceType("LIKE");
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
-            earningEventCreateDTO.setReviewerId(userId);
+            earningEventCreateDTO.setReviewerId(reviewer.getId());
             earningEventCreateDTO.setAmount(weight.multiply(unitPrice));
+            System.out.println("earningEventCreateDTO:  " + earningEventCreateDTO);
             earningEventService.create(earningEventCreateDTO);
         }
 

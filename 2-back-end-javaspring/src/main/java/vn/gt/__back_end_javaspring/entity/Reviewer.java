@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
 import vn.gt.__back_end_javaspring.enums.ReviewerStatus;
+import vn.gt.__back_end_javaspring.mapper.PageMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -39,12 +40,20 @@ public class Reviewer {
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
+    @Column(name = "follower_count")
+    Integer followerCount;
+
+    @Column(name = "following_count")
+    Integer followingCount;
+
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ReviewerStatus status;
+
+
 
     @PrePersist
     public void prePersist() {
@@ -59,4 +68,6 @@ public class Reviewer {
         }
         this.isDeleted = false;
     }
+
+
 }

@@ -2,22 +2,28 @@ package vn.gt.__back_end_javaspring.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.ap.shaded.freemarker.ext.beans.BooleanModel;
 import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.FollowCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.FollowResponse;
 import vn.gt.__back_end_javaspring.entity.Follow;
 import vn.gt.__back_end_javaspring.entity.Page;
+import vn.gt.__back_end_javaspring.entity.Reviewer;
 import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.enums.FollowType;
 import vn.gt.__back_end_javaspring.exception.ExistFollow;
 import vn.gt.__back_end_javaspring.exception.PageNotFoundException;
+import vn.gt.__back_end_javaspring.exception.ReviewerNotFound;
 import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.FollowMapper;
 import vn.gt.__back_end_javaspring.repository.FollowRepository;
 import vn.gt.__back_end_javaspring.repository.PageRepository;
+import vn.gt.__back_end_javaspring.repository.ReviewerRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
+import vn.gt.__back_end_javaspring.service.CafeOwnerService;
 import vn.gt.__back_end_javaspring.service.FollowService;
 import vn.gt.__back_end_javaspring.service.NotificationService;
+import vn.gt.__back_end_javaspring.service.ReviewerService;
 
 import java.util.List;
 
@@ -28,15 +34,24 @@ public class FollowServiceImpl implements FollowService {
     private final UserRepository userRepository;
     private final PageRepository pageRepository;
     private final NotificationService notificationService;
+    private final ReviewerService reviewerService;
+    private final ReviewerRepository reviewerRepository;
+    private  final CafeOwnerService cafeOwnerService;
 
     @Override
     public FollowResponse follow(FollowCreateDTO request) {
         User follower = userRepository.findById(request.getFollowerId())
                 .orElseThrow(() -> new UserNotFoundException("Follower not found"));
 
+        if(cafeOwnerService.isCafeOwner(request.getFollowerId())){
+            throw new RuntimeException("Cafe owner can not follow anyone");
+        }
+
         Follow follow = new Follow();
+
         follow.setFollower(follower);
         follow.setFollowType(request.getFollowType());
+
 
         if (request.getFollowType() == FollowType.USER) {
             User followedUser = userRepository.findById(request.getFollowedUserId())
@@ -57,6 +72,7 @@ public class FollowServiceImpl implements FollowService {
 
             follow.setFollowedUser(followedUser);
             follow.setFollowedPage(null);
+            follow.setFollowedReviewer(null);
 
             notificationService.notifyNewFollower(follower, followedUser);
 
@@ -74,11 +90,42 @@ public class FollowServiceImpl implements FollowService {
 
             follow.setFollowedPage(page);
             follow.setFollowedUser(null);
+            follow.setFollowedReviewer(null);
             notificationService.notifyNewPageFollower(follower, page);
-        } else {
+        } else if (request.getFollowType() == FollowType.REVIEWER) {
+
+            Reviewer reviewer = reviewerRepository.findByUser_Id(request.getFollowedUserId());
+
+            if (reviewer == null) {
+                throw new ReviewerNotFound("Reviewer not found");
+            }
+
+            String reviewerId = reviewer.getId();
+
+            if (reviewer.getUser() != null
+                    && reviewer.getUser().getId().equals(follower.getId())) {
+                throw new RuntimeException("Cannot follow yourself");
+            }
+
+            if (followRepository.existsByFollower_IdAndFollowedReviewer_Id(
+                    request.getFollowerId(), reviewerId)) {
+                throw new ExistFollow("Following Reviewer already exists");
+            }
+
+
+
+            follower.setFollowingCount(follower.getFollowingCount() + 1);
+            reviewer.setFollowerCount(reviewer.getFollowerCount() + 1);
+
+            follow.setFollowedReviewer(reviewer);
+            follow.setFollowedPage(null);
+            follow.setFollowedUser(null);
+
+            //Thieu notification
+        }
+        else  {
             throw new IllegalArgumentException("Invalid follow type");
         }
-
         Follow saved = followRepository.save(follow);
         return followMapper.toResponse(saved);
     }

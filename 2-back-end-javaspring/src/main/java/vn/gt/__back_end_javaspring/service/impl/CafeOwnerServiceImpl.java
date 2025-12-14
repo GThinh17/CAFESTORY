@@ -35,16 +35,19 @@ public class CafeOwnerServiceImpl implements CafeOwnerService {
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
     private final PageRepository pageRepository;
-    private final PageService pageService;
     private final ReviewerRepository reviewerRepository;
     @Override
     public CafeOwnerResponse createCafeOwner(CafeOwnerDTO dto) {
-        // 1. Lấy user
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Role role = roleRepository.findByroleName(RoleType.CAFEOWNER);
 
+        CafeOwner cafeOwner1 = cafeOwnerRepository.findByUser_Id(dto.getUserId());
+        if(isCafeOwner(dto.getUserId())){
+            extendCafeOwner(getByUserId(dto.getUserId()).getId(), dto);
+            return cafeOwnerMapper.toResponse(cafeOwner1);
+        }
 
         UserRoleId userRoleId = new UserRoleId(
                 user.getId(),
@@ -147,6 +150,16 @@ public class CafeOwnerServiceImpl implements CafeOwnerService {
         cafeOwnerRepository.save(cafeOwner);
         return cafeOwnerMapper.toResponse(cafeOwner);
     }
+
+    @Override
+    public String getUserId(String cafeOwnerId) {
+        CafeOwner cafeOwner = cafeOwnerRepository.findById(cafeOwnerId)
+                .orElseThrow(() -> new CafeOwnerNotFound("CafeOwner not found"));
+
+        String userId = cafeOwner.getUser().getId();
+        return userId;
+    }
+
 
 
 }

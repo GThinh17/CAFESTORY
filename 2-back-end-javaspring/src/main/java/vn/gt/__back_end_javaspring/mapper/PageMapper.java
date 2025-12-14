@@ -12,8 +12,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PageMapper {
 
-//    @Mapping(source = "cafeOwnerId", target = "cafeOwner.id")
-//    @Mapping(target = "openHours", source = "openHours")
+    // @Mapping(source = "cafeOwnerId", target = "cafeOwner.id")
+    // @Mapping(target = "openHours", source = "openHours")
     Page toModel(PageCreateDTO request);
 
     @Mapping(source = "id", target = "pageId")
@@ -22,7 +22,6 @@ public interface PageMapper {
     PageResponse toResponse(Page page);
 
     List<PageResponse> toResponse(List<Page> pages);
-
 
     default String map(JsonNode node) {
         return node != null ? node.toString() : null;

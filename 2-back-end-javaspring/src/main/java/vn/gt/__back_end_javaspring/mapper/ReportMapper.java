@@ -15,6 +15,8 @@ public class ReportMapper {
                 report.getId(),
                 report.getReportingUser() != null ? report.getReportingUser().getId() : null,
                 report.getReportedUser() != null ? report.getReportedUser().getId() : null,
+                report.getReportedBlog() != null ? report.getReportedBlog().getId() : null,
+                report.getReportedPage() != null ? report.getReportedPage().getId() : null,
                 report.getReportType() != null ? report.getReportType().name() : null,
                 report.getProblem(),
                 report.getDescription(),

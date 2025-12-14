@@ -23,5 +23,6 @@ public interface CafeOwnerService {
 
     CafeOwnerResponse extendCafeOwner(String cafeOwnerId, CafeOwnerDTO dto);
 
+    String getUserId(String cafeOwnerId);
 
 }
