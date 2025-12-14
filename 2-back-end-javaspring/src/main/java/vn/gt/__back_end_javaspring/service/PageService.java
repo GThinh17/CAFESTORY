@@ -26,5 +26,6 @@ public interface PageService {
 
     List<PageResponse> getAllPagesFollowedByUserSortedAsc(String userId);
 
+    String getCafeOwnerId(String pageId);
 
 }

@@ -59,6 +59,14 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
+    public String getCafeOwnerId(String pageId) {
+        Page page = pageRepository.findById(pageId)
+                .orElseThrow(()-> new PageNotFoundException("Page not found"));
+        
+        return page.getCafeOwner().getId();
+    }
+
+    @Override
     public PageResponse getPageByCafeOwnerId(String cafeOwnerId){
         CafeOwner cafeOwner = cafeOwnerRepository.findById(cafeOwnerId)
                 .orElseThrow(()-> new CafeOwnerNotFound("CafeOwner not found"));

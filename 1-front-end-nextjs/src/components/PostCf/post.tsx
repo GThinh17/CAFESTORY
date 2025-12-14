@@ -48,6 +48,8 @@ export function Post({
   const [localLikes, setLocalLikes] = useState(likes);
   const { token, user } = useAuth();
   const [isLiked, setIsLiked] = useState(false);
+  const [openShare, setOpenShare] = useState(false);
+  const [isMe, setIsMe] = useState(user?.id === userId);
 
   ////////////////////////////// LIKE ////////////////////////////////////////////
   const handleLike = async () => {
@@ -183,7 +185,13 @@ export function Post({
             onClick={handleLike} // 👈 LIKE HERE
           />
           <MessageCircle size={24} className="icon" onClick={onOpenPost} />
-          <Send size={24} className="icon" />
+          {!isMe && (
+            <Send
+              size={24}
+              className="icon"
+              onClick={() => setOpenShare(true)}
+            />
+          )}
         </div>
       </div>
 

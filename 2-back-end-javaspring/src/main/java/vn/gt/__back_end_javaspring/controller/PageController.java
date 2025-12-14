@@ -37,6 +37,14 @@ public class PageController {
         return ResponseEntity.ok().body(data);
     }
 
+    @GetMapping("cafe-owner")
+    public ResponseEntity<String> getCafeOwnerId(
+            @RequestParam String pageId
+    ) {
+        String data = pageService.getCafeOwnerId(pageId);
+        return ResponseEntity.ok(data);
+    }
+
     @GetMapping("/cafe-owner/{cafeOwnerId}")
     public ResponseEntity<PageResponse> getPageByCafeOwnerId(
             @PathVariable String cafeOwnerId) {
