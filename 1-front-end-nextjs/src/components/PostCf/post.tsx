@@ -137,7 +137,7 @@ export function Post({
               alt="avatar"
               width={30}
               height={30}
-              className="avatar cursor-pointer"
+              className="avatarqq cursor-pointer"
             />
           </Link>
           <span className="username-post">{username}</span>

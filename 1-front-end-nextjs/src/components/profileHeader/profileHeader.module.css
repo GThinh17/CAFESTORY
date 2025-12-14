@@ -26,6 +26,8 @@
 .avatarImg {
   border-radius: 50%;
   border: 3px solid var(--background);
+  width: 150px;
+  height: 150px;
 }
 
 .profileInfo {

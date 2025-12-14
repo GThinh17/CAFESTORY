@@ -1,8 +1,10 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import "./onlineAvt.css";
 import { useAuth } from "@/context/AuthContext";
 
@@ -15,6 +17,7 @@ interface Reviewer {
 }
 
 export function OnlineAvt() {
+  const router = useRouter();
   const itemsPerPage = 6;
   const [page, setPage] = useState(0);
   const [reviewers, setReviewers] = useState<Reviewer[]>([]);
@@ -91,20 +94,12 @@ export function OnlineAvt() {
   const totalPages = Math.ceil(reviewers.length / itemsPerPage);
   const startIndex = page * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const visibleUsers = users.slice(startIndex, endIndex);
-
-  const handleNext = () => {
-    if (page < totalPages - 1) setPage(page + 1);
-  };
-
-  const handlePrev = () => {
-    if (page > 0) setPage(page - 1);
-  };
+  const visibleUsers = reviewers.slice(startIndex, endIndex);
 
   return (
     <div className="onlineAvtWrapper">
       {page > 0 && (
-        <Button className="scrollBtn left" onClick={handlePrev}>
+        <Button className="scrollBtn left" onClick={() => setPage(page - 1)}>
           <ChevronLeft size={22} />
         </Button>
       )}
@@ -134,7 +129,7 @@ export function OnlineAvt() {
       </div>
 
       {page < totalPages - 1 && (
-        <Button className="scrollBtn right" onClick={handleNext}>
+        <Button className="scrollBtn right" onClick={() => setPage(page + 1)}>
           <ChevronRight size={22} />
         </Button>
       )}

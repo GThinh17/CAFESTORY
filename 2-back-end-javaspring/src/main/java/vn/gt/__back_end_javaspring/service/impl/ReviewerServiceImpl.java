@@ -12,11 +12,13 @@ import vn.gt.__back_end_javaspring.entity.Embedded.UserRoleId;
 import vn.gt.__back_end_javaspring.enums.FollowType;
 import vn.gt.__back_end_javaspring.enums.ReviewerStatus;
 import vn.gt.__back_end_javaspring.enums.RoleType;
+import vn.gt.__back_end_javaspring.exception.ConflictRole;
 import vn.gt.__back_end_javaspring.exception.ReviewerNotFound;
 import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.PageMapper;
 import vn.gt.__back_end_javaspring.mapper.ReviewerMapper;
 import vn.gt.__back_end_javaspring.repository.*;
+import vn.gt.__back_end_javaspring.service.CafeOwnerService;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 
 import java.time.LocalDateTime;
@@ -36,6 +38,8 @@ public class ReviewerServiceImpl implements ReviewerService {
     private final UserRoleRepository userRoleRepository;
     private final FollowRepository followRepository;
     private final PageMapper pageMapper;
+
+    private final CafeOwnerRepository cafeOwnerRepository;
 
     @Override
     public void addScore(String reviewerId, Integer score) {
@@ -133,7 +137,7 @@ public class ReviewerServiceImpl implements ReviewerService {
 
     @Override
     public List<ReviewerResponse> getAllReviewersOrderByFollowerCountDesc() {
-        List<Reviewer> reviewers = reviewerRepository.findAllOrderByFollowerCountDesc();
+        List<Reviewer> reviewers = reviewerRepository.findAllByOrderByFollowerCountDesc();
         if (reviewers.isEmpty()) {
             throw new ReviewerNotFound("Reviewer not found");
         }
@@ -165,11 +169,12 @@ public class ReviewerServiceImpl implements ReviewerService {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Role role = roleRepository.findByroleName(RoleType.REVIEWER);
-        
-        // if(isReviewerByUserId(dto.getUserId())){
 
-        //     extendReviewer()
-        // }
+        Reviewer reviewer1 = reviewerRepository.findByUser_Id(user.getId());
+        if(isReviewerByUserId(dto.getUserId())) {
+            extendReviewer(reviewer1.getId(), dto);
+            return reviewerMapper.toResponse(reviewer1);
+        }
 
         UserRoleId userRoleId = new UserRoleId(user.getId(), role.getId());
         UserRole userRole = new UserRole();
@@ -193,14 +198,6 @@ public class ReviewerServiceImpl implements ReviewerService {
         Reviewer saved = reviewerRepository.save(reviewer);
         return reviewerMapper.toResponse(saved);
     }
-
-
-
-
-
-
-
-
 
 
 
