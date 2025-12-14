@@ -23,7 +23,7 @@ public class Tag {
     @Id
     @Column(name = "tag_id")
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String tagId;
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
@@ -31,7 +31,15 @@ public class Tag {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "blog_id")
-    private Blog blogId;
+    private Blog blogIdTag;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_idTag")
+    private User userIdTag;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "page_id")
+    private Page pageIdTag;
 
     @Column(name = "username")
     private String username;
