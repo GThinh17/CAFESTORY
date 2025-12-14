@@ -69,6 +69,7 @@ public class PageController {
     public ResponseEntity<List<PageResponse>> getAllPagesFollowedByUser(
             @PathVariable String userId
     ) {
+
         List<PageResponse> data = pageService.getAllPagesFollowedByUser(userId);
         return ResponseEntity.ok(data);
     }
@@ -84,9 +85,9 @@ public class PageController {
     public ResponseEntity<String> getCafeOwnerId(
             @RequestParam String pageId
     ) {
+
         String data = pageService.getCafeOwnerId(pageId);
         return ResponseEntity.ok(data);
     }
-
 
 }

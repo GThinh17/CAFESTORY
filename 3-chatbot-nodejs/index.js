@@ -12,7 +12,22 @@ const ModelCheckReport = require("./controller/ReportModels/modelReport");
 app.use(cors());
 app.use(bodyParser.json());
 connectDB(); // KẾT NỐI TRƯỚC
+<<<<<<< HEAD
+app.use((req, res, next) => {
+  const authHeader = req.headers['authorization']; // Lấy header Authorization
 
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1]; // Tách lấy token
+    req.token = token;
+  } else {
+    req.token = null;
+  }
+
+  next();
+});
+=======
+
+>>>>>>> 2422a0eb409408b2b4af3f4acc769483694311ad
 (async () => {
   app.get("/start", createThread);
   app.post("/save-knowledge", saveKnowledge);

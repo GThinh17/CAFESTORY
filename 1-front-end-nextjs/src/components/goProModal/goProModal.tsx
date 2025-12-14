@@ -22,6 +22,51 @@ export function PricingPlans({ open, onClose }: PricingPlansProps) {
   const [plans, setPlans] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { user, token } = useAuth(); // ⚡ Lấy userId từ context
+  const [isCfOwner, setIsCfOwner] = useState(false);
+  const [isReviewer, setIsReviewer] = useState(false);
+
+  useEffect(() => {
+    const fetchstatus = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/cafe-owners/user/${user?.id}/exists`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        setIsCfOwner(res.data.data);
+      } catch (err) {
+        console.log("fetch status fail");
+      }
+    };
+
+    fetchstatus();
+  }, [open, user?.id, token]);
+
+  useEffect(() => {
+    const fetchstatus = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/reviewers/${user?.id}/exists`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setIsReviewer(res.data.data);
+      } catch (err) {
+        console.log("fetch status fail");
+      }
+    };
+
+    fetchstatus();
+  }, [open, user?.id, token]);
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -92,50 +137,71 @@ export function PricingPlans({ open, onClose }: PricingPlansProps) {
           <p className="text-center py-6">Loading...</p>
         ) : (
           <div className="pricingModal__cards">
-            {plans.map((plan) => (
-              <Card key={plan.productionId} className="pricingCard">
-                <CardHeader>
-                  <CardTitle className="pricingCard__name">
-                    {plan.productionType}
-                  </CardTitle>
-                  <p className="pricingCard__desc">{plan.description}</p>
-                </CardHeader>
+            {plans
+              .filter((plan) => {
+                if (isReviewer && plan.productionType === "CAFEOWNER")
+                  return false;
+                if (isCfOwner && plan.productionType === "REVIEWER")
+                  return false;
+                return true;
+              })
+              .map((plan) => {
+                const isOwned =
+                  (isReviewer && plan.productionType === "REVIEWER") ||
+                  (isCfOwner && plan.productionType === "CAFEOWNER");
 
-                <CardContent>
-                  <div className="pricingCard__price">
-                    ${plan.total}
-                    <span className="pricingCard__usd"> USD</span>
-                  </div>
+                return (
+                  <Card key={plan.productionId} className="pricingCard">
+                    <CardHeader>
+                      <CardTitle className="pricingCard__name">
+                        {plan.productionType}
+                      </CardTitle>
+                      <p className="pricingCard__desc">{plan.description}</p>
+                    </CardHeader>
 
-                  <p className="pricingCard__per">
-                    Valid for {plan.timeExpired} months
-                  </p>
+                    <CardContent>
+                      <div className="pricingCard__price">
+                        ${plan.total}
+                        <span className="pricingCard__usd"> USD</span>
+                      </div>
 
-                  {/* 🚀 NÚT THANH TOÁN */}
-                  <Button
-                    className="pricingCard__btn"
-                    onClick={() => handleStartSubscription(plan.productionId)}
-                  >
-                    Start this subscription
-                  </Button>
+                      <p className="pricingCard__per">
+                        {plan.timeExpired} months subscription
+                      </p>
 
-                  <div>
-                    <p className="pricingCard__section">Plan information:</p>
-                    <ul className="pricingCard__features">
-                      <li className="pricingCard__feature active">
-                        • Type: {plan.productionType}
-                      </li>
-                      <li className="pricingCard__feature active">
-                        • Status: {plan.status}
-                      </li>
-                      <li className="pricingCard__feature active">
-                        • Created: {new Date(plan.createdAt).toLocaleString()}
-                      </li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                      {/* ⭐ BUTTON CHUYỂN "RENEW SUBSCRIPTION" NẾU ĐÃ CÓ GÓI */}
+                      <Button
+                        className="pricingCard__btn"
+                        onClick={() =>
+                          handleStartSubscription(plan.productionId)
+                        }
+                      >
+                        {isOwned
+                          ? "Renew subscription"
+                          : "Start this subscription"}
+                      </Button>
+
+                      <div>
+                        <p className="pricingCard__section">
+                          Plan information:
+                        </p>
+                        <ul className="pricingCard__features">
+                          <li className="pricingCard__feature active">
+                            • Type: {plan.productionType}
+                          </li>
+                          <li className="pricingCard__feature active">
+                            • Status: {plan.status}
+                          </li>
+                          <li className="pricingCard__feature active">
+                            • Created:{" "}
+                            {new Date(plan.createdAt).toLocaleString()}
+                          </li>
+                        </ul>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
           </div>
         )}
       </DialogContent>

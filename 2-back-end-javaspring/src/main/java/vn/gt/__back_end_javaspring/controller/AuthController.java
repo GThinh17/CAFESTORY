@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.DTO.LoginDTO;
 import vn.gt.__back_end_javaspring.DTO.RestLoginDTO;
@@ -20,23 +21,13 @@ import vn.gt.__back_end_javaspring.service.UserService;
 import vn.gt.__back_end_javaspring.util.SecurityUtil;
 
 @RestController
+@RequiredArgsConstructor
 public class AuthController {
-
-	private final UserRepository userRepository;
 
 	private final UserService userService;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final SecurityUtil securityUtil;
 	private final PasswordEncoder passwordEncoder;
-
-	public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil,
-			UserService userService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
-		this.authenticationManagerBuilder = authenticationManagerBuilder;
-		this.securityUtil = securityUtil;
-		this.userService = userService;
-		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
-	}
 
 	@PostMapping("api/login")
 	public ResponseEntity<RestLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {

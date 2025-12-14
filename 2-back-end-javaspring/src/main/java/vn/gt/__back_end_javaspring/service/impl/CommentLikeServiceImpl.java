@@ -38,7 +38,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     @Override
     public CommentLikeResponse likeComment(CommentLikeCreateDTO dto) {
         boolean exists = commentLikeRepository.existsById(dto.getCommentId());
-        if (!exists) {
+       if(commentLikeRepository.existsByUser_IdAndComment_Id(dto.getUserId(), dto.getCommentId())) {
             throw new LikeExist("Like exists alreadyy");
         }
         if(commentLikeRepository.existsByUser_IdAndComment_Id(dto.getUserId(), dto.getCommentId())) {
@@ -50,7 +50,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found!"));
 
         comment.setLikesCount(comment.getLikesCount() + 1);
-        commentRepository.save(comment);
+       commentRepository.save(comment);
 
         //Notification
         NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();

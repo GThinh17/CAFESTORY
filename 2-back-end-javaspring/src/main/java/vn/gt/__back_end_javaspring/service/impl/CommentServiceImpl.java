@@ -132,6 +132,7 @@ public class CommentServiceImpl implements CommentService {
         notificationClient.sendNotification(notificationRequestDTO);
         // Giữ logic earning event như cũ
         String userId = blog.getUser().getId();
+
         if (reviewerService.isReviewerByUserId(userId)) {
             Reviewer reviewer = reviewerRepository.findByUser_Id(userId);
             if(reviewer==null) {
@@ -157,7 +158,6 @@ public class CommentServiceImpl implements CommentService {
 
             earningEventService.create(earningEventCreateDTO);
         }
-
         return commentMapper.toResponse(saved);
     }
 

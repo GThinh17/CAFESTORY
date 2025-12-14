@@ -9,7 +9,8 @@ import { ProfileModal } from "./components/profileModal";
 import { Check } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
-import { useParams } from "next/navigation";
+import { ProfileTabs } from "./components/profileTab/profileTabs";
+
 interface ProfileHeaderProps {
   username: string;
   verified?: boolean;
@@ -24,6 +25,8 @@ interface ProfileHeaderProps {
   isMe?: boolean;
   currentUserId: string;
   profileUserId: string;
+  pageName: string;
+  cfOwnerId: string;
 }
 
 export function ProfileHeader({
@@ -37,6 +40,8 @@ export function ProfileHeader({
   isMe,
   currentUserId,
   profileUserId,
+  pageName,
+  cfOwnerId,
 }: ProfileHeaderProps) {
   const router = useRouter();
   const { token, user } = useAuth();
@@ -64,7 +69,6 @@ export function ProfileHeader({
 
     fetchIsFollowed();
   }, [profileUserId]);
-  console.log(localFollow);
 
   async function handleFollow() {
     try {
@@ -161,7 +165,7 @@ export function ProfileHeader({
     }
   }
   return (
-    <>
+    <div>
       <div className={styles.profileHeader}>
         {/* Avatar */}
         <div className={styles.profileAvatar}>
@@ -205,7 +209,13 @@ export function ProfileHeader({
               <strong>{followingCount}</strong> following
             </span>
           </div>
-          <div className={styles.profileBio}></div>
+          <div className={styles.profileBio}>
+            {cfOwnerId && pageName && (
+              <Link href={`/cafe/${cfOwnerId}`} className={styles.owner}>
+                Cafe page: {pageName}
+              </Link>
+            )}
+          </div>
           {!isMe && (
             <>
               <button
@@ -224,8 +234,11 @@ export function ProfileHeader({
             </>
           )}
         </div>
-      </div>
+      </div>{" "}
       <ProfileModal open={isProfile} onClose={() => setIsProfile(false)} />
-    </>
+      <div className={styles.tabWrapper}>
+        <ProfileTabs userId={profileUserId} />
+      </div>
+    </div>
   );
 }

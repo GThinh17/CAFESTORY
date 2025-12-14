@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import vn.gt.__back_end_javaspring.DTO.UserDTO;
 import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.service.UserService;
 
@@ -57,8 +59,7 @@ public class UserController {
 	}
 
 	@PutMapping("/users/{id}")
-	@PreAuthorize("@auth.hasRole('ADMIN')")
-	public ResponseEntity<?> updateUser(@RequestBody User updateUser, @PathVariable("id") String id,
+	public ResponseEntity<?> updateUser(@RequestBody UserDTO updateUser, @PathVariable("id") String id,
 			@AuthenticationPrincipal Jwt jwt) {
 		User user = this.userService.updateUserById(id, updateUser);
 

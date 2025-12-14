@@ -17,6 +17,7 @@ import com.google.gson.JsonParser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import vn.gt.__back_end_javaspring.DTO.CafeOwnerDTO;
+import vn.gt.__back_end_javaspring.DTO.CafeOwnerDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.entity.*;
@@ -26,6 +27,7 @@ import vn.gt.__back_end_javaspring.enums.RoleType;
 import vn.gt.__back_end_javaspring.repository.RoleRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
+import vn.gt.__back_end_javaspring.service.*;
 import vn.gt.__back_end_javaspring.service.*;
 import vn.gt.__back_end_javaspring.service.impl.ReviewerStatusScheduler;
 
@@ -41,6 +43,7 @@ public class StripeWebhookController {
     private final RoleRepository roleRepository;
     private final UserRoleService userRoleService;
     private final CafeOwnerService cafeOwnerService;
+
     @Value("${stripe.endPointSecret.key}")
     private String endpointSecret;
 
@@ -64,12 +67,6 @@ public class StripeWebhookController {
         String userId = metadata.get("userId").getAsString();
         User user = userRepository.findById(userId).get();
 
-
-
-
-
-
-
     }
 
     private void handlePaymentFailed(Event event) {
@@ -84,7 +81,6 @@ public class StripeWebhookController {
         if (paymentId != null) {
             paymentService.UpdatePayment(paymentId, PaymentStatus.FAILED);
         }
-
 
     }
 
@@ -105,61 +101,63 @@ public class StripeWebhookController {
     }
 
     private void handleCheckoutSessionCompleted(Event event) {
-        EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+        try {
 
-        String rawJson = deserializer.getRawJson(); // RAW STRING JSON
-        JsonObject stripeObject = JsonParser.parseString(rawJson).getAsJsonObject(); // Parse JSON
+            EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
 
-        // Lấy thông tin Session
-        String sessionId = stripeObject.get("id").getAsString();
-        String email = stripeObject.get("customer_email").getAsString();
-        String clientReferenceId = stripeObject.get("client_reference_id").getAsString();
-        String paymentIntentId = stripeObject.get("payment_intent").getAsString();
+            String rawJson = deserializer.getRawJson(); // RAW STRING JSON
+            JsonObject stripeObject = JsonParser.parseString(rawJson).getAsJsonObject(); // Parse JSON
 
-        // Metadata
-        JsonObject metadata = stripeObject.getAsJsonObject("metadata");
-        String paymentId = metadata.get("paymentId").getAsString();
-        String productionId = metadata.get("productionId").getAsString();
+            // Lấy thông tin Session
+            String sessionId = stripeObject.get("id").getAsString();
+            String email = stripeObject.get("customer_email").getAsString();
+            String clientReferenceId = stripeObject.get("client_reference_id").getAsString();
+            String paymentIntentId = stripeObject.get("payment_intent").getAsString();
 
-        System.out.println(" Checkout Session Completed thanh cong toi day: " + paymentId);
-        // >>>>>>>>>>>>>>>>>>>>LOG ĐỂ KIỂM TRA <<<<<<<<<<<<<<<<<<<<<<
-        // System.out.println("Checkout Completed: " + sessionId);
-        // System.out.println("User Email: " + email);
-        // System.out.println("Client Ref Id: " + clientReferenceId);
-        // System.out.println("Payment Intent ID: " + paymentIntentId);
-        // System.out.println("Metadata PaymentID: " + paymentId);
-        // System.out.println("Metadata ProductionID: " + productionId);
+            // Metadata
+            JsonObject metadata = stripeObject.getAsJsonObject("metadata");
+            String paymentId = metadata.get("paymentId").getAsString();
+            String productionId = metadata.get("productionId").getAsString();
+            String userId = metadata.get("userId").getAsString();
+            System.out.println(" Checkout Session Completed thanh cong toi day: " + paymentId);
+            // >>>>>>>>>>>>>>>>>>>>LOG ĐỂ KIỂM TRA <<<<<<<<<<<<<<<<<<<<<<
+            System.out.println("Checkout Completed: " + sessionId);
+            System.out.println("User Email: " + email);
+            System.out.println("Client Ref Id: " + clientReferenceId);
+            System.out.println("Payment Intent ID: " + paymentIntentId);
+            System.out.println("Metadata PaymentID: " + paymentId);
+            System.out.println("Metadata ProductionID: " + productionId);
 
-        // Cập nhật lại trạng thái payment nếu thành công
+            // Cập nhật lại trạng thái payment nếu thành công
 
-        String productId = metadata.get("productId").getAsString();
-        Production production = productionService.GetProduction(productId);
+            // String productId = metadata.get("productId").getAsString();
+            Production production = productionService.GetProduction(productionId);
 
-        String userId = metadata.get("userId").getAsString();
-        User user = userRepository.findById(userId).get();
+            User user = userRepository.findById(userId).get();
 
+            // Tao Reviewer
 
-        //Tao Reviewer
+            if (production.getProductionType() == ProductionType.REVIEWER) {
+                ReviewerCreateDTO dto = new ReviewerCreateDTO();
+                dto.setUserId(userId);
+                dto.setDuration(production.getTimeExpired());
+                ReviewerResponse reviewerResponse = reviewerService.registerReviewer(dto);
 
-        if(production.getProductionType() == ProductionType.REVIEWER){
-            ReviewerCreateDTO dto = new ReviewerCreateDTO();
-            dto.setUserId(userId);
-            dto.setDuration(production.getTimeExpired());
-            ReviewerResponse reviewerResponse = reviewerService.registerReviewer(dto);
+            } else {
+                // Thieu cai dang ky
+                CafeOwnerDTO cafeOwnerDTO = new CafeOwnerDTO();
+                cafeOwnerDTO.setUserId(userId);
+                cafeOwnerDTO.setDuration(production.getTimeExpired());
+                cafeOwnerService.createCafeOwner(cafeOwnerDTO);
+            }
 
-        } else{
-            //Thieu cai dang ky
-            CafeOwnerDTO cafeOwnerDTO = new CafeOwnerDTO();
-            cafeOwnerDTO.setUserId(userId);
-            cafeOwnerDTO.setDuration(production.getTimeExpired());
-            cafeOwnerService.createCafeOwner(cafeOwnerDTO);
+            // Set payment thanh success
+            Payment payment = this.paymentService.UpdatePayment(paymentId, PaymentStatus.SUCCESS);
+            System.out.println(" Checkout Session Completed thanh toi day2: " + payment);
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.out.println(">>>>>>>>>>>>>>LỖI NÈ<<<<<<<<<<<" + e);
         }
-
-        //Set payment thanh success
-        Payment payment = this.paymentService.UpdatePayment(paymentId, PaymentStatus.SUCCESS);
-        //System.out.println(" Checkout Session Completed thanh toi day2: " + paymentId);
-
-        //System.out.println(payment);
     }
 
     @PostMapping("/webhook")
@@ -184,10 +182,10 @@ public class StripeWebhookController {
         // Handle events from Stripe
         switch (event.getType()) {
             case "checkout.session.completed":
-                handleCheckoutSessionCompleted(event); //Dang ky
+                handleCheckoutSessionCompleted(event); // Dang ky
                 break;
 
-            case "payment_intent.succeeded": //Nap tien
+            case "payment_intent.succeeded": // Nap tien
                 handlePaymentSucceeded(event);
                 break;
 

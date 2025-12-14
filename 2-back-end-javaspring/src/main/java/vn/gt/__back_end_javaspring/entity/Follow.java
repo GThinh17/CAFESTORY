@@ -43,9 +43,10 @@ public class Follow {
     @JoinColumn(name = "followed_reviewer_id")
     private Reviewer followedReviewer;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "followed_page_id")
-    private Page followedPage;
+    private Page followedPage; //Thang duoc follow
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

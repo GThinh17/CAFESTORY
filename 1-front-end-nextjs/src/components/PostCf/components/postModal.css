@@ -84,6 +84,7 @@
 
 .CommentItem {
   display: flex;
+  flex-direction: column;
   gap: 6px;
   margin-bottom: 12px;
 }
@@ -145,4 +146,40 @@
 .LoadMoreBtn {
   color: var(--muted-foreground);
   font-size: 11px;
+}
+
+.CommentActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+}
+
+.LikeBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #8e8e8e;
+}
+
+.LikeBtn:hover {
+  color: #262626;
+}
+
+.LikeBtn.liked {
+  color: red;
+}
+
+.MoreBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #8e8e8e;
+}
+
+.MoreBtn:hover {
+  color: #262626;
 }

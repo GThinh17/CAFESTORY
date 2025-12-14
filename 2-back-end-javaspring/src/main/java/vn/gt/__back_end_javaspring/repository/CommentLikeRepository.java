@@ -22,5 +22,6 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, String
 
     @Modifying
     @Transactional
+    @Query("delete from CommentLike l where l.user.id = :userId and l.comment.id = :commentId")
     int deleteByUser_IdAndComment_Id(String userId, String commentId);
 }

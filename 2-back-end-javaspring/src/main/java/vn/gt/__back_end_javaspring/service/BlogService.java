@@ -18,3 +18,4 @@ public interface BlogService {
      Page<BlogResponse> getBlogsForReviewer(String reviewerId, PageRequest pageRequest);
      Page<BlogResponse> getBlogsForPage(String pageId, PageRequest pageRequest);
 }
+

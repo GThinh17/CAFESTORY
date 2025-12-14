@@ -9,9 +9,40 @@ import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { User } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { User } from "lucide-react";
 
 export default function Sidebar() {
   const router = useRouter();
+  const { logout, token } = useAuth();
+  const [fullName, setfullName] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const fetchGetMe = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/users/getme", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log('>>>>>>>>>>>>>>>>>DATA NÈ<<<<<<<<<<<<<', response.data.data);
+      const UserData = response.data.data;
+      const userAvatar = UserData?.data?.data?.avatar
+        ? `http://localhost:8080/${UserData.data.data.avatar}`
+        : "https://i.pravatar.cc/40?img=12";
+
+      setAvatar(userAvatar);
+      setfullName(UserData.fullName);
+    } catch (error) {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>LỖI NÈ<<<<<<<<<<<<<<<<<<<<<<", error);
+    }
+  }
+  useEffect(() => {
+    if (token) {
+      fetchGetMe();
+    }
+  }, [token]);
   const { logout, token } = useAuth();
   const [fullName, setfullName] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -52,9 +83,11 @@ export default function Sidebar() {
             <Avatar>
               <AvatarImage src="https://i.pravatar.cc/40?img=12" />
               <AvatarFallback>ADm,i</AvatarFallback>
+              <AvatarFallback>ADm,i</AvatarFallback>
             </Avatar>
 
             <div>
+              <p className={styles.userName}>{fullName}</p>
               <p className={styles.userName}>{fullName}</p>
               <p className={styles.userRole}>Super Admin</p>
             </div>
@@ -83,13 +116,21 @@ export default function Sidebar() {
               Pages
             </Button>
             <Button
-              onClick={() => router.push("/admin")}
+              onClick={() => router.push("/admin/reviewers")}
               variant="ghost"
               className={styles.navBtn}
             >
-              Settings
+              Reviewers
             </Button>
             <Button
+              onClick={() => router.push("/admin/reports")}
+              variant="ghost"
+              className={styles.navBtn}
+            >
+              Reports
+            </Button>
+            <Button
+              onClick={() => (logout(), router.push("/login/admin"))}
               onClick={() => (logout(), router.push("/login/admin"))}
               variant="ghost"
               className={styles.navBtn}

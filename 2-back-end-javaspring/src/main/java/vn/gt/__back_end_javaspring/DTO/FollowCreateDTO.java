@@ -1,3 +1,4 @@
+
 package vn.gt.__back_end_javaspring.DTO;
 
 import jakarta.persistence.Column;
@@ -29,4 +30,5 @@ public class FollowCreateDTO {
     private String followedUserId;
 
     private String followedPageId;
+   
 }

@@ -8,6 +8,7 @@ import { PostList } from "@/components/PostCf/PostList";
 import { MsgModal } from "@/components/msgModal/msgModal";
 import { SignInButton } from "@/components/SingInBtn/SignInBtn";
 import { useAuth } from "@/context/AuthContext";
+import {SuggestionsReviewers} from "@/components/suggestions/suggestionsReviewer"
 
 export default function Home() {
   const { token, loading } = useAuth(); // lấy user và loading từ context
@@ -39,6 +40,7 @@ export default function Home() {
         </div>
         <div className={styles.rightContainer}>
           <Suggestions />
+          <SuggestionsReviewers/>
         </div>
         <MsgModal />
       </main>

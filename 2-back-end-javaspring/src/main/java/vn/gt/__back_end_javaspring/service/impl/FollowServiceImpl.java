@@ -2,6 +2,7 @@ package vn.gt.__back_end_javaspring.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.ap.shaded.freemarker.ext.beans.BooleanModel;
 import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.FollowCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.FollowResponse;
@@ -34,10 +35,10 @@ import java.util.List;
 public class FollowServiceImpl implements FollowService {
     private final UserRepository userRepository;
     private final PageRepository pageRepository;
-    private final ReviewerService reviewerService;
     private final ReviewerRepository reviewerRepository;
     private  final CafeOwnerService cafeOwnerService;
     private final NotificationClient notificationClient;
+
 
     @Override
     public FollowResponse follow(FollowCreateDTO request) {
@@ -68,7 +69,6 @@ public class FollowServiceImpl implements FollowService {
                     request.getFollowerId(), request.getFollowedUserId())) {
                 throw new ExistFollow("Follower already exists");
             }
-
 
             follower.setFollowingCount(follower.getFollowingCount() + 1);
             followedUser.setFollowerCount(followedUser.getFollowerCount() + 1);
@@ -163,7 +163,6 @@ public class FollowServiceImpl implements FollowService {
         return followMapper.toResponse(saved);
     }
 
-
     // Get all follow user (Ai dang follow user nay)
     @Override
     public List<FollowResponse> getUserFollower(String userId) {
@@ -224,7 +223,7 @@ public class FollowServiceImpl implements FollowService {
         if (user.getFollowingCount() != 0 && user.getFollowingCount() > 0) {
             user.setFollowingCount(user.getFollowingCount() - 1);
         }
-        if(page.getFollowingCount() != 0 && page.getFollowingCount() > 0) {
+        if (page.getFollowingCount() != 0 && page.getFollowingCount() > 0) {
             page.setFollowingCount(page.getFollowingCount() - 1);
         }
 
@@ -243,7 +242,8 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public Boolean isFollowUser(String userId, String userFollowingId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Follower not found"));
-        User user1 = userRepository.findById(userFollowingId).orElseThrow(() -> new UserNotFoundException("Follower not found"));
+        User user1 = userRepository.findById(userFollowingId)
+                .orElseThrow(() -> new UserNotFoundException("Follower not found"));
 
         return followRepository.existsByFollower_IdAndFollowedUser_Id(user.getId(), user1.getId());
     }

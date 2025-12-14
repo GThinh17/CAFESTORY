@@ -28,4 +28,3 @@ public interface ReviewerService {
     User getUser(String reviewerId);
 }
 
-

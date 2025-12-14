@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class PageServiceImpl implements PageService {
 
     private final PageRepository pageRepository;
-    private  final UserRepository userRepository;
+    private final UserRepository userRepository;
     private final PageMapper pageMapper;
     private final CafeOwnerRepository cafeOwnerRepository;
     private final FollowService followService;
@@ -42,35 +42,35 @@ public class PageServiceImpl implements PageService {
     public PageResponse createPage(PageCreateDTO request) {
 
         CafeOwner cafeOwner = cafeOwnerRepository.findById(request.getCafeOwnerId())
-                .orElseThrow(()-> new CafeOwnerNotFound("CafeOwner not found"));
+                .orElseThrow(() -> new CafeOwnerNotFound("CafeOwner not found"));
 
-        Page page =pageMapper.toModel(request);
+        Page page = pageMapper.toModel(request);
         page.setCafeOwner(cafeOwner);
 
-        Page saved =  pageRepository.save(page);
+        Page saved = pageRepository.save(page);
         return pageMapper.toResponse(saved);
     }
 
     @Override
     public PageResponse getPageById(String pageId) {
         Page page = pageRepository.findById(pageId)
-                .orElseThrow(()-> new PageNotFoundException("Page not found"));
+                .orElseThrow(() -> new PageNotFoundException("Page not found"));
         return pageMapper.toResponse(page);
     }
 
     @Override
-    public PageResponse getPageByCafeOwnerId(String cafeOwnerId){
+    public PageResponse getPageByCafeOwnerId(String cafeOwnerId) {
         CafeOwner cafeOwner = cafeOwnerRepository.findById(cafeOwnerId)
-                .orElseThrow(()-> new CafeOwnerNotFound("CafeOwner not found"));
+                .orElseThrow(() -> new CafeOwnerNotFound("CafeOwner not found"));
 
-        Page page =  pageRepository.findPageByCafeOwner_Id(cafeOwner.getId());
+        Page page = pageRepository.findPageByCafeOwner_Id(cafeOwner.getId());
         return pageMapper.toResponse(page);
     }
 
     @Override
     public PageResponse updatePage(PageUpdateDTO request, String pageId) {
         Page page = pageRepository.findById(pageId)
-                .orElseThrow(()-> new PageNotFoundException("Page not found"));
+                .orElseThrow(() -> new PageNotFoundException("Page not found"));
 
         pageMapper.updateEntity(page, request);
         Page saved = pageRepository.save(page);
@@ -80,7 +80,7 @@ public class PageServiceImpl implements PageService {
     @Override
     public void deletePage(String pageId) {
         Page page = pageRepository.findById(pageId)
-                        .orElseThrow(()-> new PageNotFoundException("Page not found"));
+                .orElseThrow(() -> new PageNotFoundException("Page not found"));
 
         page.setIsDeleted(true);
         pageRepository.save(page);
@@ -90,6 +90,7 @@ public class PageServiceImpl implements PageService {
     public List<PageResponse> getAllPagesOrderByFollowersDesc() {
         List<Page> pages = pageRepository.findAllOrderByFollowingCountDesc();
         if(pages.isEmpty()){
+
             throw new PageNotFoundException("Page not found");
         }
 
@@ -108,7 +109,9 @@ public class PageServiceImpl implements PageService {
                 .filter(Objects::nonNull)
                 .map(pageMapper::toResponse)
                 .collect(Collectors.toList());
+
     }
+
 
 
     @Override

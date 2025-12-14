@@ -6,6 +6,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" }, // thêm domain này
+      { protocol: "https", hostname: "res-console.cloudinary.com" }, // ⭐ THÊM DÒNG NÀY
       { protocol: "https", hostname: "cdn-icons-png.flaticon.com" },
       { protocol: "https", hostname: "avatars.githubusercontent.com" },
       { protocol: "https", hostname: "cdn.pixabay.com" },
@@ -30,6 +31,18 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "hdwpro.com",
+      },
+      {
+        protocol: "https",
+        hostname: "scontent.fsgn2-9.fna.fbcdn.net",
+      },
+      {
+        protocol: "https",
+        hostname: "scontent.fsgn2-8.fna.fbcdn.net",
+      },
+      {
+        protocol: "https",
+        hostname: "www.facebook.com",
       },
     ],
   },

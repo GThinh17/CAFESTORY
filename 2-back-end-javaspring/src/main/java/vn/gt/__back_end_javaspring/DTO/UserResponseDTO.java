@@ -2,11 +2,15 @@ package vn.gt.__back_end_javaspring.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Getter
+@Setter
 public class UserResponseDTO {
     private String avatar;
 
@@ -21,4 +25,5 @@ public class UserResponseDTO {
     Integer followerCount;
 
     private String vertifiedBank;
+
 }

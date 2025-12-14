@@ -19,7 +19,6 @@ public interface PageService {
 
     void deletePage(String pageId);
 
-
     public List<PageResponse> getAllPagesOrderByFollowersDesc();
 
     List<PageResponse> getAllPagesFollowedByUser(String userId);
