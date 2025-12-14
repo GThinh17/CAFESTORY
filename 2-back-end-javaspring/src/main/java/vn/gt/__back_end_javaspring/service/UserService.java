@@ -31,14 +31,6 @@ public class UserService {
 	private final UserRoleRepository userRoleRepository;
 	private final RoleRepository roleRepository;
 
-	public UserService(UserRepository userRepository, UserRoleRepository userRoleRepository,
-			RoleRepository roleRepository, UserMapper userMapper) {
-		this.userRepository = userRepository;
-		this.userRoleRepository = userRoleRepository;
-		this.roleRepository = roleRepository;
-		this.userMapper = userMapper;
-	}
-
 	public List<UserResponseDTO> GetAllUsersDTO() {
 		return this.userRepository.findAll()
 				.stream()
