@@ -13,7 +13,7 @@ import vn.gt.__back_end_javaspring.entity.WalletTransaction;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-14T22:35:51+0700",
+    date = "2025-12-14T22:41:56+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
