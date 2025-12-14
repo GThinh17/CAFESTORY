@@ -22,6 +22,7 @@ public class ReviewerController {
             @Valid @RequestBody ReviewerCreateDTO dto) {
         ReviewerResponse response = reviewerService.registerReviewer(dto);
         System.out.println(">>>>>>>>>>>>>>>>RESPONSE NÈ<<<<<<<<<<<<<" + response);
+        System.out.println(">>>>>>>>>>>>>>>>RESPONSE NÈ<<<<<<<<<<<<<" + response);
         return ResponseEntity.ok(response);
     }
 

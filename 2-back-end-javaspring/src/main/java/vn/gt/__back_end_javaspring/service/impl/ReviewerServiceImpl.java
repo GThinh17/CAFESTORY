@@ -84,6 +84,26 @@ public class ReviewerServiceImpl implements ReviewerService {
                 .toList();
     }
 
+    public List<ReviewerResponse> getAllReviewer() {
+        return this.reviewerRepository.findAll()
+                .stream()
+                .map(reviewer -> ReviewerResponse.builder()
+                        .id(reviewer.getId())
+                        .userId(reviewer.getUser().getId())
+                        .userName(reviewer.getUser().getFullName())
+                        .userAvatarUrl(reviewer.getUser().getAvatar())
+                        .userEmail(reviewer.getUser().getEmail())
+                        .bio(reviewer.getBio())
+                        .followerCount(reviewer.getUser().getFollowerCount())
+                        .joinAt(reviewer.getJoinAt())
+                        .expiredAt(reviewer.getExpiredAt())
+                        .totalScore(reviewer.getTotalScore())
+                        .isDeleted(reviewer.getIsDeleted())
+                        .status(reviewer.getStatus().name())
+                        .build())
+                .toList();
+    }
+
     @Override
     public ReviewerResponse getReviewer(String reviewerId) {
         Reviewer reviewer = reviewerRepository.findById(reviewerId)
@@ -116,6 +136,7 @@ public class ReviewerServiceImpl implements ReviewerService {
     @Override
     public ReviewerResponse updateReviewer(String reviewerId, ReviewerUpdateDTO dto) {
         Reviewer reviewer = reviewerRepository.findById(reviewerId)
+                .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
                 .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
 
         reviewerMapper.updateEntity(dto, reviewer);
@@ -174,12 +195,14 @@ public class ReviewerServiceImpl implements ReviewerService {
     public boolean isReviewerByUserId(String userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         Boolean result = reviewerRepository.existsByUser_Id(userId);
         return result;
     }
 
     @Override
     public ReviewerResponse registerReviewer(ReviewerCreateDTO dto) {
+        // Create Record in UserRole
         // Create Record in UserRole
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -200,6 +223,7 @@ public class ReviewerServiceImpl implements ReviewerService {
 
         userRoleRepository.save(userRole);
 
+        // Create Record in Reviewer
         // Create Record in Reviewer
         Reviewer reviewer = reviewerMapper.toModel(dto);
 
