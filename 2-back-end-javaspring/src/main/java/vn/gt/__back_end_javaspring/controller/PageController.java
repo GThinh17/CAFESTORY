@@ -67,19 +67,23 @@ public class PageController {
 
     @GetMapping("/user/{userId}/following")
     public ResponseEntity<List<PageResponse>> getAllPagesFollowedByUser(
-            @PathVariable String userId
-    ) {
+            @PathVariable String userId) {
         List<PageResponse> data = pageService.getAllPagesFollowedByUser(userId);
         return ResponseEntity.ok(data);
     }
 
     @GetMapping("/user/{userId}/following/sorted-asc")
     public ResponseEntity<List<PageResponse>> getAllPagesFollowedByUserSortedAsc(
-            @PathVariable String userId
-    ) {
+            @PathVariable String userId) {
         List<PageResponse> data = pageService.getAllPagesFollowedByUserSortedAsc(userId);
         return ResponseEntity.ok(data);
     }
 
+    @GetMapping("cafe-owner")
+    public ResponseEntity<String> getCafeOwnerId(
+            @RequestParam String pageId) {
+        String data = pageService.getCafeOwnerId(pageId);
+        return ResponseEntity.ok(data);
+    }
 
 }

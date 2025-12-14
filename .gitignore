@@ -1,4 +1,7 @@
 # ignore vs code file
+<<<<<<<<< Temporary merge branch 1
+*.env
+=========
 .vscode/
 **/node_modules/
 

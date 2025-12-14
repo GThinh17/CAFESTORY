@@ -19,12 +19,11 @@ public interface PageService {
 
     void deletePage(String pageId);
 
-
     public List<PageResponse> getAllPagesOrderByFollowersDesc();
 
     List<PageResponse> getAllPagesFollowedByUser(String userId);
 
     List<PageResponse> getAllPagesFollowedByUserSortedAsc(String userId);
 
-
+    String getCafeOwnerId(String pageId);
 }

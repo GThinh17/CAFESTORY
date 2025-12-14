@@ -17,6 +17,7 @@ import com.google.gson.JsonParser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import vn.gt.__back_end_javaspring.DTO.CafeOwnerDTO;
+import vn.gt.__back_end_javaspring.DTO.CafeOwnerDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.entity.*;
@@ -26,6 +27,7 @@ import vn.gt.__back_end_javaspring.enums.RoleType;
 import vn.gt.__back_end_javaspring.repository.RoleRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
+import vn.gt.__back_end_javaspring.service.*;
 import vn.gt.__back_end_javaspring.service.*;
 import vn.gt.__back_end_javaspring.service.impl.ReviewerStatusScheduler;
 
@@ -39,6 +41,8 @@ public class StripeWebhookController {
     private final UserRoleRepository userRoleRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserRoleService userRoleService;
+    private final CafeOwnerService cafeOwnerService;
     private final UserRoleService userRoleService;
     private final CafeOwnerService cafeOwnerService;
     @Value("${stripe.endPointSecret.key}")

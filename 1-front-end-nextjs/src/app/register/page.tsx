@@ -75,9 +75,6 @@ export default function RegisterPage() {
           <CardTitle className={styles.title}>
             <Link href="/">CafeBlog</Link>
           </CardTitle>
-          <CardTitle className={styles.title}>
-            <Link href="/">CafeBlog</Link>
-          </CardTitle>
         </CardHeader>
 
         <CardContent className={styles.content}>

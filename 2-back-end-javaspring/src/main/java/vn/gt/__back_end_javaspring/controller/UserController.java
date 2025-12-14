@@ -29,6 +29,11 @@ public class UserController {
 		return ResponseEntity.ok().body(this.userService.GetAllUsersDTO());
 	}
 
+	@GetMapping("/users/admin")
+	public ResponseEntity<?> GetAllUserFormat() {
+		return ResponseEntity.ok().body(this.userService.GetAllUsersDTO());
+	}
+
 	@GetMapping("/users")
 
 	public ResponseEntity<?> getAllUsers() {
@@ -57,8 +62,7 @@ public class UserController {
 	}
 
 	@PutMapping("/users/{id}")
-	@PreAuthorize("@auth.hasRole('ADMIN')")
-	public ResponseEntity<?> updateUser(@RequestBody User updateUser, @PathVariable("id") String id,
+	public ResponseEntity<?> updateUser(@RequestBody UserDTO updateUser, @PathVariable("id") String id,
 			@AuthenticationPrincipal Jwt jwt) {
 		User user = this.userService.updateUserById(id, updateUser);
 

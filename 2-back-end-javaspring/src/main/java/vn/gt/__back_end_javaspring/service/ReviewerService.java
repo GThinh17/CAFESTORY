@@ -4,6 +4,8 @@ package vn.gt.__back_end_javaspring.service;
 import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.DTO.ReviewerUpdateDTO;
+import vn.gt.__back_end_javaspring.DTO.UserResponseDTO;
+import vn.gt.__back_end_javaspring.entity.User;
 
 import java.util.List;
 
@@ -29,4 +31,5 @@ public interface ReviewerService {
     List<ReviewerResponse> getAllReviewersOrderByFollowerCountDesc();
 
     String getUserId(String reviewerId);
+
 }

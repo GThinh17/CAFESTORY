@@ -31,6 +31,9 @@ public class PageAlbumController {
         return ResponseEntity.ok().body(data);
     }
 
+    
+   
+
     @GetMapping("/{albumId}")
     public ResponseEntity<PageAlbumResponse> getPageAlbumById(
             @PathVariable String albumId

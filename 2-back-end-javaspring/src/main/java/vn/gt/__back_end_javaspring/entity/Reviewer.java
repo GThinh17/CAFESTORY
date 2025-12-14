@@ -34,6 +34,13 @@ public class Reviewer {
     @Column(name = "total_score")
     private Integer totalScore;
 
+    @Column(name = "follower_count")
+    Integer followerCount;
+
+    @Column(name = "following_count")
+    Integer followingCount;
+
+
     @Column(name = "join_at")
     private LocalDateTime joinAt;
 
@@ -67,6 +74,8 @@ public class Reviewer {
             totalScore = 0;
         }
         this.isDeleted = false;
+        followerCount=0;
+        followingCount=0;
     }
 
 

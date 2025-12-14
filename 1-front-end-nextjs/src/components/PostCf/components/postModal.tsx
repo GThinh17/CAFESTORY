@@ -9,6 +9,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../../ui/carousel";
+import { Heart, MoreHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
@@ -65,6 +66,13 @@ export function PostModal({ open, onClose, post, blogId }: PostModalProps) {
     }
   }, [open]);
 
+  useEffect(() => {
+    if (!open) {
+      setComments([]);
+      setNextCursor(null);
+    }
+  }, [open]);
+
   // ------------------------------------------
   // HANDLE SEND COMMENT
   // ------------------------------------------
@@ -88,6 +96,111 @@ export function PostModal({ open, onClose, post, blogId }: PostModalProps) {
       getComments(); // reload comments
     } catch (err: any) {
       console.error("Comment failed:", err.response?.data || err.message);
+    }
+  };
+
+  // ------------------------------------------
+  // GET COMMENT LIKES FOR EACH COMMENT
+  // ------------------------------------------
+  useEffect(() => {
+    if (!comments.length || !user?.id || !token) return;
+
+    const needFetch = comments.some((cmt) => cmt.liked === undefined);
+    if (!needFetch) return;
+
+    const fetchCommentLikes = async () => {
+      try {
+        const updatedComments = await Promise.all(
+          comments.map(async (cmt) => {
+            if (cmt.liked !== undefined) return cmt;
+
+            const res = await axios.get(
+              "http://localhost:8080/api/comment-likes/by-comment",
+              {
+                params: { commentId: cmt.commentId },
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+
+            const likes = res.data.data || [];
+
+            return {
+              ...cmt,
+              liked: likes.some((like: any) => like.userId === user.id),
+              likeCount: likes.length,
+            };
+          })
+        );
+
+        setComments(updatedComments);
+      } catch (error) {
+        console.error("Failed to load comment likes", error);
+      }
+    };
+
+    fetchCommentLikes();
+  }, [comments]);
+
+  const handleLikeComment = async (commentId: string) => {
+    if (!user?.id || !token) return;
+
+    const current = comments.find((c) => c.commentId === commentId);
+    if (!current) return;
+
+    try {
+      // ----------------------------
+      // UNLIKE
+      // ----------------------------
+      if (current.liked) {
+        await axios.delete("http://localhost:8080/api/comment-likes", {
+          params: {
+            userId: user.id,
+            commentId: commentId,
+          },
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setComments((prev) =>
+          prev.map((cmt) =>
+            cmt.commentId === commentId
+              ? {
+                  ...cmt,
+                  liked: false,
+                  likeCount: Math.max((cmt.likeCount || 1) - 1, 0),
+                }
+              : cmt
+          )
+        );
+      }
+      // ----------------------------
+      // LIKE
+      // ----------------------------
+      else {
+        await axios.post(
+          "http://localhost:8080/api/comment-likes",
+          {
+            userId: user.id,
+            commentId: commentId,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        setComments((prev) =>
+          prev.map((cmt) =>
+            cmt.commentId === commentId
+              ? {
+                  ...cmt,
+                  liked: true,
+                  likeCount: (cmt.likeCount || 0) + 1,
+                }
+              : cmt
+          )
+        );
+      }
+    } catch (err: any) {
+      console.error("Toggle like failed:", err.response?.data || err.message);
     }
   };
 
@@ -142,9 +255,33 @@ export function PostModal({ open, onClose, post, blogId }: PostModalProps) {
               {/* Render comments */}
               {[...comments].reverse().map((cmt) => (
                 <div key={cmt.commentId} className="CommentItem">
-                  <span className="CommentGuest">
-                    {cmt.userFullName}: {cmt.content}
-                  </span>
+                  {/* CONTENT */}
+                  <div className="CommentContent">
+                    <span className="CommentGuest">
+                      <b>{cmt.userFullName}</b> {cmt.content}
+                    </span>
+                  </div>
+
+                  {/* ACTIONS (NẰM DƯỚI) */}
+                  <div className="CommentActions">
+                    <button
+                      className={`LikeBtn ${cmt.liked ? "liked" : ""}`}
+                      onClick={() => handleLikeComment(cmt.commentId)}
+                    >
+                      <Heart
+                        size={14}
+                        fill={cmt.liked ? "currentColor" : "none"}
+                      />
+                      <span>{cmt.likeCount || 0}</span>
+                    </button>
+
+                    <button
+                      className="MoreBtn"
+                      onClick={() => handleOpenMenu(cmt.commentId)}
+                    >
+                      <MoreHorizontal size={14} />
+                    </button>
+                  </div>
                 </div>
               ))}
 

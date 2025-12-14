@@ -12,6 +12,7 @@ const ModelCheckReport = require("./controller/ReportModels/modelReport");
 app.use(cors());
 app.use(bodyParser.json());
 connectDB(); // KẾT NỐI TRƯỚC
+<<<<<<< HEAD
 app.use((req, res, next) => {
   const authHeader = req.headers['authorization']; // Lấy header Authorization
 
@@ -24,6 +25,9 @@ app.use((req, res, next) => {
 
   next();
 });
+=======
+
+>>>>>>> 2422a0eb409408b2b4af3f4acc769483694311ad
 (async () => {
   app.get("/start", createThread);
   app.post("/save-knowledge", saveKnowledge);

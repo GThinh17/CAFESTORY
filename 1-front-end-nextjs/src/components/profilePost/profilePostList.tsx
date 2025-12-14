@@ -6,13 +6,23 @@ import { useAuth } from "@/context/AuthContext";
 import { useParams } from "next/navigation";
 import { PostModal } from "../PostCf/components/postModal";
 
-interface Post {
+interface Share {
+  shareId: string;
+  blogId: string;
+  caption: string;
+  createdAt: string;
+  userFullName: string;
+  userAvatarUrl: string;
+}
+
+interface Blog {
   id: string;
   caption: string;
   mediaUrls: string[];
   likeCount: number;
   createdAt: string;
 }
+
 
 export function ProfilePostList() {
   const [posts, setPosts] = useState<Post[]>([]);

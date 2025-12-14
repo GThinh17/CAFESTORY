@@ -2,9 +2,6 @@ package vn.gt.__back_end_javaspring.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.entity.Role;
 import vn.gt.__back_end_javaspring.entity.User;
@@ -14,7 +11,6 @@ import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.repository.RoleRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
-import vn.gt.__back_end_javaspring.DTO.UserRoleResponse;
 import vn.gt.__back_end_javaspring.service.UserRoleService;
 
 @Service
@@ -22,51 +18,50 @@ import vn.gt.__back_end_javaspring.service.UserRoleService;
 @RequiredArgsConstructor
 public class UserRoleServiceImpl implements UserRoleService {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final UserRoleRepository userRoleRepository;
+        private final UserRepository userRepository;
+        private final RoleRepository roleRepository;
+        private final UserRoleRepository userRoleRepository;
 
-    @Override
-    public void registerCafeOwner(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        Role role = roleRepository.findByroleName(RoleType.CAFEOWNER);
+        @Override
+        public void registerCafeOwner(String userId) {
+                User user = userRepository.findById(userId)
+                                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                Role role = roleRepository.findByroleName(RoleType.CAFEOWNER);
 
-        UserRole userRole = new UserRole();
-        userRole.setUser(user);
-        userRole.setRole(role);
-    }
+                UserRole userRole = new UserRole();
+                userRole.setUser(user);
+                userRole.setRole(role);
+        }
 
-    @Override
-    public void removeCafeOwner(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        Role role = roleRepository.findByroleName(RoleType.CAFEOWNER);
-        UserRole userRole = userRoleRepository.findByUser_IdAndRole_Id(userId, role.getId());
+        @Override
+        public void removeCafeOwner(String userId) {
+                User user = userRepository.findById(userId)
+                                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                Role role = roleRepository.findByroleName(RoleType.CAFEOWNER);
+                UserRole userRole = userRoleRepository.findByUser_IdAndRole_Id(userId, role.getId());
 
-        userRoleRepository.delete(userRole);
+                userRoleRepository.delete(userRole);
 
-    }
+        }
 
-    @Override
-    public void registerReviewer(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        Role role = roleRepository.findByroleName(RoleType.REVIEWER);
+        @Override
+        public void registerReviewer(String userId) {
+                User user = userRepository.findById(userId)
+                                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                Role role = roleRepository.findByroleName(RoleType.REVIEWER);
 
-        UserRole userRole = new UserRole();
-        userRole.setUser(user);
-        userRole.setRole(role);
-    }
+                UserRole userRole = new UserRole();
+                userRole.setUser(user);
+                userRole.setRole(role);
+        }
 
-    @Override
-    public void removeReviewer(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        Role role = roleRepository.findByroleName(RoleType.CAFEOWNER);
-        UserRole userRole = userRoleRepository.findByUser_IdAndRole_Id(userId, role.getId());
+        @Override
+        public void removeReviewer(String userId) {
+                User user = userRepository.findById(userId)
+                                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                Role role = roleRepository.findByroleName(RoleType.CAFEOWNER);
+                UserRole userRole = userRoleRepository.findByUser_IdAndRole_Id(userId, role.getId());
 
-        userRoleRepository.delete(userRole);
-    }
-
+                userRoleRepository.delete(userRole);
+        }
 }
