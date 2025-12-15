@@ -59,6 +59,9 @@ public class ShareServiceImpl implements ShareService {
         if(reviewerService.isReviewerByUserId(userId)){
             Reviewer reviewer = reviewerRepository.findByUser_Id(userId);
 
+            if(reviewer==null) {
+                throw new ReviewerNotFound("Reviewer not found");
+            }
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
             if (pricingRule == null) {
                 throw new PricingRuleNotFound("No active pricing rule");
@@ -77,7 +80,7 @@ public class ShareServiceImpl implements ShareService {
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
             earningEventCreateDTO.setReviewerId(reviewer.getId());
             earningEventCreateDTO.setAmount(amount);
-
+            earningEventCreateDTO.setShareId(saved.getId());
             earningEventService.create(earningEventCreateDTO);
 
         }
@@ -95,6 +98,7 @@ public class ShareServiceImpl implements ShareService {
         notificationRequestDTO.setBody(user.getFullName() + " đã chia sẻ bài viết của bạn");
 
         notificationService.sendNotification(receiverId, notificationRequestDTO);
+
 
 //        notificationClient.sendNotification(notificationRequestDTO);
         return shareMapper.toResponse(saved);
@@ -131,6 +135,9 @@ public class ShareServiceImpl implements ShareService {
         if (!share.getUser().getId().equals(userId)) {
             throw new UserNotFoundException("You are not allowed to delete this share");
         }
+
+        earningEventService.deleteShareEvent(share.getId());
+
         share.setIsDeleted(true);
         shareRepository.save(share);
     }

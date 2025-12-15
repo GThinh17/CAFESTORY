@@ -31,7 +31,9 @@ public class EarningEventServiceImpl implements EarningEventService {
 
     @Override
     public EarningEventResponse create(EarningEventCreateDTO earningEventCreateDTO) {
+
         EarningEvent earningEvent = earningEventMapper.toModel(earningEventCreateDTO);
+
         Reviewer reviewer = reviewerRepository.findById(earningEventCreateDTO.getReviewerId())
                 .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
 
@@ -48,4 +50,36 @@ public class EarningEventServiceImpl implements EarningEventService {
         return earningEventMapper.toResponse(earningEvent);
 
     }
+
+    @Override
+    public void deleteLikeEvent(String likeId) {
+        EarningEvent earningEvent = earningEventRepository.findEarningEventByLikeId(likeId);
+        if (earningEvent == null) {
+            throw new RuntimeException("EarningEvent not found");
+        }
+        earningEvent.setIsDeleted(true);
+        earningEventRepository.save(earningEvent);
+
+    }
+
+    @Override
+    public void deleteCommentEvent(String commentId) {
+        EarningEvent earningEvent = earningEventRepository.findEarningEventByCommentId(commentId);
+        if (earningEvent == null) {
+            throw new RuntimeException("EarningEvent not found");
+        }
+        earningEvent.setIsDeleted(true);
+        earningEventRepository.save(earningEvent);
+    }
+
+    @Override
+    public void deleteShareEvent(String shareId) {
+        EarningEvent earningEvent = earningEventRepository.findEarningEventByShareId(shareId);
+        if (earningEvent == null) {
+            throw new RuntimeException("EarningEvent not found");
+        }
+        earningEvent.setIsDeleted(true);
+        earningEventRepository.save(earningEvent);
+    }
+
 }

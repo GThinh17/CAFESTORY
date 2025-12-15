@@ -163,6 +163,7 @@ public class CommentServiceImpl implements CommentService {
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
             earningEventCreateDTO.setReviewerId(reviewer.getId());
             earningEventCreateDTO.setAmount(amount);
+            earningEventCreateDTO.setCommentId(saved.getId());
 
             earningEventService.create(earningEventCreateDTO);
         }
@@ -197,6 +198,10 @@ public class CommentServiceImpl implements CommentService {
         blog.setCommentsCount(blog.getCommentsCount() - 1);
         comment.setIsDeleted(true);
         commentRepository.save(comment);
+
+        //Xoa earningEvent
+        earningEventService.deleteCommentEvent(commentId);
+
         return commentMapper.toResponse(commentRepository.save(comment));
     }
 }

@@ -50,26 +50,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
 
-        String useId = blog.getUser().getId();
-        if(reviewerService.isReviewerByUserId(userId)){
-            Reviewer reviewer = reviewerRepository.findByUser_Id(userId);
-            System.out.println("Reviewer:  " + reviewer);
 
-            PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
-
-            EarningEventCreateDTO earningEventCreateDTO = new EarningEventCreateDTO();
-
-            BigDecimal weight = pricingRule.getLikeWeight();
-            BigDecimal unitPrice = pricingRule.getUnitPrice();
-
-            earningEventCreateDTO.setBlogId(blogId);
-            earningEventCreateDTO.setSourceType("LIKE");
-            earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
-            earningEventCreateDTO.setReviewerId(reviewer.getId());
-            earningEventCreateDTO.setAmount(weight.multiply(unitPrice));
-            System.out.println("earningEventCreateDTO:  " + earningEventCreateDTO);
-            earningEventService.create(earningEventCreateDTO);
-        }
 
         blog.setLikesCount(blog.getLikesCount() + 1);
         blogRepository.save(blog);
@@ -90,6 +71,34 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         notificationRequestDTO.setWalletTransactionId(null);
         notificationRequestDTO.setBadgeId(null);
         notificationRequestDTO.setBody(user.getFullName() + " đã thích bài viết của bạn");
+
+        //Set EarningEvent
+        String userReviewerId = blog.getUser().getId();
+        if(reviewerService.isReviewerByUserId(userReviewerId)){
+            Reviewer reviewer = reviewerRepository.findByUser_Id(userReviewerId);
+            if(reviewer==null) {
+                throw new ReviewerNotFound("Reviewer not found");
+            }
+
+            PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
+
+            EarningEventCreateDTO earningEventCreateDTO = new EarningEventCreateDTO();
+
+            BigDecimal weight = pricingRule.getLikeWeight();
+            BigDecimal unitPrice = pricingRule.getUnitPrice();
+
+            earningEventCreateDTO.setBlogId(blogId);
+            earningEventCreateDTO.setSourceType("LIKE");
+            earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
+            earningEventCreateDTO.setReviewerId(reviewer.getId());
+            earningEventCreateDTO.setAmount(weight.multiply(unitPrice));
+            System.out.println("saved : "+ saved.getId());
+            earningEventCreateDTO.setLikeId(saved.getId());
+            System.out.println("after saved : "+ earningEventCreateDTO.getLikeId());
+
+            earningEventService.create(earningEventCreateDTO);
+        }
+
 
         notificationService.sendNotification(receiverId, notificationRequestDTO);
 
@@ -112,6 +121,10 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         }
 
         blogLikeRepository.deleteByUserAndBlog(userId, blogId);
+
+        //Xoa EarningEvent
+        BlogLike blogLike = blogLikeRepository.findBlogLikesByUser_IdAndBlog_Id(userId, blogId);
+        earningEventService.deleteLikeEvent(blogLike.getId());
     }
 
     @Override

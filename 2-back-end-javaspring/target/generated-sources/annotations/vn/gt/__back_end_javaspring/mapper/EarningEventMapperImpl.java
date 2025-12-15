@@ -12,7 +12,7 @@ import vn.gt.__back_end_javaspring.enums.SourceType;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-16T03:24:30+0700",
+    date = "2025-12-16T05:07:34+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
@@ -26,6 +26,9 @@ public class EarningEventMapperImpl implements EarningEventMapper {
 
         EarningEvent.EarningEventBuilder earningEvent = EarningEvent.builder();
 
+        earningEvent.commentId( earningEventCreateDTO.getCommentId() );
+        earningEvent.likeId( earningEventCreateDTO.getLikeId() );
+        earningEvent.shareId( earningEventCreateDTO.getShareId() );
         earningEvent.amount( earningEventCreateDTO.getAmount() );
         if ( earningEventCreateDTO.getSourceType() != null ) {
             earningEvent.sourceType( Enum.valueOf( SourceType.class, earningEventCreateDTO.getSourceType() ) );
@@ -48,6 +51,9 @@ public class EarningEventMapperImpl implements EarningEventMapper {
         earningEventResponse.commentWeight( earningEventPricingRuleCommentWeight( earningEvent ) );
         earningEventResponse.shareWeight( earningEventPricingRuleShareWeight( earningEvent ) );
         earningEventResponse.unitPrice( earningEventPricingRuleUnitPrice( earningEvent ) );
+        earningEventResponse.commentId( earningEvent.getCommentId() );
+        earningEventResponse.likeId( earningEvent.getLikeId() );
+        earningEventResponse.shareId( earningEvent.getShareId() );
         earningEventResponse.amount( earningEvent.getAmount() );
         if ( earningEvent.getSourceType() != null ) {
             earningEventResponse.sourceType( earningEvent.getSourceType().name() );

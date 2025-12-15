@@ -32,6 +32,15 @@ public class EarningEvent {
     @JoinColumn(name = "blog_id")
     private Blog blog;
 
+    @Column(name = "comment_id")
+    private String commentId;
+
+    @Column(name = "like_id")
+    private String likeId;
+
+    @Column(name = "share_id")
+    private String shareId;
+
     @Column(nullable = false)
     private BigDecimal amount;
 
@@ -42,8 +51,12 @@ public class EarningEvent {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
     @PrePersist
     public void prePersist() {
+        isDeleted = false;
         createdAt = LocalDateTime.now();
     }
 }

@@ -15,7 +15,7 @@ import vn.gt.__back_end_javaspring.enums.Visibility;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-16T03:24:30+0700",
+    date = "2025-12-16T05:07:34+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component
