@@ -12,7 +12,7 @@ import vn.gt.__back_end_javaspring.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-15T07:31:04+0700",
+    date = "2025-12-16T03:24:30+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
 )
 @Component

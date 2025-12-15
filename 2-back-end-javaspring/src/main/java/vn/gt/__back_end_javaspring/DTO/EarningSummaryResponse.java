@@ -19,7 +19,11 @@ import java.time.LocalDateTime;
 public class EarningSummaryResponse {
     private String id;
 
-    private Reviewer reviewerId;
+    private String reviewerId;
+
+    private String userId;
+
+    private String userName;
 
     private Integer year;
 
@@ -30,6 +34,16 @@ public class EarningSummaryResponse {
     private Long totalCommentsCount;
 
     private Long totalSharesCount;
+
+    private Long totalFollowerCount;
+
+    private String followRuleId;
+
+    private String followRuleMin;
+
+    private String followRuleMax;
+
+    private BigDecimal bonusAmount;
 
     private BigDecimal totalEarningAmount;
 

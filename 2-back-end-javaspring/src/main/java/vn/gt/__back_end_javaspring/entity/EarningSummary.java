@@ -41,9 +41,20 @@ public class EarningSummary {
     @Column(name = "total_shares_count")
     private Long totalSharesCount;
 
+    @Column(name = "total_follower_count")
+    private Long totalFollowerCount;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "follow_rule_id")
+    private FollowRule followRule;
+
+    @Column(name = "bonus_amount") //Theo follow Rule
+    private BigDecimal bonusAmount;
+
     @Column(name = "total_earning_amount")
     private BigDecimal totalEarningAmount;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
     private EarningSummaryStatus status; // OPEN / CLOSED / PAID...
 
@@ -54,5 +65,6 @@ public class EarningSummary {
     public void prePersist() {
         status = EarningSummaryStatus.OPEN;
         createdAt = LocalDateTime.now();
+
     }
 }
