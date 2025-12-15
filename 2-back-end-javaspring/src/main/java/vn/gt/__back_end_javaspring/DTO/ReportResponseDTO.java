@@ -19,6 +19,8 @@ public class ReportResponseDTO {
     private String id;
     private String reportingUserId;
     private String reportedUserId;
+    private String reportedBlogId;
+    private String reportedPageId;
     private String reportType;
     private String problem;
     private String description;

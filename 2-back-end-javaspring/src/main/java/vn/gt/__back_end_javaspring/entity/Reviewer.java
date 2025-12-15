@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
 import vn.gt.__back_end_javaspring.enums.ReviewerStatus;
+import vn.gt.__back_end_javaspring.mapper.PageMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "reviewer")
 @NoArgsConstructor
@@ -39,7 +41,6 @@ public class Reviewer {
     @Column(name = "following_count")
     Integer followingCount;
 
-
     @Column(name = "join_at")
     private LocalDateTime joinAt;
 
@@ -65,7 +66,8 @@ public class Reviewer {
             totalScore = 0;
         }
         this.isDeleted = false;
-        followerCount=0;
-        followingCount=0;
+        followerCount = 0;
+        followingCount = 0;
     }
+
 }

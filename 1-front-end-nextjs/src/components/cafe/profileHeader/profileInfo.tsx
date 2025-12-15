@@ -68,7 +68,7 @@ export function ProfileInfo() {
 
     fetchCfOwnerId();
   }, [user?.id, token]);
-  
+
   useEffect(() => {
     const fetchPage = async () => {
       try {

@@ -27,8 +27,8 @@ public interface CommentMapper {
 
     @Mapping(source = "blogId", target = "blog.id")
     @Mapping(source = "userId", target = "user.id")
-    @Mapping(source = "commentParentId",target = "parentComment.id")
-    @Mapping(source = "commentImageUrl",target = "commentImage.imageUrl")
+    @Mapping(source = "commentParentId", target = "parentComment.id")
+    @Mapping(source = "commentImageUrl", target = "commentImage.imageUrl")
     Comment toModel(CommentCreateDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

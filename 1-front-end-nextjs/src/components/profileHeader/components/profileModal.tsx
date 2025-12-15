@@ -230,9 +230,8 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
             {filteredOptions.map((item) => (
               <button
                 key={item}
-                className={`ProfileItem ${
-                  item === "Cancel" ? "CancelItem" : ""
-                }`}
+                className={`ProfileItem ${item === "Cancel" ? "CancelItem" : ""
+                  }`}
                 onClick={() => handleClick(item)}
               >
                 {item}

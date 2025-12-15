@@ -25,11 +25,11 @@ import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
+	private final UserMapper userMapper;
 	private final UserRepository userRepository;
 	private final UserRoleRepository userRoleRepository;
 	private final RoleRepository roleRepository;
-	private final  UserMapper userMapper;
-
 
 	public List<UserResponseDTO> GetAllUsersDTO() {
 		return this.userRepository.findAll()
@@ -65,17 +65,16 @@ public class UserService {
 		return this.userRepository.findByEmail(username);
 	}
 
+	public User updateUserById(String id, UserDTO dto) {
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("User not found"));
 
+		// Cập nhật partial bằng mapper
+		userMapper.partialUpdate(dto, user);
 
-public User updateUserById(String id, UserDTO dto) {
-    User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+		return userRepository.save(user);
+	}
 
-    // Cập nhật partial bằng mapper
-    userMapper.partialUpdate(dto, user);
-
-    return userRepository.save(user);
-}
 	public UserRole handleUpdateRoleUser(String userId) {
 
 		// 1. Lấy User
@@ -125,5 +124,28 @@ public User updateUserById(String id, UserDTO dto) {
 		}
 
 		return list;
+	}
+
+	public List<UserResponseDTO> searchUser(String keyword) {
+
+		String keyString = keyword
+				.trim()
+				.replaceAll("\\s+", " ")
+				.toLowerCase();
+
+		List<User> users = userRepository.searchUser(keyString);
+
+		System.out.println("Search size = " + users.size());
+
+		return users.stream()
+				.map(user -> new UserResponseDTO(
+						user.getAvatar(),
+						user.getFullName(),
+						user.getEmail(),
+						user.getId(),
+						user.getAddress(),
+						user.getFollowerCount(),
+						user.getVertifiedBank()))
+				.toList();
 	}
 }

@@ -49,6 +49,8 @@ public class CommentLikeServiceImpl implements CommentLikeService {
 
         notificationService.notifyLikeComment(user, comment);
 
+        notificationService.notifyLikeComment(user, comment);
+
         CommentLike commentLike = commentLikeMapper.toModel(dto);
         commentLike.setComment(comment);
         commentLike.setUser(user);

@@ -69,7 +69,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login", "/api/blogs", "/api/signup", "/users/{id}", "/api/pages/{id}",
                                 "/api/blogs?userId={userId}", "/api/production", "/stripe/webhook", "/",
-                                "/api/pages/cafe-owner/{pageId}", "/api/blogs/page/{realPageId}","/api/cafe-owners/{id}","/api/blogs/page/{pageId}","/api/cafe-owners/user/{id}","/api/pages/top-followers","api/reviewers","/api/shares/**","/api/blogs/{blogId}")
+                                "/api/pages/cafe-owner/{pageId}", "/api/blogs/page/{realPageId}",
+                                "/api/cafe-owners/{id}", "/api/blogs/page/{pageId}", "/api/cafe-owners/user/{id}",
+                                "/api/pages/top-followers", "api/reviewers", "/api/shares/**", "/api/blogs/{blogId}")
                         .permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth

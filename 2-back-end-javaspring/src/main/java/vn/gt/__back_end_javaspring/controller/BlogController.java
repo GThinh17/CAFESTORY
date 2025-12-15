@@ -6,8 +6,6 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -78,6 +76,16 @@ public class BlogController {
         return ResponseEntity.ok().body(data);
     }
 
+    @GetMapping("/page/{pageId}")
+    public ResponseEntity<org.springframework.data.domain.Page<BlogResponse>> getBlogsForPage(
+            @PathVariable String pageId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<BlogResponse> blogPage = blogService.getBlogsForPage(pageId, pageRequest);
+        return ResponseEntity.ok(blogPage);
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<org.springframework.data.domain.Page<BlogResponse>> getBlogsForUser(
             @PathVariable String userId,
@@ -99,13 +107,4 @@ public class BlogController {
         return ResponseEntity.ok(blogPage);
     }
 
-    @GetMapping("/page/{pageId}")
-    public ResponseEntity<org.springframework.data.domain.Page<BlogResponse>> getBlogsForPage(
-            @PathVariable String pageId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<BlogResponse> blogPage = blogService.getBlogsForPage(pageId, pageRequest);
-        return ResponseEntity.ok(blogPage);
-    }
 }
