@@ -28,16 +28,20 @@ public class TagServiceImpl implements TagService {
     private final UserRepository userRepository;
     private final BlogRepository blogRepository;
     private final PageRepository pageRepository;
+    private final TagMapper tagMapper;
 
     @Override
-    public List<?> GetAllTag() {
-        return this.tagRepository.findAll();
+    public List<TagResponse> GetAllTag() {
+        List<Tag> list = this.tagRepository.findAll();
+        List<TagResponse> listTag = tagMapper.toResponseList(list);
+        return listTag;
     }
 
     @Override
-    public Tag GetTagById(String id) {
+    public TagResponse GetTagById(String id) {
         Tag tag = this.tagRepository.findById(id).orElseThrow(() -> new TagNotFound("Tag Not Found"));
-        return tag;
+
+        return tagMapper.toResponse(tag);
     }
 
     @Override
@@ -49,13 +53,13 @@ public class TagServiceImpl implements TagService {
 
         // 2. Tạo Tag entity
         Tag tag = new Tag();
-        tag.setBlogIdTag(blog);
+        tag.setBlogTag(blog);
 
         // 3. Người tạo tag
         if (tagDTO.getUserId() != null) {
             User creator = userRepository.findById(tagDTO.getUserId())
                     .orElseThrow(() -> new BlogNotFoundException("User not found"));
-            tag.setUserId(creator);
+            tag.setUser(creator);
         }
 
         // 4. TAG PAGE
@@ -64,9 +68,8 @@ public class TagServiceImpl implements TagService {
             Page page = pageRepository.findById(tagDTO.getPageIdTag())
                     .orElseThrow(() -> new BlogNotFoundException("Page not found"));
 
-            tag.setPageIdTag(page);
-            tag.setUserIdTag(null);
-            tag.setUsername(page.getPageName());
+            tag.setPageTag(page);
+            tag.setUserTag(null);
         }
         // 5. TAG USER
         else if (tagDTO.getUserIdTag() != null) {
@@ -74,9 +77,8 @@ public class TagServiceImpl implements TagService {
             User userTag = userRepository.findById(tagDTO.getUserIdTag())
                     .orElseThrow(() -> new BlogNotFoundException("User not found"));
 
-            tag.setUserIdTag(userTag);
-            tag.setPageIdTag(null);
-            tag.setUsername(userTag.getFullName());
+            tag.setUserTag(userTag);
+            tag.setPageTag(null);
         } else {
             throw new IllegalArgumentException("Must tag a user or a page");
         }
@@ -85,7 +87,7 @@ public class TagServiceImpl implements TagService {
         Tag savedTag = tagRepository.save(tag);
 
         // 7. Mapper → Response
-        return TagMapper.toTagResponse(savedTag);
+        return tagMapper.toResponse(savedTag);
     }
 
     @Override
@@ -99,7 +101,7 @@ public class TagServiceImpl implements TagService {
         if (tagDTO.getBlogIdTag() != null) {
             Blog blog = blogRepository.findById(tagDTO.getBlogIdTag())
                     .orElseThrow(() -> new BlogNotFoundException("Blog not found"));
-            tag.setBlogIdTag(blog);
+            tag.setBlogTag(blog);
         }
 
         // 3. Update TAG PAGE
@@ -108,9 +110,9 @@ public class TagServiceImpl implements TagService {
             Page page = pageRepository.findById(tagDTO.getPageIdTag())
                     .orElseThrow(() -> new BlogNotFoundException("Page not found"));
 
-            tag.setPageIdTag(page);
-            tag.setUserIdTag(null);
-            tag.setUsername(page.getPageName());
+            tag.setPageTag(page);
+            tag.setUserTag(null);
+
         }
         // 4. Update TAG USER
         else if (tagDTO.getUserIdTag() != null) {
@@ -118,16 +120,16 @@ public class TagServiceImpl implements TagService {
             User user = userRepository.findById(tagDTO.getUserIdTag())
                     .orElseThrow(() -> new BlogNotFoundException("User not found"));
 
-            tag.setUserIdTag(user);
-            tag.setPageIdTag(null);
-            tag.setUsername(user.getFullName());
+            tag.setUserTag(user);
+            tag.setPageTag(null);
         }
 
         // 5. Lưu DB
         Tag updatedTag = tagRepository.save(tag);
 
         // 6. Mapper → Response
-        return TagMapper.toTagResponse(updatedTag);
+        return tagMapper.toResponse(updatedTag);
+
     }
 
     @Override

@@ -30,7 +30,7 @@ public class Production {
     private ProductionType productionType;
 
     @Column(name = "timeExpired")
-    private int timeExpired;  //Ngay
+    private int timeExpired; // Ngay
 
     @Column(name = "status", length = 50)
     private String status; // ACTIVE / EXPIRED / CANCELED ...
