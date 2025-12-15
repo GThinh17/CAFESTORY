@@ -20,4 +20,6 @@ public interface TagService {
     public TagResponse UpdateTag(String id, TagDTO tagDTO);
 
     public Tag DeleteTagById(String id);
+
+    public List<TagResponse> GetAllTagByUserId(String userIdTag);
 }

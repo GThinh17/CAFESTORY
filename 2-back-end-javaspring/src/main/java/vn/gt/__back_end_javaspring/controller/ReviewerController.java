@@ -10,6 +10,8 @@ import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/reviewers")
@@ -22,8 +24,7 @@ public class ReviewerController {
     public ResponseEntity<ReviewerResponse> registerReviewer(
             @Valid @RequestBody ReviewerCreateDTO dto) {
         ReviewerResponse response = reviewerService.registerReviewer(dto);
-        System.out.println(">>>>>>>>>>>>>>>>RESPONSE NÈ<<<<<<<<<<<<<" + response);
-        System.out.println(">>>>>>>>>>>>>>>>RESPONSE NÈ<<<<<<<<<<<<<" + response);
+
         return ResponseEntity.ok(response);
     }
 
@@ -80,4 +81,10 @@ public class ReviewerController {
         List<ReviewerResponse> responses = reviewerService.getAllReviewersOrderByFollowerCountDesc();
         return ResponseEntity.ok(responses);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> SearchReviewerByLocation(@RequestParam("location") String param) {
+        return ResponseEntity.ok().body(this.reviewerService.searchReviewerByLocation(param));
+    }
+
 }
