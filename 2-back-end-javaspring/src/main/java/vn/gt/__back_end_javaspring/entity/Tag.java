@@ -16,32 +16,36 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tag")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class Tag {
+
     @Id
     @Column(name = "tag_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    // Người tạo tag (luôn có)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User userId;
 
+    // Blog được tag (luôn có)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "blog_id")
+    @JoinColumn(name = "blog_id", nullable = false)
     private Blog blogIdTag;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_idTag")
+    // User được tag (có thể null)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id_tag", nullable = true)
     private User userIdTag;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "page_id")
+    // Page được tag (có thể null)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "page_id", nullable = true)
     private Page pageIdTag;
 
     @Column(name = "username")
     private String username;
-
 }
