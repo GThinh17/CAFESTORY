@@ -53,8 +53,6 @@ export default function DashboardPage() {
         Overview & management
       </p>
 
-      
-
       <ReviewersTable reviewers={reviewersData} />
     </div>
   );

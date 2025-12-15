@@ -1,0 +1,55 @@
+@import "../../../layout.scss";
+.page {
+  display: flex;
+  justify-content: center; /* Căn giữa nội dung */
+  align-items: center;
+  min-height: 100vh; /* Toàn màn hình */
+}
+
+.main {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  width: 100vw;
+  min-height: 100vh;
+}
+
+.leftContainer {
+  flex: 1;
+  @include medium {
+    flex: 0.5;
+  }
+  @include exsmall {
+    display: none;
+  }
+}
+
+.mainContainer {
+  flex: 5;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileHeader {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  width: 80%;
+  border-bottom: 1px solid var(--color-border);
+  @include exsmall {
+    width: 98%;
+  }
+}
+
+.profileMain {
+  display: flex;
+  flex: 2;
+  width: 80%;
+  padding-top: 5px;
+  justify-content: center;
+  @include exsmall {
+    width: 98%;
+  }
+}

@@ -8,7 +8,7 @@ type Props = {
   users: number;
   pages: number;
   reviewers: number;
-  balance: number;
+  balance: string;
 };
 
 export default function Stats({ users, pages, reviewers, balance }: Props) {

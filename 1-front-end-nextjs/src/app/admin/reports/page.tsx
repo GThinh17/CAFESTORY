@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Stats from "@/components/admin/Stats";
 import UsersTable from "@/components/admin/PagesTable";
 import { useAuth } from "@/context/AuthContext";
@@ -51,8 +51,6 @@ export default function DashboardPage() {
       <p className="text-sm text-muted-foreground mb-6">
         Overview & management
       </p>
-
-    
 
       <ReportsTable reports={reportsData} />
     </div>
