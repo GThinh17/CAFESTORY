@@ -9,8 +9,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import vn.gt.__back_end_javaspring.DTO.PaymentResponse;
 import vn.gt.__back_end_javaspring.entity.Payment;
 import vn.gt.__back_end_javaspring.enums.PaymentStatus;
+import vn.gt.__back_end_javaspring.mapper.PaymentMapper;
 import vn.gt.__back_end_javaspring.repository.PaymentRepository;
 import vn.gt.__back_end_javaspring.service.PaymentService;
 
@@ -18,9 +20,12 @@ import vn.gt.__back_end_javaspring.service.PaymentService;
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
+    private final PaymentMapper paymentMapper;
 
-    public List<Payment> GetAllUserPayment() {
-        return this.paymentRepository.findAll();
+    public List<PaymentResponse> GetAllUserPayment() {
+        List<Payment> list = this.paymentRepository.findAll();
+        List<PaymentResponse> listPay = paymentMapper.toResponseList(list);
+        return listPay;
     }
 
     public Optional<Payment> GetUserPayment(String id) {
@@ -38,7 +43,6 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     public Payment UpdatePayment(String paymentId, PaymentStatus paymentStatus) {
-
 
         Payment updateStatus = this.paymentRepository.findByPaymentId(paymentId);
         updateStatus.setStatus(paymentStatus);

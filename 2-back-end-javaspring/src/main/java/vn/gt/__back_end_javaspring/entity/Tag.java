@@ -1,5 +1,7 @@
 package vn.gt.__back_end_javaspring.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,23 +32,28 @@ public class Tag {
     // Người tạo tag (luôn có)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User userId;
+    private User user;
 
     // Blog được tag (luôn có)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "blog_id", nullable = false)
-    private Blog blogIdTag;
+    private Blog blogTag;
 
     // User được tag (có thể null)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id_tag", nullable = true)
-    private User userIdTag;
+    private User userTag;
 
     // Page được tag (có thể null)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "page_id", nullable = true)
-    private Page pageIdTag;
+    private Page pageTag;
 
-    @Column(name = "username")
-    private String username;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    void init() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

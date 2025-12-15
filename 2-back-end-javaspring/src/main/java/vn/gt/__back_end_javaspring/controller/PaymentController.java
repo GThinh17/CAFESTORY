@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import vn.gt.__back_end_javaspring.DTO.PaymentResponse;
 import vn.gt.__back_end_javaspring.entity.Payment;
 import vn.gt.__back_end_javaspring.service.PaymentService;
 
@@ -16,14 +17,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping("/api/payment")
+@RequestMapping("/api/payments")
 @RequiredArgsConstructor
 public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping("")
     public ResponseEntity<?> getAllPayment() {
-        List<Payment> list = this.paymentService.GetAllUserPayment();
+        List<PaymentResponse> list = this.paymentService.GetAllUserPayment();
         return ResponseEntity.ok().body(list);
     }
 

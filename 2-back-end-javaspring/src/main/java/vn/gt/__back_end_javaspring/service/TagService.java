@@ -13,7 +13,7 @@ public interface TagService {
 
     public List<?> GetAllTag();
 
-    public Tag GetTagById(String id);
+    public TagResponse GetTagById(String id);
 
     public TagResponse CreateTag(TagDTO tagDTO);
 

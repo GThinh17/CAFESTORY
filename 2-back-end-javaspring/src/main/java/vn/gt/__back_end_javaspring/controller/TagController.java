@@ -5,9 +5,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import vn.gt.__back_end_javaspring.DTO.TagDTO;
+import vn.gt.__back_end_javaspring.DTO.TagResponse;
 import vn.gt.__back_end_javaspring.entity.RestResponse;
 import vn.gt.__back_end_javaspring.entity.Tag;
 import vn.gt.__back_end_javaspring.service.TagService;
+
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -29,6 +32,7 @@ public class TagController {
 
     @GetMapping("")
     public ResponseEntity<?> GetAllTag() {
+
         return ResponseEntity.ok().body(this.tagService.GetAllTag());
     }
 
@@ -39,8 +43,8 @@ public class TagController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> GetTagById(@PathVariable("id") String id) {
-        Tag tag = this.tagService.GetTagById(id);
+    public ResponseEntity<TagResponse> GetTagById(@PathVariable("id") String id) {
+        TagResponse tag = this.tagService.GetTagById(id);
         return ResponseEntity.ok().body(tag);
     }
 
