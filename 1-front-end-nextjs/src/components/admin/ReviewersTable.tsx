@@ -31,7 +31,11 @@ interface Reviewers {
   // followingCount: number;
 }
 
-export default function ReviewersTable({ reviewers = [] }: { reviewers: Reviewers[] }) {
+export default function ReviewersTable({
+  reviewers = [],
+}: {
+  reviewers: Reviewers[];
+}) {
   const { token } = useAuth();
   const [query, setQuery] = useState("");
 
@@ -44,18 +48,14 @@ export default function ReviewersTable({ reviewers = [] }: { reviewers: Reviewer
     );
   }, [reviewers, query]);
 
-
   // --- HÀM XEM CHI TIẾT PAGE THEO ID ---
   const handlePageById = async (pageId: string) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/pages/${pageId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axios.get(`http://localhost:8080/api/pages/${pageId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       console.log("CHI TIẾT PAGE:", res.data.data);
     } catch (error) {
@@ -91,7 +91,6 @@ export default function ReviewersTable({ reviewers = [] }: { reviewers: Reviewer
             </TableRow>
           </TableHeader>
 
-
           <TableBody>
             {filtered.map((r) => (
               <TableRow key={r.id}>
@@ -100,24 +99,14 @@ export default function ReviewersTable({ reviewers = [] }: { reviewers: Reviewer
                     <AvatarImage src={r.userAvatarUrl} />
                   </Avatar>
                 </TableCell>
-
                 <TableCell>{r.userName}</TableCell>
-
                 <TableCell>{r.userEmail}</TableCell>
-
                 <TableCell>{r.followerCount ?? 0}</TableCell>
-
                 <TableCell>{r.totalScore ?? 0}</TableCell>
-
-                <TableCell>
-
-                  {r.status}
-
-                </TableCell>
+                <TableCell>{r.status}</TableCell>
               </TableRow>
             ))}
           </TableBody>
-
         </Table>
       </CardContent>
     </Card>

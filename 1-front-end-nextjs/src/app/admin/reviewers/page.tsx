@@ -25,9 +25,12 @@ export default function DashboardPage() {
 
   const handleGetAllReviewers = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/reviewers`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `http://localhost:8080/api/reviewers/top/follower-desc`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       console.log("DATA NÈ:", response.data.data);
 
@@ -50,7 +53,7 @@ export default function DashboardPage() {
         Overview & management
       </p>
 
-      <Stats total={4} active={2} editors={2} pending={1} />
+      
 
       <ReviewersTable reviewers={reviewersData} />
     </div>

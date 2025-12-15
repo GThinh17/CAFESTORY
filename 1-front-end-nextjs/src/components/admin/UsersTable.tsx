@@ -20,24 +20,37 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import UserDetailModal from "@/components/admin/components/UserDetailModal";
 
 import styles from "./UsersTable.module.css";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
-interface User {
+export interface User {
   id: string;
   fullName: string;
   email: string;
-  avatar: string;
-  address?: string;
+  phone: string;
+  avatar: string | null;
+  address: string | null;
+  dateOfBirth: string | null;
+
   followerCount: number;
-  vertifiedBank?: string;
-  role?: string; // nếu backend có
+  followingCount: number;
+
+  vertifiedBank: boolean | null;
+
+  createdAt: string;
+  updatedAt: string | null;
 }
+
 export default function UsersTable({ users = [] }: { users: User[] }) {
   const [query, setQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
   const { token } = useAuth();
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false);
+
   const roles = useMemo(
     () => ["All", ...Array.from(new Set(users.map((u) => u.role || "User")))],
     [users]
@@ -55,21 +68,22 @@ export default function UsersTable({ users = [] }: { users: User[] }) {
 
   const handleUserById = async (id: string) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/users/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-      console.log(">>>>>>>>>>>>>>>>>RES NÈ MẤY BA<<<<<<<<<<<<<<<", res.data.data);
+      setLoading(true);
+
+      const res = await axios.get(`http://localhost:8080/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setSelectedUser(res.data.data); // ⭐ gán user chi tiết
+      setOpen(true); // ⭐ mở modal
     } catch (error) {
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>> LỖI ĐÂY NÈ <<<<<<<<<<<<<", error);
+      console.log("LỖI:", error);
+    } finally {
+      setLoading(false);
     }
   };
-
-
 
   return (
     <Card>
@@ -120,8 +134,12 @@ export default function UsersTable({ users = [] }: { users: User[] }) {
               <TableRow key={u.id} className={styles.tableBodyRow}>
                 <TableCell className={styles.avatarCell}>
                   <Avatar>
-                    <AvatarImage src={u.avatar} />
-                    {/* <AvatarFallback>{u.fullName?.[0] ?? "?"}</AvatarFallback> */}
+                    <AvatarImage
+                      src={
+                        u.avatar ||
+                        "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
+                      }
+                    />
                   </Avatar>
                 </TableCell>
 
@@ -139,18 +157,30 @@ export default function UsersTable({ users = [] }: { users: User[] }) {
                     {u.followerCount}
                   </Badge>
                 </TableCell>
-                <TableCell> {u.address}</TableCell>
+                <TableCell>{u.address}</TableCell>
                 <TableCell>
                   <Button className={styles.button}>Delete</Button>
-                  <Button className={styles.button}
+                  <Button
+                    className={styles.button}
+                    disabled={loading}
                     onClick={() => handleUserById(u.id)}
-                  >View</Button>
+                  >
+                    {loading ? "Loading..." : "View"}
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </CardContent>
-    </Card >
+      <UserDetailModal
+        open={open}
+        user={selectedUser}
+        onClose={() => {
+          setOpen(false);
+          setSelectedUser(null);
+        }}
+      />
+    </Card>
   );
 }

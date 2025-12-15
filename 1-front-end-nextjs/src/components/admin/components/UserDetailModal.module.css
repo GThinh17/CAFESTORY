@@ -1,0 +1,66 @@
+
+
+.modalContent {
+  max-width: 520px;
+  padding: 10px;
+}
+
+.avatarWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 1px solid hsl(var(--border));
+}
+
+.userName {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.userEmail {
+  font-size: 14px;
+  color: hsl(var(--muted-foreground));
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  grid-column: span 2;
+}
+
+@media (min-width: 640px) {
+  .infoRow {
+    grid-column: span 1;
+  }
+}
+
+.infoLabel {
+  color: hsl(var(--muted-foreground));
+}
+
+.infoValue {
+  font-weight: 500;
+}
+
+.verifiedRow {
+  grid-column: span 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

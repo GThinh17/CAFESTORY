@@ -52,7 +52,7 @@ export default function DashboardPage() {
         Overview & management
       </p>
 
-      <Stats total={4} active={2} editors={2} pending={1} />
+    
 
       <ReportsTable reports={reportsData} />
     </div>

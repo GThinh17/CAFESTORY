@@ -51,8 +51,15 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
 
   return (
     <>
-      <Card >
-        <CardHeader style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: "auto" }}>
+      <Card>
+        <CardHeader
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            margin: "auto",
+          }}
+        >
           <CardTitle>Reports</CardTitle>
         </CardHeader>
 
@@ -70,8 +77,7 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
                 <TableHead>Report Type</TableHead>
                 <TableHead>Problem</TableHead>
                 <TableHead>Description</TableHead>
-
-                <TableHead>Tools</TableHead> {/* 🔥 thêm cột Tools */}
+                <TableHead>Tools</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -83,12 +89,7 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
                   <TableCell>{r.description}</TableCell>
 
                   <TableCell>
-                    <Button
-
-                      onClick={() => handleOpenModal(r)}
-                    >
-                      View
-                    </Button>
+                    <Button onClick={() => handleOpenModal(r)}>View</Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -106,14 +107,31 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
 
           {selectedReport && (
             <div className="space-y-3">
-              <p><strong>ID:</strong> {selectedReport.id}</p>
-              <p><strong>Reporting User:</strong> {selectedReport.reportingUserId}</p>
-              <p><strong>Type:</strong> {selectedReport.reportType}</p>
-              <p><strong>Problem:</strong> {selectedReport.problem}</p>
-              <p><strong>Description:</strong> {selectedReport.description}</p>
-              <p><strong>isFlagged:</strong> {selectedReport.isFlagged}</p>
-              <p><strong>isBanned:</strong> {selectedReport.isBanned}</p>
-              <p><strong>isDeleted:</strong> {selectedReport.isDeleted}</p>
+              <p>
+                <strong>ID:</strong> {selectedReport.id}
+              </p>
+              <p>
+                <strong>Reporting User:</strong>
+                {selectedReport.reportingUserId}
+              </p>
+              <p>
+                <strong>Type:</strong> {selectedReport.reportType}
+              </p>
+              <p>
+                <strong>Problem:</strong> {selectedReport.problem}
+              </p>
+              <p>
+                <strong>Description:</strong> {selectedReport.description}
+              </p>
+              <p>
+                <strong>isFlagged:</strong> {selectedReport.isFlagged}
+              </p>
+              <p>
+                <strong>isBanned:</strong> {selectedReport.isBanned}
+              </p>
+              <p>
+                <strong>isDeleted:</strong> {selectedReport.isDeleted}
+              </p>
             </div>
           )}
         </DialogContent>
