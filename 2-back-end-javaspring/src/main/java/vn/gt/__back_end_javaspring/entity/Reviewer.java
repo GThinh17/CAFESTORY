@@ -54,6 +54,9 @@ public class Reviewer {
     @Column(name = "status")
     private ReviewerStatus status;
 
+    @Column(name = "location")
+    private String location;
+
     @PrePersist
     public void prePersist() {
         if (joinAt == null) {

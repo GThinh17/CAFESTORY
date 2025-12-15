@@ -106,6 +106,8 @@ public class UserService {
 		String password = signupUser.getPassword();
 		String fullname = signupUser.getFullname();
 		String phone = signupUser.getPhone();
+		String location = signupUser.getLocation();
+		newUser.setLocation(location);
 		newUser.setEmail(email);
 		newUser.setFullName(fullname);
 		newUser.setPassword(password);

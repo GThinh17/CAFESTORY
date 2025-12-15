@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import vn.gt.__back_end_javaspring.DTO.PageCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.PageResponse;
 import vn.gt.__back_end_javaspring.DTO.PageUpdateDTO;
+import vn.gt.__back_end_javaspring.DTO.PaymentResponse;
 import vn.gt.__back_end_javaspring.service.PageService;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/pages")
@@ -84,6 +87,11 @@ public class PageController {
             @RequestParam String pageId) {
         String data = pageService.getCafeOwnerId(pageId);
         return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> SearchPageByLocation(@RequestParam("location") String location) {
+        return ResponseEntity.ok().body(this.pageService.searchPageByLocation(location));
     }
 
 }

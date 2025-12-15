@@ -61,6 +61,9 @@ public class User { // Check
     @Column(name = "vertifiedBank")
     private String vertifiedBank;
 
+    @Column(name = "location")
+    private String location;
+
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();

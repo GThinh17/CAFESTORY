@@ -138,4 +138,11 @@ public class TagServiceImpl implements TagService {
         throw new UnsupportedOperationException("Unimplemented method 'DeleteTagById'");
     }
 
+    @Override
+    public List<TagResponse> GetAllTagByUserId(String userIdTag) {
+        List<Tag> list = this.tagRepository.findByUserTag_Id(userIdTag);
+        List<TagResponse> listTag = tagMapper.toResponseList(list);
+        return listTag;
+    }
+
 }

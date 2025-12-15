@@ -54,4 +54,8 @@ public class TagController {
         return ResponseEntity.ok().body(this.tagService.UpdateTag(id, tagDTO));
     }
 
+    @GetMapping("/by-useridtag/{id}")
+    public ResponseEntity<?> GetAllTagByUserId(@PathVariable("id") String id) {
+        return ResponseEntity.ok().body(this.tagService.GetAllTagByUserId(id));
+    }
 }
