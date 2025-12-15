@@ -35,8 +35,8 @@ export function Sidebar() {
 
   const menuItems = [
     { href: "/", icon: Home, label: "Home" },
-    { href: "/search", icon: Search, label: "Search" },
-    { href: "/explore", icon: Compass, label: "Explore" },
+    { href: "/explore/page", icon: Search, label: "Search" },
+    { href: "/explore/post", icon: Compass, label: "Explore" },
     { icon: MessageCircle, label: "Messages", modal: true },
     { icon: Heart, label: "Notifications", modal: true },
     { icon: PlusSquare, label: "Create", modal: true },
@@ -129,7 +129,7 @@ export function Sidebar() {
             <Menu size={22} /> <span className="sidebarComp">More</span>
           </li>
           <li onClick={() => setIsOpenPricing(true)}>
-            <Crown size={22} className="crown"/>{" "}
+            <Crown size={22} className="crown" />{" "}
             <span className="sidebarComp">Go pro</span>
           </li>
         </div>
