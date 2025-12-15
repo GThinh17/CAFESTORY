@@ -1,5 +1,6 @@
 "use client";
 
+import { removeFcmToken } from "@/firebase/fcm";
 import { createContext, useContext, useEffect, useState } from "react";
 
 export interface User {
@@ -47,7 +48,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+  
 
+    localStorage.removeItem("fcm_token");
     setToken(null);
     setUser(null);
   };

@@ -61,6 +61,9 @@ public class User { // Check
     @Column(name = "vertifiedBank")
     private String vertifiedBank;
 
+    @Column(name = "fcm_token")
+    private String fcmToken; //Neu ma dùng  tren nhieu thiet bi thi se tao bang rieng
+
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();

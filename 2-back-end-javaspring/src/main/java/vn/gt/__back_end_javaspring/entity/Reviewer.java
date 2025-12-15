@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 public class Reviewer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "reviewer_id")

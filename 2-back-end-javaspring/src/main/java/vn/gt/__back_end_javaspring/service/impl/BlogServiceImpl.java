@@ -17,7 +17,7 @@ import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.BlogService;
 import vn.gt.__back_end_javaspring.service.CafeOwnerService;
 import vn.gt.__back_end_javaspring.service.FollowService;
-import vn.gt.__back_end_javaspring.service.NotificationClient;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class BlogServiceImpl implements BlogService {
     private final ReviewerRepository reviewerRepository;
     private final FollowRepository followRepository;
     private final FollowService followService;
-    private final NotificationClient notificationClient;
+    private final NotificationService notificationService;
 
     @Override
     public BlogResponse createBlog(BlogCreateDTO dto) {
@@ -81,18 +81,20 @@ public class BlogServiceImpl implements BlogService {
             for(FollowResponse follow : follower){
                 String receivedId = follow.getFollowerId();
 
+
                 NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
                 notificationRequestDTO.setSenderId(user.getId());
                 notificationRequestDTO.setReceiverId(receivedId);
                 notificationRequestDTO.setType(NotificationType.PAGE_NEW_POST);
-                notificationRequestDTO.setPostId(null);
+                notificationRequestDTO.setPostId(saved.getId());
                 notificationRequestDTO.setCommentId(null);
                 notificationRequestDTO.setPageId(null);
                 notificationRequestDTO.setWalletTransactionId(null);
                 notificationRequestDTO.setBadgeId(null);
-                notificationRequestDTO.setContent(follow.getPageFollowedName() + "đăng bài post mới");
+                notificationRequestDTO.setBody(page.getPageName()+ "đăng bài post mới");
 
-                notificationClient.sendNotification(notificationRequestDTO);
+                notificationService.sendNotification(receivedId, notificationRequestDTO);
+//                notificationClient.sendNotification(notificationRequestDTO);
             }
         }
 

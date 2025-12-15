@@ -13,7 +13,7 @@ import vn.gt.__back_end_javaspring.mapper.CommentMapper;
 import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.CommentService;
 import vn.gt.__back_end_javaspring.service.EarningEventService;
-import vn.gt.__back_end_javaspring.service.NotificationClient;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
@@ -34,7 +34,7 @@ public class CommentServiceImpl implements CommentService {
     private final ReviewerRepository reviewerRepository;
     private final PricingRuleRepository pricingRuleRepository;
     private final EarningEventService earningEventService;
-    private final NotificationClient notificationClient;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional(readOnly = true)
@@ -107,29 +107,37 @@ public class CommentServiceImpl implements CommentService {
 
         Comment saved = commentRepository.save(comment);
         NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+        String senderId = user.getId();
+
         //Notification
         if(parent == null) {
-            notificationRequestDTO.setSenderId(user.getId());
-            notificationRequestDTO.setReceiverId(blog.getUser().getId());
+            String receiverId = blog.getUser().getId();
+            notificationRequestDTO.setSenderId(senderId);
+            notificationRequestDTO.setReceiverId(receiverId);
             notificationRequestDTO.setType(NotificationType.COMMENT_POST);
             notificationRequestDTO.setPostId(blog.getId());
             notificationRequestDTO.setCommentId(null);
             notificationRequestDTO.setPageId(null);
             notificationRequestDTO.setWalletTransactionId(null);
             notificationRequestDTO.setBadgeId(null);
-            notificationRequestDTO.setContent(user.getFullName() + "đã comment bài viết của bạn");
+            notificationRequestDTO.setBody(user.getFullName() + " đã bình luận bài viết của bạn");
+
+            notificationService.sendNotification(receiverId, notificationRequestDTO);
         } else{
-            notificationRequestDTO.setSenderId(user.getId());
-            notificationRequestDTO.setReceiverId(parent.getUser().getId());
+            String receiverId = parent.getUser().getId();
+            notificationRequestDTO.setSenderId(senderId);
+            notificationRequestDTO.setReceiverId(receiverId);
             notificationRequestDTO.setType(NotificationType.REPLY_COMMENT);
             notificationRequestDTO.setPostId(null);
             notificationRequestDTO.setCommentId(parent.getId());
             notificationRequestDTO.setPageId(null);
             notificationRequestDTO.setWalletTransactionId(null);
             notificationRequestDTO.setBadgeId(null);
-            notificationRequestDTO.setContent(user.getFullName() + "đã reply comment của bạn");
+            notificationRequestDTO.setBody(user.getFullName() + " đã trả lời bình luận của bạn");
+
+            notificationService.sendNotification(receiverId, notificationRequestDTO);
+
         }
-        notificationClient.sendNotification(notificationRequestDTO);
         // Giữ logic earning event như cũ
         String userId = blog.getUser().getId();
 

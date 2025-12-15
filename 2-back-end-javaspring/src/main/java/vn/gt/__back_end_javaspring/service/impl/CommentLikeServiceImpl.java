@@ -20,7 +20,7 @@ import vn.gt.__back_end_javaspring.repository.CommentLikeRepository;
 import vn.gt.__back_end_javaspring.repository.CommentRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.service.CommentLikeService;
-import vn.gt.__back_end_javaspring.service.NotificationClient;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 
 import java.util.List;
 
@@ -33,7 +33,8 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     private  final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final CommentLikeMapper commentLikeMapper;
-    private final NotificationClient notificationClient;
+    private final NotificationService notificationService;
+
 
     @Override
     public CommentLikeResponse likeComment(CommentLikeCreateDTO dto) {
@@ -53,19 +54,24 @@ public class CommentLikeServiceImpl implements CommentLikeService {
        commentRepository.save(comment);
 
         //Notification
+        String senderId =dto.getUserId();
+        String receiverId =comment.getUser().getId();
+
         NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
-        notificationRequestDTO.setSenderId(user.getId());
-        notificationRequestDTO.setReceiverId(comment.getUser().getId());
+        notificationRequestDTO.setSenderId(senderId);
+        notificationRequestDTO.setReceiverId(receiverId);
         notificationRequestDTO.setType(NotificationType.LIKE_COMMENT);
         notificationRequestDTO.setPostId(null);
         notificationRequestDTO.setCommentId(comment.getId());
         notificationRequestDTO.setPageId(null);
         notificationRequestDTO.setWalletTransactionId(null);
         notificationRequestDTO.setBadgeId(null);
-        notificationRequestDTO.setContent(user.getFullName() + "đã thích bài comment của bạn");
+        notificationRequestDTO.setBody(user.getFullName() + " đã thích comment của bạn");
 
-        notificationClient.sendNotification(notificationRequestDTO);
+        notificationService.sendNotification(receiverId, notificationRequestDTO);
 
+
+//        notificationService.sendNotification();
 
         CommentLike commentLike = commentLikeMapper.toModel(dto);
         commentLike.setComment(comment);

@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useState } from "react";
 import { useAuth, User } from "@/context/AuthContext";
-
+import { registerFcm } from "@/firebase/fcm";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,11 +48,16 @@ export default function LoginPage() {
 
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(safeUser));
+        console.log("handle registerFCM:", id);
+          //Call the fucntion fcm Toke
+      await registerFcm(id);
 
         login(token, safeUser); // Đưa vào AuthContext
         router.push("/");
       }
-      console.log("token", token);
+
+    
+      
     } catch (err: any) {
       console.error(err);
       alert(err.response?.data?.message || "Đăng nhập thất bại!");

@@ -24,7 +24,7 @@ import vn.gt.__back_end_javaspring.repository.ReviewerRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.service.CafeOwnerService;
 import vn.gt.__back_end_javaspring.service.FollowService;
-import vn.gt.__back_end_javaspring.service.NotificationClient;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class FollowServiceImpl implements FollowService {
     private final PageRepository pageRepository;
     private final ReviewerRepository reviewerRepository;
     private  final CafeOwnerService cafeOwnerService;
-    private final NotificationClient notificationClient;
+    private final NotificationService notificationService;
 
 
     @Override
@@ -78,15 +78,17 @@ public class FollowServiceImpl implements FollowService {
             follow.setFollowedReviewer(null);
 
             //Notification
-            notificationRequestDTO.setReceiverId(followedUser.getId());
+            String receiverId = followedUser.getId();
+            notificationRequestDTO.setReceiverId(receiverId);
             notificationRequestDTO.setType(NotificationType.NEW_FOLLOWER_USER);
             notificationRequestDTO.setPostId(null);
             notificationRequestDTO.setCommentId(null);
             notificationRequestDTO.setPageId(null);
             notificationRequestDTO.setWalletTransactionId(null);
             notificationRequestDTO.setBadgeId(null);
-            notificationRequestDTO.setContent(follower.getFullName() + "đã theo dõi bạn");
-            notificationClient.sendNotification(notificationRequestDTO);
+            notificationRequestDTO.setBody(follower.getFullName() + " đã theo dõi bạn");
+
+            notificationService.sendNotification(receiverId, notificationRequestDTO);
         } else if (request.getFollowType() == FollowType.PAGE) {
             Page page = pageRepository.findById(request.getFollowedPageId())
                     .orElseThrow(() -> new PageNotFoundException("Page not found"));
@@ -104,16 +106,18 @@ public class FollowServiceImpl implements FollowService {
             follow.setFollowedReviewer(null);
             //Notification
 
-            notificationRequestDTO.setReceiverId(page.getCafeOwner().getUser().getId());
+            String receiverId = page.getCafeOwner().getUser().getId();
+
+            notificationRequestDTO.setReceiverId(receiverId);
             notificationRequestDTO.setType(NotificationType.NEW_PAGE_FOLLOWER);
             notificationRequestDTO.setPostId(null);
             notificationRequestDTO.setCommentId(null);
             notificationRequestDTO.setPageId(page.getId());
             notificationRequestDTO.setWalletTransactionId(null);
             notificationRequestDTO.setBadgeId(null);
-            notificationRequestDTO.setContent(follower.getFullName() + "đã theo dõi quán cà phê bạn");
-            notificationClient.sendNotification(notificationRequestDTO);
+            notificationRequestDTO.setBody(follower.getFullName() + " đã theo dõi quán cà phê bạn");
 
+            notificationService.sendNotification(receiverId, notificationRequestDTO);
         } else if (request.getFollowType() == FollowType.REVIEWER) {
 
             Reviewer reviewer = reviewerRepository.findByUser_Id(request.getFollowedUserId());
@@ -137,6 +141,7 @@ public class FollowServiceImpl implements FollowService {
 
 
             follower.setFollowingCount(follower.getFollowingCount() + 1);
+
             reviewer.setFollowerCount(reviewer.getFollowerCount() + 1);
             reviewerRepository.save(reviewer);
 
@@ -145,16 +150,17 @@ public class FollowServiceImpl implements FollowService {
             follow.setFollowedUser(null);
 
             //Thieu notification
-
-            notificationRequestDTO.setReceiverId(reviewer.getUser().getId());
+            String receiverId = reviewer.getUser().getId();
+            notificationRequestDTO.setReceiverId(receiverId);
             notificationRequestDTO.setType(NotificationType.NEW_FOLLOWER_REVIEWER);
             notificationRequestDTO.setPostId(null);
             notificationRequestDTO.setCommentId(null);
             notificationRequestDTO.setPageId(null);
             notificationRequestDTO.setWalletTransactionId(null);
             notificationRequestDTO.setBadgeId(null);
-            notificationRequestDTO.setContent(follower.getFullName() + "đã theo dõi bạn");
-            notificationClient.sendNotification(notificationRequestDTO);
+            notificationRequestDTO.setBody(follower.getFullName() + " đã theo dõi bạn");
+
+            notificationService.sendNotification(receiverId, notificationRequestDTO);
         }
         else  {
             throw new IllegalArgumentException("Invalid follow type");

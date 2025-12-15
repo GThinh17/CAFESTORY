@@ -44,6 +44,7 @@ const nextConfig = {
         protocol: "https",
         hostname: "www.facebook.com",
       },
+            { protocol: "https", hostname: "example.com" },
     ],
   },
   devIndicators: false,

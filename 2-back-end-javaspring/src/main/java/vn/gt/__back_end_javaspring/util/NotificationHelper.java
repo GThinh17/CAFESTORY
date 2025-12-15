@@ -26,7 +26,6 @@ public class NotificationHelper {
                 .pageId(pageId)
                 .walletTransactionId(walletTransactionId)
                 .badgeId(badgeId)
-                .content(content)
                 .build();
     }
 }

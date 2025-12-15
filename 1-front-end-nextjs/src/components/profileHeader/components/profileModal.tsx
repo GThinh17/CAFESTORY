@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ChangeAvtModal } from "./ChangeAvtModal/changeAvtModal";
 import ProfileEditModal from "./EditProfile/editProfile";
+import { removeFcmToken } from "@/firebase/fcm";
 
 interface ProfileModalProps {
   open: boolean;
@@ -173,7 +174,7 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
     fetchPageInf();
   }, [open, cfOwnerId]);
 
-  const handleClick = (item: string) => {
+  const handleClick = async (item: string) => {
     if (item === "Change Avatar") {
       setOpenChangeAvt(true); // Mở modal Change Avatar
       return;
@@ -200,10 +201,23 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
     }
 
     if (item === "Log Out") {
+      const fcmToken = localStorage.getItem("fcm_token");
+
+      if (fcmToken) {
+        try {
+          console.log("Goi ham")
+          await removeFcmToken(fcmToken);
+          
+          localStorage.removeItem("fcm_token");
+        } catch (e) {
+          console.error("Remove FCM token failed", e);
+        }
+      }
+
       logout();
       router.push("/");
       return;
-    }
+}
 
     onClose();
   };

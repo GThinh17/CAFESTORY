@@ -33,9 +33,11 @@ public class Notification {
     @Column(name = "type", nullable = false, length = 100)
     private NotificationType type;
 
+    @Column(name = "title")
+    private String title;
 
-    @Column(name = "content", length = 1000)
-    private String content;
+    @Column(name = "body", length = 1000)
+    private String body;
 
 
     @Column(name = "is_read", nullable = false)
