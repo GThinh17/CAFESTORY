@@ -2,7 +2,13 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Heart, MessageCircle, Send, MoreHorizontal } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  Send,
+  MessageCircleWarningIcon,
+  Trash2,
+} from "lucide-react";
 import { Input } from "../ui/input";
 import Link from "next/link";
 import axios from "axios";
@@ -18,6 +24,7 @@ import {
 import "./post.css";
 import { useAuth } from "@/context/AuthContext";
 import { ShareModal } from "./components/shareModal/ShareModal";
+import { ReportModal } from "./components/reportModal/reportModal";
 
 export interface PostProps {
   userId: string;
@@ -51,6 +58,7 @@ export function Post({
   const [isLiked, setIsLiked] = useState(false);
   const [openShare, setOpenShare] = useState(false);
   const [isMe, setIsMe] = useState(user?.id === userId);
+  const [openReport, setOpenReport] = useState(false);
 
   ////////////////////////////// LIKE ////////////////////////////////////////////
   const handleLike = async () => {
@@ -146,7 +154,15 @@ export function Post({
             <span className="dot">•</span>
             <span className="time">{time}</span>
           </div>
-          <MoreHorizontal size={20} className="more-icon" />
+          {isMe ? (
+            <Trash2 size={15} className="more-icon" />
+          ) : (
+            <MessageCircleWarningIcon
+              size={15}
+              className="more-icon"
+              onClick={() => setOpenReport(true)}
+            />
+          )}
         </div>
 
         {/* Carousel */}
@@ -215,6 +231,11 @@ export function Post({
       <ShareModal
         open={openShare}
         onClose={() => setOpenShare(false)}
+        blogId={postId}
+      />
+      <ReportModal
+        open={openReport}
+        onClose={() => setOpenReport(false)}
         blogId={postId}
       />
     </>

@@ -9,10 +9,6 @@ import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { User } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { User } from "lucide-react";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -23,10 +19,10 @@ export default function Sidebar() {
     try {
       const response = await axios.get("http://localhost:8080/users/getme", {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-      console.log('>>>>>>>>>>>>>>>>>DATA NÈ<<<<<<<<<<<<<', response.data.data);
+      console.log(">>>>>>>>>>>>>>>>>DATA NÈ<<<<<<<<<<<<<", response.data.data);
       const UserData = response.data.data;
       const userAvatar = UserData?.data?.data?.avatar
         ? `http://localhost:8080/${UserData.data.data.avatar}`
@@ -35,36 +31,12 @@ export default function Sidebar() {
       setAvatar(userAvatar);
       setfullName(UserData.fullName);
     } catch (error) {
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>LỖI NÈ<<<<<<<<<<<<<<<<<<<<<<", error);
+      console.log(
+        ">>>>>>>>>>>>>>>>>>>>>>>>>LỖI NÈ<<<<<<<<<<<<<<<<<<<<<<",
+        error
+      );
     }
-  }
-  useEffect(() => {
-    if (token) {
-      fetchGetMe();
-    }
-  }, [token]);
-  const { logout, token } = useAuth();
-  const [fullName, setfullName] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const fetchGetMe = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/users/getme", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      console.log('>>>>>>>>>>>>>>>>>DATA NÈ<<<<<<<<<<<<<', response.data.data);
-      const UserData = response.data.data;
-      const userAvatar = UserData?.data?.data?.avatar
-        ? `http://localhost:8080/${UserData.data.data.avatar}`
-        : "https://i.pravatar.cc/40?img=12";
-
-      setAvatar(userAvatar);
-      setfullName(UserData.fullName);
-    } catch (error) {
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>LỖI NÈ<<<<<<<<<<<<<<<<<<<<<<", error);
-    }
-  }
+  };
   useEffect(() => {
     if (token) {
       fetchGetMe();
@@ -88,7 +60,7 @@ export default function Sidebar() {
 
             <div>
               <p className={styles.userName}>{fullName}</p>
-              <p className={styles.userName}>{fullName}</p>
+
               <p className={styles.userRole}>Super Admin</p>
             </div>
           </div>
@@ -130,7 +102,6 @@ export default function Sidebar() {
               Reports
             </Button>
             <Button
-              onClick={() => (logout(), router.push("/login/admin"))}
               onClick={() => (logout(), router.push("/login/admin"))}
               variant="ghost"
               className={styles.navBtn}

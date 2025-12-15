@@ -12,6 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 import { ChangeAvtModal } from "./ChangeAvtModal/changeAvtModal";
 import ProfileEditModal from "./EditProfile/editProfile";
 import { useState } from "react";
+import { ChangeBackgroundModal } from "./changeBackground/changeBackground";
 
 interface ProfileModalProps {
   open: boolean;
@@ -22,6 +23,7 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
   const router = useRouter();
   const [openChangeAvt, setOpenChangeAvt] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const [openChangeBack, setOpenChangeBack] = useState(false);
 
   const options: string[] = [
     "Change Background Image",
@@ -33,6 +35,10 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
   const handleClick = (item: string) => {
     if (item === "Change Avatar") {
       setOpenChangeAvt(true); // Mở modal Change Avatar
+      return;
+    }
+    if (item === "Change Background Image") {
+      setOpenChangeBack(true); // Mở modal Change Avatar
       return;
     }
     if (item === "Edit Profile") {
@@ -68,6 +74,10 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
       <ChangeAvtModal
         open={openChangeAvt}
         onClose={() => setOpenChangeAvt(false)}
+      />
+      <ChangeBackgroundModal
+        open={openChangeBack}
+        onClose={() => setOpenChangeBack(false)}
       />
       <ProfileEditModal open={openEdit} onClose={() => setOpenEdit(false)} />
     </>

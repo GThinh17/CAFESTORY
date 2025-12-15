@@ -113,7 +113,7 @@
 .nameRow {
   display: flex;
   align-items: center;
-  justify-content: center;
+
   gap: 8px;
 }
 
@@ -139,6 +139,9 @@
 
 /* ============ RESPONSIVE: MAX WIDTH 768px ============ */
 @media (max-width: 800px) {
+  .nameRow{
+    justify-content: center;
+  }
   .cover {
     height: 200px;
     border-radius: 0;

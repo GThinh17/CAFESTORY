@@ -6,10 +6,11 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ProfileModal } from "./components/profileModal";
-import { Check } from "lucide-react";
+import { Check, MessageCircleWarningIcon } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 import { ProfileTabs } from "./components/profileTab/profileTabs";
+import { ReportModal } from "./components/reportModal/reportModal";
 
 interface ProfileHeaderProps {
   username: string;
@@ -47,6 +48,7 @@ export function ProfileHeader({
   const { token, user } = useAuth();
   const [isProfile, setIsProfile] = useState(false);
   const [localFollow, setLocalFollow] = useState(false);
+  const [openReport, setOpenReport] = useState(false);
 
   useEffect(() => {
     if (!token || !currentUserId || !profileUserId) return;
@@ -231,6 +233,12 @@ export function ProfileHeader({
               >
                 Message
               </button>
+              <button
+                onClick={() => setOpenReport(true)}
+                className={`${styles.btn} ${styles.messageBtn}`}
+              >
+                <MessageCircleWarningIcon size={15} className="more-icon" />
+              </button>
             </>
           )}
         </div>
@@ -239,6 +247,11 @@ export function ProfileHeader({
       <div className={styles.tabWrapper}>
         <ProfileTabs userId={profileUserId} />
       </div>
+      <ReportModal
+        open={openReport}
+        onClose={() => setOpenReport(false)}
+        profileUserId={profileUserId}
+      />
     </div>
   );
 }

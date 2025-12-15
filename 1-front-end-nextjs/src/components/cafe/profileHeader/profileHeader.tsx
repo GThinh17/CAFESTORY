@@ -4,11 +4,11 @@ import Image from "next/image";
 import styles from "./profileHeader.module.css";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Pin, MessageCircle, Plus, Search } from "lucide-react";
+import { Pin, MessageCircleWarningIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { ProfileModal } from "./components/profileModal";
-
+import { ReportModal } from "./components/reportModal/reportModal";
 import axios from "axios";
 interface ProfileHeaderProps {
   username: string;
@@ -50,6 +50,7 @@ export default function ProfileHeader({
   const [isProfile, setIsProfile] = useState(false);
   const [realPageId, setRealPageId] = useState();
   const { pageId } = useParams();
+  const [openReport, setOpenReport] = useState(false);
 
   useEffect(() => {
     const fetchPage = async () => {
@@ -208,8 +209,11 @@ export default function ProfileHeader({
                   {localFollow ? "Following" : "Follow"}
                 </button>
 
-                <button className={`${styles.btn} ${styles.followBtn}`}>
-                  Messages
+                <button
+                  onClick={() => setOpenReport(true)}
+                  className={`${styles.btn} ${styles.followBtn}`}
+                >
+                  <MessageCircleWarningIcon size={15} className="more-icon" />
                 </button>
               </>
             )}
@@ -217,6 +221,11 @@ export default function ProfileHeader({
         </div>
       </div>
       <ProfileModal open={isProfile} onClose={() => setIsProfile(false)} />
+      <ReportModal
+        open={openReport}
+        onClose={() => setOpenReport(false)}
+        pageId={realPageId}
+      />
     </>
   );
 }
