@@ -1,160 +1,186 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
-import { ProfilePost } from "./profilePost";
-import styles from "./profilePost.module.scss";
-import { useAuth } from "@/context/AuthContext";
-import { useParams } from "next/navigation";
-import { PostModal } from "../PostCf/components/postModal";
 
+import { useEffect, useState, useRef } from "react";
+import axios from "axios";
+import { useParams } from "next/navigation";
+import { ProfilePostTag } from "./profilePostTag";
+import styles from "./profilePost.module.scss";
+import { PostModal } from "../PostCf/components/postModal";
+import { useAuth } from "@/context/AuthContext";
+
+/* ===== SHARE FROM BACKEND ===== */
 interface Share {
   shareId: string;
-  blogId: string;
-  caption: string;
+  blogTagId: string;
+  caption: string; // caption share
   createdAt: string;
   userFullName: string;
-  userAvatarUrl: string;
+  userAvatarUrl?: string;
 }
 
-interface Blog {
-  id: string;
-  caption: string;
+/* ===== POST AFTER MERGE ===== */
+interface Post {
+  shareId: string;
+  id: string; // blogId
+  caption: string; // caption blog
+  captionShare: string;
   mediaUrls: string[];
   likeCount: number;
   createdAt: string;
+  userFullName: string;
+  userShareFullName: string;
+  userAvatar: string;
 }
 
-export function ProfilePostTagList() {
+export function TaggedPostList() {
+  const { userId } = useParams<{ userId: string }>();
+  const { loading: authLoading } = useAuth();
+
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
+
   const [isOpenPost, setIsOpenPost] = useState(false);
   const [selectedPost, setSelectedPost] = useState<any>(null);
 
-  const { userId } = useParams();
-  const { token, loading: authLoading } = useAuth();
-
   const observerRef = useRef<HTMLDivElement>(null);
 
-  // Fetch initial posts
-  useEffect(() => {
-    async function fetchPosts(cursor: string | null = null) {
-      try {
-        const url = new URL("http://localhost:8080/api/blogs");
-        url.searchParams.append("size", "9");
-        url.searchParams.append("userId", userId);
-        if (cursor) url.searchParams.append("cursor", cursor);
-
-        const res = await fetch(url.toString(), {
-          method: "GET",
-        });
-        const data = await res.json();
-        const postData = data.data?.data || [];
-        setPosts((prev) => {
-          // lọc post mới không trùng với các post đã có
-          const newPosts = postData.filter(
-            (p: any) =>
-              !p.pageId && // ❌ bỏ post có pageId
-              !prev.some((prevP) => prevP.id === p.id)
-          );
-
-          return [...prev, ...newPosts];
-        });
-
-        setNextCursor(data.data?.nextCursor || null);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      } finally {
-        setLoading(false);
-        setLoadingMore(false);
+  /* ===============================
+     FETCH SHARE + BLOG DETAIL
+  =============================== */
+  const fetchSharedPosts = async (cursor: string | null = null) => {
+    const res = await axios.get(
+      `http://localhost:8080/api/tags/by-useridtag/${userId}`,
+      {
+        params: {
+          userId,
+          size: 9,
+          cursor: cursor ?? undefined,
+        },
       }
-    }
+    );
 
-    fetchPosts();
-  }, [userId, token]);
+    const shares: Share[] = res.data.data || [];
 
-  const openPost = (post: any) => {
-    setSelectedPost({
-      ...post,
-      username: post.userFullName,
-      avatar:
-        post.userAvatar ??
-        "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
-      images: post.mediaUrls ?? [],
-      likes: post.likeCount,
-    });
-    setIsOpenPost(true);
+    const posts: Post[] = await Promise.all(
+      shares.map(async (share) => {
+        const blogRes = await axios.get(
+          `http://localhost:8080/api/blogs/${share.blogTagId}`
+        );
+
+        const blog = blogRes.data.data;
+
+        return {
+          shareId: share.shareId,
+          id: blog.id,
+          caption: blog.caption,
+          captionShare: blog.caption,
+          mediaUrls: blog.mediaUrls || [],
+          likeCount: blog.likeCount || 0,
+          createdAt: blog.createdAt,
+          userFullName: blog.userFullName,
+          userShareFullName: blog.userFullName,
+          userAvatar:
+            blog.userAvatar ??
+            "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
+        };
+      })
+    );
+
+    return {
+      posts,
+      nextCursor: res.data.data?.nextCursor || null,
+    };
   };
 
-  // Infinite scroll
+  /* ===============================
+     INIT FETCH
+  =============================== */
+  useEffect(() => {
+    if (!userId) return;
+
+    setLoading(true);
+
+    fetchSharedPosts()
+      .then(({ posts, nextCursor }) => {
+        setPosts(posts);
+        setNextCursor(nextCursor);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [userId]);
+
+  /* ===============================
+     INFINITE SCROLL
+  =============================== */
   useEffect(() => {
     if (!observerRef.current || !nextCursor) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && nextCursor) {
+        if (entries[0].isIntersecting) {
           setLoadingMore(true);
-          // fetch thêm posts
-          const fetchMore = async () => {
-            try {
-              const url = new URL("http://localhost:8080/api/blogs");
-              url.searchParams.append("size", "9");
-              url.searchParams.append("userId", userId);
-              url.searchParams.append("cursor", nextCursor);
 
-              const res = await fetch(url.toString(), {
-                method: "GET",
-              });
-
-              const data = await res.json();
-
-              // trong fetchMore
-              const postData = data.data?.data || [];
+          fetchSharedPosts(nextCursor)
+            .then(({ posts: newPosts, nextCursor }) => {
               setPosts((prev) => {
-                const newPosts = postData.filter(
-                  (p: any) =>
-                    !p.pageId && // ❌ bỏ post có pageId
-                    !prev.some((prevP) => prevP.id === p.id)
+                const filtered = newPosts.filter(
+                  (p) => !prev.some((prevP) => prevP.shareId === p.shareId)
                 );
-
-                return [...prev, ...newPosts];
+                return [...prev, ...filtered];
               });
-              setNextCursor(data.data?.nextCursor || null);
-            } catch (error) {
-              console.error("Error fetching more posts:", error);
-            } finally {
-              setLoadingMore(false);
-            }
-          };
-          fetchMore();
+              setNextCursor(nextCursor);
+            })
+            .catch(console.error)
+            .finally(() => setLoadingMore(false));
         }
       },
       { threshold: 1 }
     );
 
     observer.observe(observerRef.current);
-
     return () => observer.disconnect();
-  }, [nextCursor, userId, token]);
+  }, [nextCursor]);
 
+  /* ===============================
+     OPEN MODAL
+  =============================== */
+  const openPost = (post: Post) => {
+    setSelectedPost({
+      ...post,
+      images: post.mediaUrls,
+      likes: post.likeCount,
+      username: post.userFullName,
+      avatar: post.userAvatar,
+    });
+    setIsOpenPost(true);
+  };
+
+  /* ===============================
+     RENDER
+  =============================== */
   if (authLoading || loading) return <div>Loading...</div>;
-  if (posts.length === 0) return <div>No post</div>;
+  if (posts.length === 0) return <div>No tagged posts</div>;
 
   return (
     <>
       <div className={styles.list}>
         {posts.map((p) => (
-          <ProfilePost
-            key={p.id}
+          <ProfilePostTag
+            key={p.shareId}
             image={p.mediaUrls[0]}
             caption={p.caption}
+            captionShare={p.captionShare}
+            userShareFullName={p.userShareFullName}
             likes={p.likeCount}
             time={new Date(p.createdAt).toLocaleDateString()}
             onClick={() => openPost(p)}
           />
         ))}
       </div>
-      {nextCursor && <div ref={observerRef} style={{ height: 1 }}></div>}
+
+      {nextCursor && <div ref={observerRef} style={{ height: 1 }} />}
       {loadingMore && <div>Loading more posts...</div>}
 
       <PostModal

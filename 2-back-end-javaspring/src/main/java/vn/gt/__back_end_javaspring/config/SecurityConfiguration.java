@@ -71,7 +71,7 @@ public class SecurityConfiguration {
                                 "/api/blogs?userId={userId}", "/api/production", "/stripe/webhook", "/",
                                 "/api/pages/cafe-owner/{pageId}", "/api/blogs/page/{realPageId}",
                                 "/api/cafe-owners/{id}", "/api/blogs/page/{pageId}", "/api/cafe-owners/user/{id}",
-                                "/api/pages/top-followers", "api/reviewers", "/api/shares/**", "/api/blogs/{blogId}","/api/reviewers/top/follower-desc","/api/shares/by-user")
+                                "/api/pages/top-followers", "api/reviewers", "/api/shares/**", "/api/blogs/{blogId}","/api/reviewers/top/follower-desc","/api/shares/by-user","/api/tags/by-useridtag/{userId}")
                         .permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth

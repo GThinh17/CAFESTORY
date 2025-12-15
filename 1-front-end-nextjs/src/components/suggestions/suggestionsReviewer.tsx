@@ -27,10 +27,7 @@ export function SuggestionsReviewers() {
           reviewersData.map(async (reviewer: any) => {
             try {
               const userRes = await axios.get(
-                `http://localhost:8080/users/${reviewer.userId}`,
-                {
-                  headers: { Authorization: `Bearer ${token}` },
-                }
+                `http://localhost:8080/users/${reviewer.userId}`
               );
 
               return {
@@ -53,8 +50,8 @@ export function SuggestionsReviewers() {
       }
     }
 
-    if (token) fetchReviewers();
-  }, [token]);
+    fetchReviewers();
+  }, []);
 
   return (
     <div className="suggestions">
