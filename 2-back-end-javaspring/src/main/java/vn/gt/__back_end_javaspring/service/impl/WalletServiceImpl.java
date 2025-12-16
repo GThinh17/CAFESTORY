@@ -31,20 +31,19 @@ public class WalletServiceImpl implements WalletService {
     private final WalletMapper walletMapper;
     private final UserRepository userRepository;
 
-
     @Override
     public WalletResponse createWallet(WalletCreateDTO dto) {
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if(walletRepository.existsByUser_Id(dto.getUserId())) {
+        if (walletRepository.existsByUser_Id(dto.getUserId())) {
             throw new UserAlreadyhaveWallet("User already have wallet");
         }
 
         Wallet wallet = walletMapper.toModel(dto);
         wallet.setUser(user);
 
-        Wallet saved =  walletRepository.save(wallet);
+        Wallet saved = walletRepository.save(wallet);
         return walletMapper.toResponse(saved);
     }
 
@@ -59,7 +58,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public WalletResponse updateWallet(WalletUpdateDTO updateDTO, String id) {
         Wallet wallet = walletRepository.findById(id)
-                .orElseThrow(()-> new WalletNotFound("Wallet not found"));
+                .orElseThrow(() -> new WalletNotFound("Wallet not found"));
 
         walletMapper.updateEntity(updateDTO, wallet);
 
@@ -70,7 +69,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public void softDelete(String id) {
         Wallet wallet = walletRepository.findById(id)
-                .orElseThrow(()-> new WalletNotFound("Wallet not found"));
+                .orElseThrow(() -> new WalletNotFound("Wallet not found"));
 
         wallet.setIsDeleted(true);
         walletRepository.save(wallet);
@@ -79,7 +78,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public void restore(String walletId) {
         Wallet wallet = walletRepository.findById(walletId)
-                .orElseThrow(()-> new WalletNotFound("Wallet not found"));
+                .orElseThrow(() -> new WalletNotFound("Wallet not found"));
 
         wallet.setIsDeleted(false);
 
@@ -89,59 +88,58 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public boolean existsByUserId(String userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(()-> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         return walletRepository.existsByUser_IdAndIsDeletedIsFalse(userId);
     }
 
-//    @Override
-//    public WalletResponse deposit(String walletId, BigDecimal amount) {
-//        if(amount ==  null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-//            throw new IllegalArgumentException("Amount must be greater than zero");
-//        }
-//
-//
-//        Wallet wallet = walletRepository.findById(walletId)
-//                .orElseThrow(()-> new WalletNotFound("Wallet not found"));
-//
-//        //WalletCreateDTo
-//        WalletTransactionCreateDTO walletTransactionCreateDTO = new WalletTransactionCreateDTO();
-//        walletTransactionCreateDTO.setWalletId(walletId);
-//        walletTransactionCreateDTO.setAmount(amount);
-//        walletTransactionCreateDTO.setTransactionType(TransactionType.DEPOSIT);
-//        walletTransactionService.create(walletTransactionCreateDTO);
-//
-//
-//        wallet.setBalance(wallet.getBalance().add(amount));
-//        walletRepository.save(wallet);
-//        return walletMapper.toResponse(wallet);
-//    }
-//
-//    @Override
-//    public WalletResponse withdraw(String walletId, BigDecimal amount) {
-//        if(amount ==  null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-//            throw new IllegalArgumentException("Amount must be greater than zero");
-//        }
-//        Wallet wallet = walletRepository.findById(walletId)
-//                .orElseThrow(()-> new WalletNotFound("Wallet not found"));
-//
-//        if(wallet.getBalance().subtract(amount).compareTo(BigDecimal.ZERO) <= 0) {
-//            throw new IllegalArgumentException("Insufficient funds");
-//        }
-//
-//        wallet.setBalance(wallet.getBalance().subtract(amount));
-//        walletRepository.save(wallet);
-//        return walletMapper.toResponse(wallet);
-//    }
-
-
+    // @Override
+    // public WalletResponse deposit(String walletId, BigDecimal amount) {
+    // if(amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+    // throw new IllegalArgumentException("Amount must be greater than zero");
+    // }
+    //
+    //
+    // Wallet wallet = walletRepository.findById(walletId)
+    // .orElseThrow(()-> new WalletNotFound("Wallet not found"));
+    //
+    // //WalletCreateDTo
+    // WalletTransactionCreateDTO walletTransactionCreateDTO = new
+    // WalletTransactionCreateDTO();
+    // walletTransactionCreateDTO.setWalletId(walletId);
+    // walletTransactionCreateDTO.setAmount(amount);
+    // walletTransactionCreateDTO.setTransactionType(TransactionType.DEPOSIT);
+    // walletTransactionService.create(walletTransactionCreateDTO);
+    //
+    //
+    // wallet.setBalance(wallet.getBalance().add(amount));
+    // walletRepository.save(wallet);
+    // return walletMapper.toResponse(wallet);
+    // }
+    //
+    // @Override
+    // public WalletResponse withdraw(String walletId, BigDecimal amount) {
+    // if(amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+    // throw new IllegalArgumentException("Amount must be greater than zero");
+    // }
+    // Wallet wallet = walletRepository.findById(walletId)
+    // .orElseThrow(()-> new WalletNotFound("Wallet not found"));
+    //
+    // if(wallet.getBalance().subtract(amount).compareTo(BigDecimal.ZERO) <= 0) {
+    // throw new IllegalArgumentException("Insufficient funds");
+    // }
+    //
+    // wallet.setBalance(wallet.getBalance().subtract(amount));
+    // walletRepository.save(wallet);
+    // return walletMapper.toResponse(wallet);
+    // }
 
     @Override
     public WalletResponse findByUserId(String userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(()-> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         Wallet wallet = walletRepository.findWalletByUser_Id(userId);
-
+        System.out.println(wallet);
 
         return walletMapper.toResponse(wallet);
 

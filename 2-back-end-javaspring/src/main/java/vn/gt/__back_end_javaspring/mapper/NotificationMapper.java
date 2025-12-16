@@ -17,6 +17,5 @@ public interface NotificationMapper {
     @Mapping(source = "sender.fullName", target = "senderName")
     NotificationResponse toResponse(Notification notification);
 
-
     List<NotificationResponse> toResponseList(List<Notification> notifications);
 }

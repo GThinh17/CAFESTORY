@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
-
+import com.stripe.model.Payout;
 import com.stripe.model.Transfer;
 
 import vn.gt.__back_end_javaspring.DTO.PayOutDTO;
@@ -23,7 +23,9 @@ public interface PayOutService {
 
         public Transfer transferToReviewer(
                         Long amount,
-                        String reviewerStripeAccountId) throws StripeException;
+                        String reviewerStripeAccountId,
+                        String walletTransactionId,
+                        String payOutId) throws StripeException;
 
         public Account getAccountStatus(String accountId) throws StripeException;
 
@@ -33,4 +35,8 @@ public interface PayOutService {
 
         public PayOutResponse updatePayOut(PayOutDTO payOutDTO, String paString);
 
+        public Payout payoutToReviewer(Long amount, String connectedAccountId)
+                        throws StripeException;
+
+        public void UpdateStatusSuccess(String payString, String status);
 }
