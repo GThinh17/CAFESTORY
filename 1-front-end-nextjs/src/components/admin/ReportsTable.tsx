@@ -18,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import styles from "./UsersTable.module.css";
+import styles from "./ReportTable.module.css";
 
 interface Reports {
   id: string;
@@ -51,7 +51,7 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
 
   return (
     <>
-      <Card>
+      <Card className={styles.bigCon}>
         <CardHeader className={styles.Header}>
           <CardTitle>Reports</CardTitle>
         </CardHeader>

@@ -131,10 +131,11 @@ export default function UsersTable({ users = [] }: { users: User[] }) {
 
           <TableBody>
             {filtered.map((u) => (
-              <TableRow key={u.id} className={styles.tableBodyRow}>
-                <TableCell className={styles.avatarCell}>
+              <TableRow key={u.id} className={styles.tableRow}>
+                <TableCell className={`${styles.cell} ${styles.avatarCell}`}>
                   <Avatar>
                     <AvatarImage
+                      className={styles.avatar}
                       src={
                         u.avatar ||
                         "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
@@ -143,23 +144,27 @@ export default function UsersTable({ users = [] }: { users: User[] }) {
                   </Avatar>
                 </TableCell>
 
-                <TableCell className={styles.nameCell}>{u.fullName}</TableCell>
-                <TableCell>{u.email}</TableCell>
-
-                <TableCell>
-                  <Badge variant="secondary" className={styles.badgeRole}>
-                    {u.role || "User"}
-                  </Badge>
+                <TableCell className={`${styles.cell} ${styles.nameCell}`}>
+                  {u.fullName}
                 </TableCell>
 
-                <TableCell>
+                <TableCell className={styles.cell}>{u.email}</TableCell>
+
+                <TableCell className={styles.cell}>
+                  <Badge className={styles.badgeRole}>{u.role || "User"}</Badge>
+                </TableCell>
+
+                <TableCell className={styles.cell}>
                   <Badge className={styles.badgeStatus}>
                     {u.followerCount}
                   </Badge>
                 </TableCell>
-                <TableCell>{u.address}</TableCell>
-                <TableCell>
-                  <Button className={styles.button}>Delete</Button>
+
+                <TableCell className={styles.cell}>
+                  {u.address || "-"}
+                </TableCell>
+
+                <TableCell className={`${styles.cell} ${styles.actionCell}`}>
                   <Button
                     className={styles.button}
                     disabled={loading}

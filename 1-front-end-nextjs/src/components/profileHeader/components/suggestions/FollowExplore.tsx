@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Input } from "@/components/ui/input";
 import { User } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 /* ================= TYPES ================= */
 type TabType = "following" | "followers";
@@ -26,7 +27,8 @@ interface FollowItem {
 export function UserFollowExplore() {
   const router = useRouter();
   const { token, user } = useAuth();
-
+  const params = useParams();
+  const userId = params.userId as string;
   const [activeTab, setActiveTab] = useState<TabType>("following");
   const [items, setItems] = useState<FollowItem[]>([]);
   const [search, setSearch] = useState("");
@@ -39,8 +41,8 @@ export function UserFollowExplore() {
       try {
         const url =
           activeTab === "following"
-            ? `/api/follows/users/${user.id}/following`
-            : `/api/follows/users/${user.id}/followers`;
+            ? `/api/follows/users/${userId}/following`
+            : `/api/follows/users/${userId}/followers`;
 
         const res = await axios.get(`http://localhost:8080${url}`, {
           headers: { Authorization: `Bearer ${token}` },
