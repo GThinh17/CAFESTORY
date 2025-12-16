@@ -67,6 +67,9 @@ public class Page {
         @Column(name = "is_deleted")
         private Boolean isDeleted;
 
+        @Column(name = "location")
+        private String location;
+
         @PrePersist
         private void prePersist() {
                 createdAt = LocalDateTime.now();

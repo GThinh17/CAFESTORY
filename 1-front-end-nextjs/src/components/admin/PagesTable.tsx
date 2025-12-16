@@ -44,18 +44,14 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
     );
   }, [pages, query]);
 
-
   // --- HÀM XEM CHI TIẾT PAGE THEO ID ---
   const handlePageById = async (pageId: string) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/pages/${pageId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axios.get(`http://localhost:8080/api/pages/${pageId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       console.log("CHI TIẾT PAGE:", res.data.data);
     } catch (error) {
@@ -103,12 +99,8 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
                 <TableCell>{p.pageName}</TableCell>
                 <TableCell>{p.contactEmail}</TableCell>
 
-                <TableCell>
-                  {p.followingCount}
-                </TableCell>
-                <TableCell>
-                  {p.postCount}
-                </TableCell>
+                <TableCell>{p.followingCount}</TableCell>
+                <TableCell>{p.postCount}</TableCell>
 
                 <TableCell>
                   <Button

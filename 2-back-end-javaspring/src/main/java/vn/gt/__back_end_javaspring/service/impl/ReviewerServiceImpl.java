@@ -206,13 +206,18 @@ public class ReviewerServiceImpl implements ReviewerService {
             reviewer.setExpiredAt(now.plusMonths(dto.getDuration()));
         }
 
-        reviewer.setStatus(ReviewerStatus.ACTIVE);
-        reviewer.setUser(user);
+                reviewer.setStatus(ReviewerStatus.ACTIVE);
+                reviewer.setUser(user);
+                reviewer.setLocation(user.getLocation());
 
-        Reviewer saved = reviewerRepository.save(reviewer);
-        return reviewerMapper.toResponse(saved);
-    }
+                Reviewer saved = reviewerRepository.save(reviewer);
+                return reviewerMapper.toResponse(saved);
+        }
 
-
-
+        public List<ReviewerResponse> searchReviewerByLocation(String location) {
+                List<Reviewer> list = this.reviewerRepository
+                                .findByLocationContainingIgnoreCaseAndIsDeletedFalse(location);
+                List<ReviewerResponse> listReviewer = reviewerMapper.toResponseList(list);
+                return listReviewer;
+        }
 }

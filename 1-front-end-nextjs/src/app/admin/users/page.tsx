@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
+
 interface User {
   id: string;
   fullName: string;
@@ -48,7 +49,6 @@ export default function DashboardPage() {
         Overview & management
       </p>
 
-      <Stats total={4} active={2} editors={2} pending={1} />
 
       <UsersTable users={userData} />
     </div>

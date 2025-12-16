@@ -5,18 +5,18 @@ import { motion } from "framer-motion";
 import styles from "./Stats.module.css";
 
 type Props = {
-  total: number;
-  active: number;
-  editors: number;
-  pending: number;
+  users: number;
+  pages: number;
+  reviewers: number;
+  balance: number;
 };
 
-export default function Stats({ total, active, editors, pending }: Props) {
+export default function Stats({ users, pages, reviewers, balance }: Props) {
   const items = [
-    { label: "Total users", value: total, delay: 0 },
-    { label: "Active", value: active, delay: 0.05 },
-    { label: "Editors", value: editors, delay: 0.1 },
-    { label: "Pending", value: pending, delay: 0.15 },
+    { label: "Total users", value: users, delay: 0 },
+    { label: "Total pages", value: pages, delay: 0.05 },
+    { label: "Total reviewers", value: reviewers, delay: 0.1 },
+    { label: "Balance", value: balance, delay: 0.15 },
   ];
 
   return (

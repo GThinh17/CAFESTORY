@@ -10,6 +10,8 @@ import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/reviewers")
@@ -24,6 +26,7 @@ public class ReviewerController {
             @Valid @RequestBody ReviewerCreateDTO dto
     ) {
         ReviewerResponse response = reviewerService.registerReviewer(dto);
+
         return ResponseEntity.ok(response);
     }
 
@@ -98,5 +101,11 @@ public class ReviewerController {
         return ResponseEntity.ok(reviewerService.getUser(reviewerId));
     }
 
+
+
+    @GetMapping("/search")
+    public ResponseEntity<?> SearchReviewerByLocation(@RequestParam("location") String param) {
+        return ResponseEntity.ok().body(this.reviewerService.searchReviewerByLocation(param));
+    }
 
 }

@@ -13,11 +13,13 @@ public interface TagService {
 
     public List<?> GetAllTag();
 
-    public Tag GetTagById(String id);
+    public TagResponse GetTagById(String id);
 
     public TagResponse CreateTag(TagDTO tagDTO);
 
     public TagResponse UpdateTag(String id, TagDTO tagDTO);
 
     public Tag DeleteTagById(String id);
+
+    public List<TagResponse> GetAllTagByUserId(String userIdTag);
 }

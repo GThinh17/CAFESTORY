@@ -5,6 +5,7 @@ import vn.gt.__back_end_javaspring.DTO.ReviewerCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.ReviewerResponse;
 import vn.gt.__back_end_javaspring.DTO.ReviewerUpdateDTO;
 import vn.gt.__back_end_javaspring.DTO.UserResponseDTO;
+import vn.gt.__back_end_javaspring.entity.Reviewer;
 import vn.gt.__back_end_javaspring.entity.User;
 
 import java.util.List;
@@ -26,5 +27,7 @@ public interface ReviewerService {
     String getUserId(String reviewerId);
 
     User getUser(String reviewerId);
+    public List<ReviewerResponse> searchReviewerByLocation(String location);
+
 }
 

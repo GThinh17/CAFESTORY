@@ -1,0 +1,37 @@
+/* profileEditModal.css */
+.Container1 {
+  max-width: 420px;
+  padding: 10px;
+}
+.profile-modal-content {
+  padding: 24px;
+}
+
+.profile-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.profile-form {
+  display: grid;
+  gap: 16px;
+}
+
+.profile-form label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.profile-form input {
+  height: 40px;
+}
+
+.profile-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.button {
+  padding: 0.5rem;
+}

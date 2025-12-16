@@ -106,6 +106,8 @@ public class UserService {
 		String password = signupUser.getPassword();
 		String fullname = signupUser.getFullname();
 		String phone = signupUser.getPhone();
+		String location = signupUser.getLocation();
+		newUser.setLocation(location);
 		newUser.setEmail(email);
 		newUser.setFullName(fullname);
 		newUser.setPassword(password);
@@ -124,5 +126,28 @@ public class UserService {
 		}
 
 		return list;
+	}
+
+	public List<UserResponseDTO> searchUser(String keyword) {
+
+		String keyString = keyword
+				.trim()
+				.replaceAll("\\s+", " ")
+				.toLowerCase();
+
+		List<User> users = userRepository.searchUser(keyString);
+
+		System.out.println("Search size = " + users.size());
+
+		return users.stream()
+				.map(user -> new UserResponseDTO(
+						user.getAvatar(),
+						user.getFullName(),
+						user.getEmail(),
+						user.getId(),
+						user.getAddress(),
+						user.getFollowerCount(),
+						user.getVertifiedBank()))
+				.toList();
 	}
 }

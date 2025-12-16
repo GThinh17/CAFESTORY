@@ -9,6 +9,10 @@ import {
 import "./profileModal.css";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { ChangeAvtModal } from "./ChangeAvtModal/changeAvtModal";
+import ProfileEditModal from "./EditProfile/editProfile";
+import { useState } from "react";
+import { ChangeBackgroundModal } from "./changeBackground/changeBackground";
 
 interface ProfileModalProps {
   open: boolean;
@@ -17,53 +21,65 @@ interface ProfileModalProps {
 
 export function ProfileModal({ open, onClose }: ProfileModalProps) {
   const router = useRouter();
-  const { logout, loading } = useAuth();
+  const [openChangeAvt, setOpenChangeAvt] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openChangeBack, setOpenChangeBack] = useState(false);
 
   const options: string[] = [
-    "Apps and websites",
-    "Settings and privacy",
-    "Meta Verified",
-    "Supervision",
-    "Dashboard",
-    "Log Out",
+    "Change Background Image",
+    "Change Avatar",
+    "Edit Profile",
     "Cancel",
   ];
 
   const handleClick = (item: string) => {
-    if (item === "Dashboard") {
-      router.push("/reviewer");
+    if (item === "Change Avatar") {
+      setOpenChangeAvt(true); // Mở modal Change Avatar
       return;
     }
-
-    if (item === "Log Out") {
-      logout();
-      router.push("/");
+    if (item === "Change Background Image") {
+      setOpenChangeBack(true); // Mở modal Change Avatar
       return;
     }
-
+    if (item === "Edit Profile") {
+      setOpenEdit(true); // Mở modal Change Avatar
+      return;
+    }
     onClose();
   };
 
-
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="PModalCon">
-        <DialogHeader className="HeaderCon">
-          <DialogTitle className="TitleText">Options</DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={onClose}>
+        <DialogContent className="PModalCon">
+          <DialogHeader className="HeaderCon">
+            <DialogTitle className="TitleText">Options</DialogTitle>
+          </DialogHeader>
 
-        <div className="ProfileList">
-          {options.map((item) => (
-            <button
-              key={item}
-              className={`ProfileItem ${item === "Cancel" ? "CancelItem" : ""}`}
-              onClick={() => handleClick(item)}
-            >
-              {item}
-            </button>
-          ))}
-        </div>
-      </DialogContent>
-    </Dialog>
+          <div className="ProfileList">
+            {options.map((item) => (
+              <button
+                key={item}
+                className={`ProfileItem ${
+                  item === "Cancel" ? "CancelItem" : ""
+                }`}
+                onClick={() => handleClick(item)}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+      <ChangeAvtModal
+        open={openChangeAvt}
+        onClose={() => setOpenChangeAvt(false)}
+      />
+      <ChangeBackgroundModal
+        open={openChangeBack}
+        onClose={() => setOpenChangeBack(false)}
+      />
+      <ProfileEditModal open={openEdit} onClose={() => setOpenEdit(false)} />
+    </>
   );
 }

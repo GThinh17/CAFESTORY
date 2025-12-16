@@ -135,4 +135,10 @@ public class PageServiceImpl implements PageService {
     }
 
 
+    public List<PageResponse> searchPageByLocation(String location) {
+        List<Page> list = this.pageRepository.findByLocationContainingIgnoreCaseAndIsDeletedFalse(location);
+        List<PageResponse> listPage = pageMapper.toResponse(list);
+        return listPage;
+
+    }
 }

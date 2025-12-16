@@ -1,5 +1,7 @@
 package vn.gt.__back_end_javaspring.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,7 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.firebase.remoteconfig.internal.TemplateResponse.UserResponse;
 
 import vn.gt.__back_end_javaspring.DTO.UserDTO;
 import vn.gt.__back_end_javaspring.entity.User;
@@ -64,5 +69,13 @@ public class UserController {
 		User user = this.userService.updateUserById(id, updateUser);
 
 		return ResponseEntity.ok().body(user);
+	}
+
+	@GetMapping("users/search")
+	public ResponseEntity<?> searchUser(
+			@RequestParam String keyword) {
+		List<?> searchList = userService.searchUser(keyword);
+		System.out.println("Search được là: " + searchList);
+		return ResponseEntity.ok().body(searchList);
 	}
 }

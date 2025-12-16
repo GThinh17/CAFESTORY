@@ -3,27 +3,30 @@ package vn.gt.__back_end_javaspring.DTO;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.google.auto.value.AutoValue.Builder;
+
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vn.gt.__back_end_javaspring.entity.Blog;
 import vn.gt.__back_end_javaspring.enums.Visibility;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class TagResponse {
-    // id bai tag
     private String id;
 
-    // id nguoi tag
     private String userId;
+    private String userName;
+    private String blogTagId;
 
-    // nguoi duoc tag va ten nguuoi do
-    private String userIdTag;
-    private String pageIdTag;
-    private String username;
+    private String userTagId;
 
-    // cac thanh phan cua blog
-    private String blogIdTag;
+    private String pageTagId;
 
 }
