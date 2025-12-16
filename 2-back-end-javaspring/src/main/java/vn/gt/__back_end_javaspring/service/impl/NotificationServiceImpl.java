@@ -34,6 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public void sendNotification(String receiverId, NotificationRequestDTO dto) {
         try{
+            System.out.println("User device toi day roio "+ receiverId);
 
             UserDevice userDevice = userDeviceRepository.findUserDeviceByUser_Id(receiverId);//Find token
 
