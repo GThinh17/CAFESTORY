@@ -1,0 +1,171 @@
+/* Floating button (cục tròn AI) */
+.floatingBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 190px; /* 👈 né trái hơn (mặc định 24px) */
+  z-index: 50;
+
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+
+  background-color: #059669; /* emerald-600 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.floatingBtn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+}
+
+/* Chấm đỏ thông báo */
+.notifyDot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ef4444;
+
+}
+
+/* Chat modal */
+.chatModal {
+  position: fixed;
+  bottom: 24px;
+  right: 32px; /* 👈 né trái giống nút tròn */
+  z-index: 50;
+
+  width: 330px;
+  height: 510px;
+
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 16px;
+  overflow: hidden;
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* Header */
+.header {
+  background-color: #059669;
+  color: white;
+  padding: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Message list */
+.messages {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  background-color: #f4f4f5;
+}
+
+.messageBubble {
+  background: white;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  max-width: 85%;
+}
+
+/* Input area */
+.inputArea {
+  padding: 12px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Mobile */
+@media (max-width: 840px) {
+ 
+
+  .floatingBtn {
+    right: 90px;
+  }
+}
+
+/* Wrapper danh sách tin nhắn */
+.messages {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  background: #f5f6f8;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Row chung */
+.messageRow {
+  display: flex;
+  width: 100%;
+}
+
+/* AI / người kia (trái) */
+.messageLeft {
+  justify-content: flex-start;
+}
+
+/* User (phải) */
+.messageRight {
+  justify-content: flex-end;
+}
+
+/* Bubble chung */
+.messageBubble {
+  max-width: 75%;
+  padding: 10px 14px; /* 👈 padding giống Messenger */
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.4;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* Bubble trái */
+.leftBubble {
+  background: #ffffff;
+  color: #111;
+  border-top-left-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Bubble phải */
+.rightBubble {
+  background: #2563eb; /* xanh giống Messenger */
+  color: white;
+  border-top-right-radius: 6px;
+}
+
+/* Khoảng cách khi nhắn liên tục */
+.messageRow + .messageRow {
+  margin-top: 2px;
+}

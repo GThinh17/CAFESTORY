@@ -8,6 +8,7 @@ import { MyBarChart } from "@/components/admin/barChart";
 import { ChartAreaStacked } from "@/components/admin/Chart";
 import { useAuth } from "@/context/AuthContext";
 
+
 export default function DashboardPage() {
   const [userCount, setUserCount] = useState(0);
   const [pageCount, setPageCount] = useState(0);

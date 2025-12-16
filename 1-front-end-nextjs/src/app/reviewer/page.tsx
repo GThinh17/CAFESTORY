@@ -55,12 +55,12 @@ export default function Home() {
               }`}
             />
           </div>
-          <div className={styles.chartCon}>
+          {/* <div className={styles.chartCon}>
             <MyBarChart />
           </div>
           <div className={styles.chartCon}>
             <ChartAreaStacked />
-          </div>
+          </div> */}
         </div>
       </main>
       <footer></footer>

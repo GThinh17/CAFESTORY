@@ -9,7 +9,7 @@ import { MsgModal } from "@/components/msgModal/msgModal";
 import { SignInButton } from "@/components/SingInBtn/SignInBtn";
 import { useAuth } from "@/context/AuthContext";
 import {SuggestionsReviewers} from "@/components/suggestions/suggestionsReviewer"
-
+import  ChatbotModalWidget from "@/components/chatbotModal/chatbotModal"
 export default function Home() {
   const { token, loading } = useAuth(); // lấy user và loading từ context
   console.log("Token:", token);
@@ -43,6 +43,7 @@ export default function Home() {
           <SuggestionsReviewers/>
         </div>
         <MsgModal />
+        <ChatbotModalWidget/>
       </main>
       <footer></footer>
     </div>
