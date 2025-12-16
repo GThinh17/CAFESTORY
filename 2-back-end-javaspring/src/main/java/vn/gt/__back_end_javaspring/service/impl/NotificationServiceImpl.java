@@ -34,15 +34,14 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public void sendNotification(String receiverId, NotificationRequestDTO dto) {
         try{
-            System.out.println("User device "+ receiverId);
+            System.out.println("User device toi day roio "+ receiverId);
 
             UserDevice userDevice = userDeviceRepository.findUserDeviceByUser_Id(receiverId);//Find token
 
-            System.out.println("User device "+ userDevice.getFcmToken());
             if(userDevice==null){
-                throw new IllegalStateException("UserDevice not found");
+                return;
             }
-
+            System.out.println("User device " + userDevice.toString());
             Map<String, String> data = new HashMap<>();
             data.put("senderId", dto.getSenderId());
             data.put("receiverId", dto.getReceiverId());
@@ -51,7 +50,7 @@ public class NotificationServiceImpl implements NotificationService {
             if (dto.getPostId() != null) data.put("postId", dto.getPostId());
             if (dto.getCommentId() != null) data.put("commentId", dto.getCommentId());
             if (dto.getPageId() != null) data.put("pageId", dto.getPageId());
-
+            System.out.println("User device "+ userDevice.getFcmToken());
             String token = userDevice.getFcmToken();
 
             Message message = Message.builder()

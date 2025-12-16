@@ -175,6 +175,8 @@ public class EarningSummaryServiceImpl implements EarningSummaryService {
         EarningSummaryResponse saved = createSummary(dto);
         updateStatusSummary(saved.getId(), EarningSummaryStatus.CLOSED.toString());
 
+
+        //COng tien vao wallet
         Wallet wallet = walletRepository.findWalletByUser_Id(user.getId());
 
         WalletTransactionCreateDTO walletTransactionCreateDTO = new WalletTransactionCreateDTO();
