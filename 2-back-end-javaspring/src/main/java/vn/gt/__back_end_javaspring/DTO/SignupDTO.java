@@ -28,10 +28,10 @@ public class SignupDTO {
 
 	@Email
 	@NotBlank(message = "email is not blank")
-
+	private String email;
+	
 	private String location;
 
-	private String email;
 
 	private String avatar;
 

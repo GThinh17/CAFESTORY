@@ -18,7 +18,6 @@ import styles from "./UsersTable.module.css";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 import PageDetailModal from "./components/PagesDetailedModal";
-import PageDetailModal from "./components/PagesDetailedModal";
 
 interface Page {
   pageId: string;
@@ -35,8 +34,6 @@ interface Page {
 export default function PagesTable({ pages = [] }: { pages: Page[] }) {
   const { token } = useAuth();
   const [query, setQuery] = useState("");
-  const [open, setOpen] = useState(false);
-  const [selectedPage, setSelectedPage] = useState<Page | null>(null);
   const [open, setOpen] = useState(false);
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
 
@@ -106,7 +103,7 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
                 {/* AVATAR */}
                 <TableCell className={styles.avatarCell}>
                   <Avatar className={styles.avatar}>
-                    <AvatarImage src={p.avatarUrl } />
+                    <AvatarImage src={p.avatarUrl} />
                   </Avatar>
                 </TableCell>
 

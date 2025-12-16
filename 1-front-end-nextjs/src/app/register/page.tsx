@@ -24,7 +24,7 @@ export default function RegisterPage() {
     phone: "",
     password: "",
     confirmPassword: "",
-    name: "",
+    location: "",
   });
 
   const [message, setMessage] = useState("");
@@ -50,7 +50,7 @@ export default function RegisterPage() {
           email: form.email,
           phone: form.phone,
           password: form.password,
-          name: form.name,
+          location: form.location,
         }),
       });
 
@@ -129,9 +129,9 @@ export default function RegisterPage() {
           </div>
 
           <div className={styles.field}>
-            <Label>Account name</Label>
+            <Label>City Location</Label>
             <Input
-              name="name"
+              name="location"
               type="text"
               placeholder="Enter your username"
               onChange={handleChange}
