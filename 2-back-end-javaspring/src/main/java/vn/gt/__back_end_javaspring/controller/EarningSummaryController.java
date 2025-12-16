@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import vn.gt.__back_end_javaspring.DTO.EarningSummaryCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.EarningSummaryResponse;
 import vn.gt.__back_end_javaspring.enums.EarningSummaryStatus;
+import vn.gt.__back_end_javaspring.service.EarningSummaryScheduler;
 import vn.gt.__back_end_javaspring.service.EarningSummaryService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -17,12 +19,22 @@ import java.util.List;
 public class EarningSummaryController {
 
     private final EarningSummaryService earningSummaryService;
+    private final EarningSummaryScheduler earningSummaryScheduler;
 
     @PostMapping
     public ResponseEntity<EarningSummaryResponse> createSummary(@RequestBody EarningSummaryCreateDTO dto) {
         EarningSummaryResponse response = earningSummaryService.createSummary(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PostMapping("/run")
+    public ResponseEntity<?> runMonthlySummary() {
+        earningSummaryScheduler.generateMonthlySummary();
+        return ResponseEntity.ok(
+                "Generate monthly summary triggered at " + LocalDateTime.now()
+        );
+    }
+
 
     @PatchMapping("/{id}/status")
     public ResponseEntity<EarningSummaryResponse> updateStatus(

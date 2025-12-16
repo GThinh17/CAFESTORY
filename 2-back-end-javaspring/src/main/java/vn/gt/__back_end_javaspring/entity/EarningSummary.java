@@ -44,7 +44,7 @@ public class EarningSummary {
     @Column(name = "total_follower_count")
     private Long totalFollowerCount;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "follow_rule_id")
     private FollowRule followRule;
 

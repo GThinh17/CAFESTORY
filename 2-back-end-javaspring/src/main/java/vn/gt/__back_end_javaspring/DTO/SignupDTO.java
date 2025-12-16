@@ -26,12 +26,12 @@ public class SignupDTO {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 
-	@Email
-	@NotBlank(message = "email is not blank")
 
 	private String location;
 
-	private String email;
+    @Email
+    @NotBlank(message = "email is not blank")
+    private String email;
 
 	private String avatar;
 

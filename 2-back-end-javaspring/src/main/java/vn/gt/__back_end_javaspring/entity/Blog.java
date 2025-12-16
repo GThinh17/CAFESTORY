@@ -61,6 +61,8 @@ public class Blog { //Check
         @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
         private List<Media> mediaList = new ArrayList<>();
 
+
+
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "location_id")
         private Location location;

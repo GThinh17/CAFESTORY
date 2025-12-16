@@ -46,9 +46,6 @@ public class FollowServiceImpl implements FollowService {
         User follower = userRepository.findById(request.getFollowerId())
                 .orElseThrow(() -> new UserNotFoundException("Follower not found"));
 
-        if(cafeOwnerService.isCafeOwner(request.getFollowerId())){
-            throw new RuntimeException("Cafe owner can not follow anyone");
-        }
 
         Follow follow = new Follow();
 

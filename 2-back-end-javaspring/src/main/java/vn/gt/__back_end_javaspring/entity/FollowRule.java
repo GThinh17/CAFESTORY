@@ -17,7 +17,6 @@ public class FollowRule { //Tao chay
     @Column(name = "follow_rule_id")
     private String id;
 
-
     @Column(name = "min_follow")
     private Long minFollow;
 

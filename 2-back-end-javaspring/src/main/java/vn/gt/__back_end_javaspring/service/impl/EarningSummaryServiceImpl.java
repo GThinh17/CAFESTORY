@@ -1,8 +1,10 @@
 package vn.gt.__back_end_javaspring.service.impl;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.EarningSummaryCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.EarningSummaryResponse;
@@ -24,6 +26,7 @@ import java.math.BigDecimal;
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 
 @Slf4j
@@ -119,72 +122,82 @@ public class EarningSummaryServiceImpl implements EarningSummaryService {
         List<EarningSummary> earningSummaries = earningSummaryRepository.findAllByYear(year);
         return earningSummaryMapper.toResponseList(earningSummaries);
     }
-
     @Override
+    @Transactional
     public void generateMonthlySummary(String reviewerId, Integer year, Integer month) {
-        if (earningSummaryRepository
-                .existsByReviewer_IdAndYearAndMonth(reviewerId, year, month)) {
-            throw new RuntimeException("EarningSummary already exists");
+
+
+        if (earningSummaryRepository.existsByReviewer_IdAndYearAndMonth(
+                reviewerId, year, month)) {
+
+            return;
         }
 
-        LocalDateTime start = LocalDate.of(year, month, 1).atStartOfDay();
-        LocalDateTime end = start.plusMonths(1);
-        System.out.println("Thoi gian bat dau : " + start);
-        System.out.println("Thoi gian ket thuc : " + end);
+        try {
+
+            YearMonth ym = YearMonth.of(year, month);
+            LocalDateTime start = ym.atDay(1).atStartOfDay();
+            LocalDateTime end = start.plusMonths(1);
+
+            Reviewer reviewer = reviewerRepository.findById(reviewerId)
+                    .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
+
+            User user = reviewer.getUser();
+
+            List<EarningEvent> events =
+                    earningEventRepository.findMonthlyEvents(reviewerId, start, end);
+
+            Long likes = events.stream().filter(e -> e.getSourceType() == SourceType.LIKE).count();
+            Long comments = events.stream().filter(e -> e.getSourceType() == SourceType.COMMENT).count();
+            Long shares = events.stream().filter(e -> e.getSourceType() == SourceType.SHARE).count();
 
 
-        List<EarningEvent> earningEvents = earningEventRepository.findMonthlyEvents(reviewerId, start, end);
-        System.out.println("earningEvents size: " + earningEvents.size());
 
-        Reviewer reviewer = reviewerRepository.findById(reviewerId)
-                .orElseThrow(()-> new ReviewerNotFound("Reviewer not found"));
+            long followers = user.getFollowerCount().longValue();
 
-        User user =reviewer.getUser();
 
-        Long totalLikesCount = earningEvents.stream()
-                .filter(e->e.getSourceType() == SourceType.LIKE)
-                .count();
+            BigDecimal totalAmount = events.stream()
+                    .map(EarningEvent::getAmount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        Long totalCommentsCount = earningEvents.stream()
-                .filter(e-> e.getSourceType() == SourceType.COMMENT)
-                .count();
-        Long totalSharesCount = earningEvents.stream()
-                .filter(e->e.getSourceType()==SourceType.SHARE)
-                .count();
 
-        Long totalFollowerCount = user.getFollowerCount().longValue();
+            EarningSummaryCreateDTO dto = new EarningSummaryCreateDTO();
+            dto.setReviewerId(reviewerId);
+            dto.setYear(year);
+            dto.setMonth(month);
+            dto.setTotalLikesCount(likes);
+            dto.setTotalCommentsCount(comments);
+            dto.setTotalSharesCount(shares);
+            dto.setTotalFollowerCount(followers);
+            dto.setTotalEarningAmount(totalAmount);
 
-        BigDecimal totalEarningAmount = BigDecimal.ZERO;
+            EarningSummaryResponse saved = createSummary(dto);
 
-        for(EarningEvent earningEvent : earningEvents) {
-            BigDecimal amount = earningEvent.getAmount();
-            totalEarningAmount = totalEarningAmount.add(amount);
+
+
+            updateStatusSummary(saved.getId(), EarningSummaryStatus.CLOSED.name());
+
+            Wallet wallet = walletRepository.findWalletByUser_Id(user.getId());
+            if (wallet == null) {
+                throw new RuntimeException("Wallet not found");
+            }
+            if(totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new  RuntimeException("Total amount must be greater than 0");
+            }
+
+            WalletTransactionCreateDTO tx = new WalletTransactionCreateDTO();
+            tx.setWalletId(wallet.getId());
+            tx.setAmount(totalAmount);
+            tx.setTransactionType(TransactionType.DEPOSIT);
+            walletTransactionService.create(tx);
+
+
+        } catch (DataIntegrityViolationException e) {
+            log.warn("[SUMMARY] Duplicate detected at DB level reviewer={} {}/{}",
+                    reviewerId, month, year);
         }
-
-
-        EarningSummaryCreateDTO dto = new EarningSummaryCreateDTO();
-        dto.setReviewerId(reviewerId);
-        dto.setYear(year);
-        dto.setMonth(month);
-        dto.setTotalLikesCount(totalLikesCount);
-        dto.setTotalCommentsCount(totalCommentsCount);
-        dto.setTotalSharesCount(totalSharesCount);
-        dto.setTotalFollowerCount(totalFollowerCount);
-        dto.setTotalEarningAmount(totalEarningAmount);
-
-        EarningSummaryResponse saved = createSummary(dto);
-        updateStatusSummary(saved.getId(), EarningSummaryStatus.CLOSED.toString());
-
-
-        //COng tien vao wallet
-        Wallet wallet = walletRepository.findWalletByUser_Id(user.getId());
-
-        WalletTransactionCreateDTO walletTransactionCreateDTO = new WalletTransactionCreateDTO();
-        walletTransactionCreateDTO.setWalletId(wallet.getId());
-        walletTransactionCreateDTO.setAmount(totalEarningAmount);
-        walletTransactionCreateDTO.setTransactionType(TransactionType.DEPOSIT);
-
     }
+
 
 
 }
