@@ -89,11 +89,7 @@ public class PageServiceImpl implements PageService {
     @Override
     public List<PageResponse> getAllPagesOrderByFollowersDesc() {
         List<Page> pages = pageRepository.findAllOrderByFollowingCountDesc();
-<<<<<<< HEAD
-        if(pages.isEmpty()){
-=======
         if (pages.isEmpty()) {
->>>>>>> feature
 
             throw new PageNotFoundException("Page not found");
         }

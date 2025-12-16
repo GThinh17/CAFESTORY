@@ -1,4 +1,5 @@
 package vn.gt.__back_end_javaspring.DTO;
+
 import jakarta.persistence.Column;
 import lombok.*;
 import vn.gt.__back_end_javaspring.entity.Reviewer;
@@ -23,11 +24,7 @@ public class EarningSummaryCreateDTO {
 
     private Long totalSharesCount;
 
-<<<<<<< HEAD
     private Long totalFollowerCount;
-=======
-    private Long totalFollowersCount;
->>>>>>> feature
 
     private BigDecimal totalEarningAmount;
 }
