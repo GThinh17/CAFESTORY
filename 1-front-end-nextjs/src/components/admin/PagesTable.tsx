@@ -18,6 +18,7 @@ import styles from "./UsersTable.module.css";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 import PageDetailModal from "./components/PagesDetailedModal";
+import PageDetailModal from "./components/PagesDetailedModal";
 
 interface Page {
   pageId: string;
@@ -34,6 +35,8 @@ interface Page {
 export default function PagesTable({ pages = [] }: { pages: Page[] }) {
   const { token } = useAuth();
   const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const [selectedPage, setSelectedPage] = useState<Page | null>(null);
   const [open, setOpen] = useState(false);
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
 
@@ -53,6 +56,8 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
 
       setSelectedPage(res.data.data);
       setOpen(true);
+      setSelectedPage(res.data.data);
+      setOpen(true);
     } catch (error) {
       console.log("LỖI API:", error);
     }
@@ -66,6 +71,7 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
 
       <CardContent>
         {/* TOOLBAR */}
+        {/* TOOLBAR */}
         <div className={styles.toolbar}>
           <Input
             placeholder="Search pages..."
@@ -76,9 +82,15 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
         </div>
 
         {/* TABLE */}
+        {/* TABLE */}
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className={styles.colProfile}>Avatar</TableHead>
+              <TableHead className={styles.colName}>Name</TableHead>
+              <TableHead className={styles.colEmail}>Page email</TableHead>
+              <TableHead className={styles.colStatus}>Followers</TableHead>
+              <TableHead className={styles.colRole}>Post Count</TableHead>
               <TableHead className={styles.colProfile}>Avatar</TableHead>
               <TableHead className={styles.colName}>Name</TableHead>
               <TableHead className={styles.colEmail}>Page email</TableHead>
@@ -128,6 +140,13 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* MODAL */}
+      <PageDetailModal
+        open={open}
+        page={selectedPage}
+        onClose={() => setOpen(false)}
+      />
 
       {/* MODAL */}
       <PageDetailModal

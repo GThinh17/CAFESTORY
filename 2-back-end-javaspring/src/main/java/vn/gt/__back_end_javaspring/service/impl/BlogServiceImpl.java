@@ -5,11 +5,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.gt.__back_end_javaspring.DTO.BlogCreateDTO;
-import vn.gt.__back_end_javaspring.DTO.BlogResponse;
-import vn.gt.__back_end_javaspring.DTO.BlogUpdateDTO;
-import vn.gt.__back_end_javaspring.DTO.CursorPage;
+import vn.gt.__back_end_javaspring.DTO.*;
 import vn.gt.__back_end_javaspring.entity.*;
+import vn.gt.__back_end_javaspring.enums.NotificationType;
 import vn.gt.__back_end_javaspring.exception.BlogNotFoundException;
 import vn.gt.__back_end_javaspring.exception.PageNotFoundException;
 import vn.gt.__back_end_javaspring.exception.ReviewerNotFound;
@@ -18,6 +16,7 @@ import vn.gt.__back_end_javaspring.mapper.BlogMapper;
 import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.BlogService;
 import vn.gt.__back_end_javaspring.service.CafeOwnerService;
+import vn.gt.__back_end_javaspring.service.FollowService;
 import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
@@ -34,9 +33,11 @@ public class BlogServiceImpl implements BlogService {
     private final PageRepository pageRepository;
     private final locationRepository locationRepository;
     private final UserRoleRepository userRoleRepository;
-    private final NotificationService notificationService;
     private final CafeOwnerService cafeOwnerService;
     private final ReviewerRepository reviewerRepository;
+    private final FollowRepository followRepository;
+    private final FollowService followService;
+    private final NotificationService notificationService;
 
     @Override
     public BlogResponse createBlog(BlogCreateDTO dto) {
@@ -76,7 +77,25 @@ public class BlogServiceImpl implements BlogService {
         Blog saved = blogRepository.save(blog);
 
         if (page != null && cafeOwnerService.isCafeOwner(dto.getUserId())) {
-            notificationService.notifyPageNewPost(page, saved);
+            List<FollowResponse> follower = followService.getPageFollower(page.getId());
+            for(FollowResponse follow : follower){
+                String receivedId = follow.getFollowerId();
+
+
+                NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+                notificationRequestDTO.setSenderId(user.getId());
+                notificationRequestDTO.setReceiverId(receivedId);
+                notificationRequestDTO.setType(NotificationType.PAGE_NEW_POST);
+                notificationRequestDTO.setPostId(saved.getId());
+                notificationRequestDTO.setCommentId(null);
+                notificationRequestDTO.setPageId(null);
+                notificationRequestDTO.setWalletTransactionId(null);
+                notificationRequestDTO.setBadgeId(null);
+                notificationRequestDTO.setBody(page.getPageName()+ "đăng bài post mới");
+
+                notificationService.sendNotification(receivedId, notificationRequestDTO);
+//                notificationClient.sendNotification(notificationRequestDTO);
+            }
         }
 
         return blogMapper.toResponse(saved);

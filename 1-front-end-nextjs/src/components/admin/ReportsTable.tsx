@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableHeader,
@@ -37,6 +38,7 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
   const [open, setOpen] = useState(false);
 
   const filtered = useMemo(() => {
+    
     return reports.filter((r) =>
       `${r.problem ?? ""} ${r.description ?? ""}`
         .toLowerCase()
@@ -57,6 +59,16 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
         </CardHeader>
 
         <CardContent>
+          <div className={styles.toolbar}>
+            <Input
+              placeholder="Search reports..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className={styles.searchInput}
+            />
+            <Button className={styles.button}>Duyệt bài</Button>
+          </div>
+
           <div className={styles.toolbar}>
             <Input
               placeholder="Search reports..."
@@ -103,7 +115,9 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
       </Card>
 
       {/* Modal chi tiết report */}
+      {/* Modal chi tiết report */}
       <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="space-y-3">
         <DialogContent className="space-y-3">
           <DialogHeader>
             <DialogTitle>Report Details</DialogTitle>

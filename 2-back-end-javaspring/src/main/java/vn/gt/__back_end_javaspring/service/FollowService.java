@@ -12,7 +12,7 @@ public interface FollowService {
 
     List<FollowResponse> getUserFollowing(String userId);// Lay nhung thang User Follow
 
-    List<FollowResponse> getPageFollower(String pageId); // Lya nhung thang follow page page
+    List<FollowResponse> getPageFollower(String pageId); // Lya nhung thang follow page
 
     void deletedFollowingUserId(String userId, String userFollowingId);
 

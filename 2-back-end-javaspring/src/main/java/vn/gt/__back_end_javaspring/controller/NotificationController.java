@@ -1,12 +1,13 @@
 package vn.gt.__back_end_javaspring.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.gt.__back_end_javaspring.DTO.NotificationRequestDTO;
 import vn.gt.__back_end_javaspring.DTO.NotificationResponse;
 import vn.gt.__back_end_javaspring.service.NotificationService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -17,41 +18,55 @@ public class NotificationController {
 
 
     @GetMapping
-    public ResponseEntity<Page<NotificationResponse>> getNotifications(
-            @RequestParam String receiverId,
-            @RequestParam(defaultValue = "false") boolean unreadOnly,
-            Pageable pageable
+    public ResponseEntity<List<NotificationResponse>> getMyNotifications(
+            @RequestParam String userId
     ) {
-        Page<NotificationResponse> data =
-                notificationService.getNotifications(receiverId, unreadOnly, pageable);
-        return ResponseEntity.ok(data);
+        return ResponseEntity.ok(
+                notificationService.getNoticationByUserId(userId)
+        );
+    }
+
+
+    @PostMapping("/send/{receiverId}")
+    public ResponseEntity<Void> sendNotification(
+            @PathVariable String receiverId,
+            @RequestBody NotificationRequestDTO dto
+    ) {
+        notificationService.sendNotification(receiverId, dto);
+        return ResponseEntity.ok().build();
     }
 
 
     @PatchMapping("/{notificationId}/read")
-    public ResponseEntity<Void> markAsRead(
-            @PathVariable String notificationId,
-            @RequestParam String receiverId
+    public ResponseEntity<Void> markRead(
+            @PathVariable String notificationId
     ) {
-        notificationService.markAsRead(receiverId, notificationId);
-        return ResponseEntity.noContent().build();
+        notificationService.markRead(notificationId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{notificationId}/unread")
+    public ResponseEntity<Void> markUnread(
+            @PathVariable String notificationId
+    ) {
+        notificationService.markUnread(notificationId);
+        return ResponseEntity.ok().build();
     }
 
 
     @PatchMapping("/read-all")
-    public ResponseEntity<Void> markAllAsRead(
-            @RequestParam String receiverId
+    public ResponseEntity<Void> markAllRead(
+            @RequestParam String userId
     ) {
-        notificationService.markAllAsRead(receiverId);
-        return ResponseEntity.noContent().build();
+        notificationService.markAllRead(userId);
+        return ResponseEntity.ok().build();
     }
 
-
-    @GetMapping("/unread-count")
-    public ResponseEntity<Long> countUnread(
-            @RequestParam String receiverId
+    @DeleteMapping("/{notificationId}")
+    public ResponseEntity<Void> deleteNotification(
+            @PathVariable String notificationId
     ) {
-        long count = notificationService.countUnread(receiverId);
-        return ResponseEntity.ok(count);
+        notificationService.deleteNotification(notificationId);
+        return ResponseEntity.noContent().build();
     }
 }

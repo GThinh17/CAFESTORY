@@ -6,11 +6,13 @@ import org.mapstruct.ap.shaded.freemarker.ext.beans.BooleanModel;
 import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.FollowCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.FollowResponse;
+import vn.gt.__back_end_javaspring.DTO.NotificationRequestDTO;
 import vn.gt.__back_end_javaspring.entity.Follow;
 import vn.gt.__back_end_javaspring.entity.Page;
 import vn.gt.__back_end_javaspring.entity.Reviewer;
 import vn.gt.__back_end_javaspring.entity.User;
 import vn.gt.__back_end_javaspring.enums.FollowType;
+import vn.gt.__back_end_javaspring.enums.NotificationType;
 import vn.gt.__back_end_javaspring.exception.ExistFollow;
 import vn.gt.__back_end_javaspring.exception.PageNotFoundException;
 import vn.gt.__back_end_javaspring.exception.ReviewerNotFound;
@@ -33,20 +35,27 @@ import java.util.List;
 public class FollowServiceImpl implements FollowService {
     private final UserRepository userRepository;
     private final PageRepository pageRepository;
-    private final NotificationService notificationService;
-    private final CafeOwnerService cafeOwnerService;
-    private final ReviewerService reviewerService;
     private final ReviewerRepository reviewerRepository;
+    private  final CafeOwnerService cafeOwnerService;
+    private final NotificationService notificationService;
+
 
     @Override
     public FollowResponse follow(FollowCreateDTO request) {
+
         User follower = userRepository.findById(request.getFollowerId())
                 .orElseThrow(() -> new UserNotFoundException("Follower not found"));
+
+        if(cafeOwnerService.isCafeOwner(request.getFollowerId())){
+            throw new RuntimeException("Cafe owner can not follow anyone");
+        }
 
         Follow follow = new Follow();
 
         follow.setFollower(follower);
         follow.setFollowType(request.getFollowType());
+        NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+        notificationRequestDTO.setSenderId(follower.getId());
 
         if (request.getFollowType() == FollowType.USER) {
             User followedUser = userRepository.findById(request.getFollowedUserId())
@@ -68,8 +77,18 @@ public class FollowServiceImpl implements FollowService {
             follow.setFollowedPage(null);
             follow.setFollowedReviewer(null);
 
-            notificationService.notifyNewFollower(follower, followedUser);
+            //Notification
+            String receiverId = followedUser.getId();
+            notificationRequestDTO.setReceiverId(receiverId);
+            notificationRequestDTO.setType(NotificationType.NEW_FOLLOWER_USER);
+            notificationRequestDTO.setPostId(null);
+            notificationRequestDTO.setCommentId(null);
+            notificationRequestDTO.setPageId(null);
+            notificationRequestDTO.setWalletTransactionId(null);
+            notificationRequestDTO.setBadgeId(null);
+            notificationRequestDTO.setBody(follower.getFullName() + " đã theo dõi bạn");
 
+            notificationService.sendNotification(receiverId, notificationRequestDTO);
         } else if (request.getFollowType() == FollowType.PAGE) {
             Page page = pageRepository.findById(request.getFollowedPageId())
                     .orElseThrow(() -> new PageNotFoundException("Page not found"));
@@ -85,7 +104,20 @@ public class FollowServiceImpl implements FollowService {
             follow.setFollowedPage(page);
             follow.setFollowedUser(null);
             follow.setFollowedReviewer(null);
-            notificationService.notifyNewPageFollower(follower, page);
+            //Notification
+
+            String receiverId = page.getCafeOwner().getUser().getId();
+
+            notificationRequestDTO.setReceiverId(receiverId);
+            notificationRequestDTO.setType(NotificationType.NEW_PAGE_FOLLOWER);
+            notificationRequestDTO.setPostId(null);
+            notificationRequestDTO.setCommentId(null);
+            notificationRequestDTO.setPageId(page.getId());
+            notificationRequestDTO.setWalletTransactionId(null);
+            notificationRequestDTO.setBadgeId(null);
+            notificationRequestDTO.setBody(follower.getFullName() + " đã theo dõi quán cà phê bạn");
+
+            notificationService.sendNotification(receiverId, notificationRequestDTO);
         } else if (request.getFollowType() == FollowType.REVIEWER) {
 
             Reviewer reviewer = reviewerRepository.findByUser_Id(request.getFollowedUserId());
@@ -106,20 +138,31 @@ public class FollowServiceImpl implements FollowService {
                 throw new ExistFollow("Following Reviewer already exists");
             }
 
+
+
             follower.setFollowingCount(follower.getFollowingCount() + 1);
-            reviewer.getUser().setFollowerCount(reviewer.getUser().getFollowerCount() + 1);
-            ;
+
             reviewer.setFollowerCount(reviewer.getFollowerCount() + 1);
-            System.out.print("Hello");
             reviewerRepository.save(reviewer);
-            System.out.print("Hello1");
 
             follow.setFollowedReviewer(reviewer);
             follow.setFollowedPage(null);
-            follow.setFollowedUser(reviewer.getUser());
+            follow.setFollowedUser(null);
 
-            // Thieu notification
-        } else {
+            //Thieu notification
+            String receiverId = reviewer.getUser().getId();
+            notificationRequestDTO.setReceiverId(receiverId);
+            notificationRequestDTO.setType(NotificationType.NEW_FOLLOWER_REVIEWER);
+            notificationRequestDTO.setPostId(null);
+            notificationRequestDTO.setCommentId(null);
+            notificationRequestDTO.setPageId(null);
+            notificationRequestDTO.setWalletTransactionId(null);
+            notificationRequestDTO.setBadgeId(null);
+            notificationRequestDTO.setBody(follower.getFullName() + " đã theo dõi bạn");
+
+            notificationService.sendNotification(receiverId, notificationRequestDTO);
+        }
+        else  {
             throw new IllegalArgumentException("Invalid follow type");
         }
         Follow saved = followRepository.save(follow);

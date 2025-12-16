@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.BlogLikeCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.BlogLikeResponse;
 import vn.gt.__back_end_javaspring.DTO.EarningEventCreateDTO;
+import vn.gt.__back_end_javaspring.DTO.NotificationRequestDTO;
 import vn.gt.__back_end_javaspring.entity.*;
+import vn.gt.__back_end_javaspring.enums.NotificationType;
 import vn.gt.__back_end_javaspring.exception.*;
 import vn.gt.__back_end_javaspring.mapper.BlogLikeMapper;
 import vn.gt.__back_end_javaspring.repository.*;
@@ -48,9 +50,34 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
 
-        String useId = blog.getUser().getId();
-        if (reviewerService.isReviewerByUserId(userId)) {
-            Reviewer reviewer = reviewerRepository.findByUser_Id(userId);
+        blog.setLikesCount(blog.getLikesCount() + 1);
+        blogRepository.save(blog);
+
+        BlogLike bloglike = blogLikeMapper.toModel(request);
+        BlogLike saved = blogLikeRepository.save(bloglike);
+
+        // Notification
+        String senderId = user.getId();
+        String receiverId = blog.getUser().getId();
+        NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+        notificationRequestDTO.setSenderId(senderId);
+        notificationRequestDTO.setReceiverId(receiverId);
+        notificationRequestDTO.setType(NotificationType.LIKE_POST);
+        notificationRequestDTO.setPostId(blogId);
+        notificationRequestDTO.setCommentId(null);
+        notificationRequestDTO.setPageId(null);
+        notificationRequestDTO.setWalletTransactionId(null);
+        notificationRequestDTO.setBadgeId(null);
+        notificationRequestDTO.setBody(user.getFullName() + " đã thích bài viết của bạn");
+
+        // Set EarningEvent
+        String userReviewerId = blog.getUser().getId();
+        if (reviewerService.isReviewerByUserId(userReviewerId)) {
+            Reviewer reviewer = reviewerRepository.findByUser_Id(userReviewerId);
+            if (reviewer == null) {
+                throw new ReviewerNotFound("Reviewer not found");
+            }
+
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
 
             EarningEventCreateDTO earningEventCreateDTO = new EarningEventCreateDTO();
@@ -63,18 +90,14 @@ public class BlogLikeServiceImpl implements BlogLikeService {
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
             earningEventCreateDTO.setReviewerId(reviewer.getId());
             earningEventCreateDTO.setAmount(weight.multiply(unitPrice));
-            System.out.println("earningEventCreateDTO:  " + earningEventCreateDTO);
+            System.out.println("saved : " + saved.getId());
+            earningEventCreateDTO.setLikeId(saved.getId());
+            System.out.println("after saved : " + earningEventCreateDTO.getLikeId());
+
             earningEventService.create(earningEventCreateDTO);
         }
 
-        blog.setLikesCount(blog.getLikesCount() + 1);
-        blogRepository.save(blog);
-
-        BlogLike bloglike = blogLikeMapper.toModel(request);
-        BlogLike saved = blogLikeRepository.save(bloglike);
-
-        // Notification
-        notificationService.notifyLikePost(user, blog);
+        notificationService.sendNotification(receiverId, notificationRequestDTO);
 
         return blogLikeMapper.toResponse(saved);
 
@@ -88,13 +111,19 @@ public class BlogLikeServiceImpl implements BlogLikeService {
 
         blog.setLikesCount(blog.getLikesCount() - 1);
 
-        System.out.println("blogId: " + blogId + ", userId: " + userId);
-
         if (!blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
             throw new LikeNotFoundException("Like not exists");
         }
 
+        System.out.println("blogId: " + blogId + ", userId: " + userId);
+
+        // Xoa EarningEvent
+        BlogLike blogLike = blogLikeRepository.findByUser_IdAndBlog_Id(userId, blogId)
+                .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
+        earningEventService.deleteLikeEvent(blogLike.getId());
+
         blogLikeRepository.deleteByUserAndBlog(userId, blogId);
+
     }
 
     @Override

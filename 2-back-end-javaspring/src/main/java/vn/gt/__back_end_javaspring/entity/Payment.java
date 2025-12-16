@@ -46,9 +46,6 @@ public class Payment {
     @Column(name = "endAt")
     private LocalDateTime endAt;
 
-    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
-    private Payout payout;
-
     @PrePersist
     public void prePersist() {
         processedAt = LocalDateTime.now();

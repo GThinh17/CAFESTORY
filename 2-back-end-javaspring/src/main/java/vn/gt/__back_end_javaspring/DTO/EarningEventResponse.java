@@ -36,6 +36,11 @@ public class EarningEventResponse {
 
     private BigDecimal unitPrice; //Gia tien tren moi diem
 
+    private String commentId;
+
+    private String likeId;
+
+    private String shareId;
 
     private String blogId;
 

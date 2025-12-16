@@ -26,21 +26,18 @@ public class Notification {
     private User receiver;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "actor_id")
-    private User actor;
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 100)
     private NotificationType type;
 
-    @Column(name = "title", length = 255)
+    @Column(name = "title")
     private String title;
 
-    @Column(name = "content", length = 1000)
-    private String content;
-
-    @Column(name = "redirect_url", length = 500)
-    private String redirectUrl;
+    @Column(name = "body", length = 1000)
+    private String body;
 
 
     @Column(name = "is_read", nullable = false)

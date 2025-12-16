@@ -25,3 +25,4 @@ public interface FollowRepository extends JpaRepository<Follow, String> {
 
     List<Follow> findAllByFollower_IdAndFollowType(String followerId, FollowType followType);
 }
+

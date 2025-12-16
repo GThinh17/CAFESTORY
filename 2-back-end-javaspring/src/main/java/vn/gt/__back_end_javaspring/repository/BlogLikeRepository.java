@@ -19,6 +19,7 @@ public interface BlogLikeRepository extends JpaRepository<BlogLike, String> {
 
     List<BlogLike> findByBlog_Id(String blogId);
 
+
     @Modifying
     @Transactional
     @Query("delete from BlogLike l where l.user.id = :userId and l.blog.id = :blogId")

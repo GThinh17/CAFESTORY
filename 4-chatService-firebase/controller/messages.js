@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { db } = require("../config/admin-firebase");
+const chatService = require("../services/chat.service");
 
 // Gửi tin nhắn
 router.post("/send", async (req, res) => {
@@ -30,7 +31,21 @@ router.post("/send", async (req, res) => {
             updatedAt: new Date(),
         });
 
+        //Send Notification to other members
+        const chatDoc = await db.collection("chats").doc(chatId).get();
+        const memebers = chatDoc.data().members;
+        const receivers = memebers.filter(id => id !== senderId);
+
+        if (tokens.length) {
+            await chatService.sendMessage(
+                senderId,
+                receivers,
+                content,
+                chatId
+            );
+        }
         return res.json({ message: "Message sent!", data: newMessage });
+    
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }

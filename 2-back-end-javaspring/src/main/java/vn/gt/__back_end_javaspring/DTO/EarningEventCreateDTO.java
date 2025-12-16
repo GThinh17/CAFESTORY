@@ -1,5 +1,6 @@
 package vn.gt.__back_end_javaspring.DTO;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,4 +23,11 @@ public class EarningEventCreateDTO {
     private BigDecimal amount;
 
     private String sourceType;
+
+    private String commentId;
+
+    private String likeId;
+
+    private String shareId;
+
 }

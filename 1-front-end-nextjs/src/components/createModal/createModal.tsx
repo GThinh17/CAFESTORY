@@ -23,6 +23,15 @@ interface Reviewer {
   userAvatarUrl: string;
   type: "USER" | "PAGE";
 }
+import { Check } from "lucide-react";
+
+interface Reviewer {
+  id: string;
+  userId: string;
+  userName: string;
+  userAvatarUrl: string;
+  type: "USER" | "PAGE";
+}
 
 export function CreateModal({
   open,
@@ -87,6 +96,48 @@ export function CreateModal({
           };
         });
 
+  const [reviewers, setReviewers] = useState<Reviewer[]>([]);
+  const [selectedCollaborators, setSelectedCollaborators] = useState<
+    Reviewer[]
+  >([]);
+  const [showCollaboratorsModal, setShowCollaboratorsModal] = useState(false);
+
+  const router = useRouter();
+
+  // ------------------- FETCH FOLLOWINGS -------------------
+  useEffect(() => {
+    if (!user?.id || !token || !showCollaboratorsModal) return;
+
+    async function fetchFollowings() {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/follows/users/${userId}/following`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        const mappedData: Reviewer[] = res.data.data.map((item: any) => {
+          if (item.followType === "USER") {
+            return {
+              id: item.followId,
+              userId: item.userFollowedId,
+              userName: item.userFollowedFullName,
+              userAvatarUrl: item.userFollowedAvatar,
+              type: "USER",
+            };
+          }
+
+          return {
+            id: item.followId,
+            userId: item.pageFollowedId,
+            userName: item.pageFollowedName,
+            userAvatarUrl: item.pageFollowedAvatar,
+            type: "PAGE",
+          };
+        });
+
+        setReviewers(mappedData);
+      } catch (error) {
+        console.error("Fetch followings failed:", error);
         setReviewers(mappedData);
       } catch (error) {
         console.error("Fetch followings failed:", error);
@@ -97,7 +148,14 @@ export function CreateModal({
   }, [user?.id, token, showCollaboratorsModal]);
 
   // ------------------- FETCH CAFE OWNER STATUS -------------------
+    }
+
+    fetchFollowings();
+  }, [user?.id, token, showCollaboratorsModal]);
+
+  // ------------------- FETCH CAFE OWNER STATUS -------------------
   useEffect(() => {
+    const fetchStatus = async () => {
     const fetchStatus = async () => {
       try {
         const res = await axios.get(
@@ -115,8 +173,10 @@ export function CreateModal({
       }
     };
     fetchStatus();
+    fetchStatus();
   }, [open, user?.id, token]);
 
+  // ------------------- FETCH CAFE OWNER ID -------------------
   // ------------------- FETCH CAFE OWNER ID -------------------
   useEffect(() => {
     const fetchCfOwnerId = async () => {
@@ -139,9 +199,12 @@ export function CreateModal({
   }, [open, user?.id, token]);
 
   // ------------------- FETCH PAGE ID -------------------
+  // ------------------- FETCH PAGE ID -------------------
   useEffect(() => {
     const fetchPage = async () => {
+    const fetchPage = async () => {
       try {
+        if (!cfOwnerId) return;
         if (!cfOwnerId) return;
         const res = await axios.get(
           `http://localhost:8080/api/pages/cafe-owner/${cfOwnerId}`,
@@ -157,6 +220,84 @@ export function CreateModal({
         console.log("fetch status fail");
       }
     };
+    fetchPage();
+  }, [cfOwnerId, token]);
+
+  // ------------------- UPLOAD IMAGES -------------------
+  const uploadImages = async () => {
+    const urls: string[] = [];
+    for (const file of mediaFiles) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "upload");
+      const res = await axios.post(
+        "https://api.cloudinary.com/v1_1/dwdjlzl9h/image/upload",
+        formData
+      );
+      if (res.data.secure_url) urls.push(res.data.secure_url);
+    }
+    return urls;
+  };
+
+  // ------------------- CREATE BLOG AND TAG COLLABORATORS -------------------
+  const handleSharePost = async () => {
+    try {
+      setLoadingUp(true);
+
+      // 1️⃣ Upload ảnh
+      let mediaUrls: string[] = [];
+      if (mediaFiles.length > 0) mediaUrls = await uploadImages();
+
+      // 2️⃣ Tạo blog
+      const blogRes = await axios.post(
+        "http://localhost:8080/api/blogs",
+        {
+          caption: caption,
+          mediaUrls: mediaUrls,
+          visibility: "PUBLIC",
+          allowComment: true,
+          isPin: false,
+          locationId: null,
+          userId: userId,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const blogId = blogRes.data.data.id;
+
+      // 3️⃣ Tag collaborators
+      await Promise.all(
+        selectedCollaborators.map((collab) => {
+          const payload: any = {
+            userId, // người tạo post
+            blogIdTag: blogId,
+          };
+
+          if (collab.type === "USER") {
+            payload.userIdTag = collab.userId;
+          } else if (collab.type === "PAGE") {
+            payload.pageTagId = collab.userId;
+          }
+
+          return axios.post("http://localhost:8080/api/tags", payload, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+        })
+      );
+
+      // Reset
+      setcaption("");
+      setMediaFiles([]);
+      setSelectedCollaborators([]);
+      setIsImg(false);
+      onClose();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingUp(false);
+    }
+  };
+
     fetchPage();
   }, [cfOwnerId, token]);
 
@@ -288,6 +429,7 @@ export function CreateModal({
               value={caption}
               onChange={(e) => setcaption(e.target.value)}
             />
+            />
 
             {/* Add Location */}
 
@@ -305,6 +447,7 @@ export function CreateModal({
               />
             </div>
 
+
             {/* Switch: Đăng bài cho cafe */}
             {isCfOwner && (
               <div className="optionRow switchRow">
@@ -318,9 +461,11 @@ export function CreateModal({
             )}
 
             {/* Share button */}
+            {/* Share button */}
             <div className="btnShare">
               <Button
                 disabled={loadingUp}
+                onClick={handleSharePost}
                 onClick={handleSharePost}
                 className="btnShare"
               >

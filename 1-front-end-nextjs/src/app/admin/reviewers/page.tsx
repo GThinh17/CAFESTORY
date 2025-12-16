@@ -31,6 +31,15 @@ export default function DashboardPage() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+<<<<<<< HEAD
+=======
+      const response = await axios.get(
+        `http://localhost:8080/api/reviewers/top/follower-desc`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+>>>>>>> feature
 
       console.log("DATA NÈ:", response.data.data);
 
@@ -53,6 +62,8 @@ export default function DashboardPage() {
         Overview & management
       </p>
 
+=======
+>>>>>>> feature
       <ReviewersTable reviewers={reviewersData} />
     </div>
   );

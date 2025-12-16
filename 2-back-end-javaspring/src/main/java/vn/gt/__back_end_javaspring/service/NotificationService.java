@@ -1,36 +1,19 @@
 package vn.gt.__back_end_javaspring.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.google.firebase.messaging.*;
+import org.springframework.stereotype.Service;
+import vn.gt.__back_end_javaspring.DTO.NotificationRequestDTO;
 import vn.gt.__back_end_javaspring.DTO.NotificationResponse;
-import vn.gt.__back_end_javaspring.entity.*;
 
+import java.util.List;
+
+@Service
 public interface NotificationService {
-
-    Page<NotificationResponse> getNotifications(String receiverId, boolean unreadOnly, Pageable pageable);
-
-    void markAsRead(String receiverId, String notificationId);
-
-    void markAllAsRead(String receiverId);
-
-    long countUnread(String receiverId);
-
-    // Tạo notify cho các hành động:
-
-    void notifyLikePost(User actor, Blog blog);
-
-    void notifyCommentPost(User actor, Comment comment);
-
-    void notifySharePost(User actor, Blog blog);
-
-    void notifyReplyComment(User actor, Comment replyComment);
-
-    void notifyLikeComment(User actor, Comment comment);
-
-    void notifyNewFollower(User follower, User followedUser);
-
-    void notifyNewPageFollower(User follower, vn.gt.__back_end_javaspring.entity.Page page);
-
-    void notifyPageNewPost(vn.gt.__back_end_javaspring.entity.Page page, Blog blog);
-
+    void sendNotification(String receiverId, NotificationRequestDTO notificationRequestDTO);
+    NotificationResponse createNotification(NotificationRequestDTO notificationRequestDTO);
+    List<NotificationResponse> getNoticationByUserId(String userId );
+    void deleteNotification(String notificationId);
+    void markUnread(String notificationId);
+    void markRead(String notificationId);
+    void markAllRead(String userId );
 }

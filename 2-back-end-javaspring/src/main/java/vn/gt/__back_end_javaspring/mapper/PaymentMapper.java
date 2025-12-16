@@ -17,7 +17,7 @@ import vn.gt.__back_end_javaspring.entity.Tag;
 public interface PaymentMapper {
     Payment toEntity(PaymentCreateDTO dto);
 
-    @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "userId", source = "user.id   ")
     @Mapping(target = "productionId", source = "production.productionId")
     @Mapping(target = "total", source = "production.total")
 

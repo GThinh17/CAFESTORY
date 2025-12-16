@@ -1,9 +1,11 @@
 package vn.gt.__back_end_javaspring.controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.Transfer;
 import com.stripe.net.Webhook;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -46,8 +49,20 @@ public class StripeWebhookController {
 
     @Value("${stripe.endPointSecret.key}")
     private String endpointSecret;
-
+    private PayOutService payOutService;
     private final PaymentService paymentService;
+
+    @Transactional
+    public void handleTransferSuccess(Transfer transfer) {
+
+        String transferId = transfer.getId();
+
+    }
+
+    @Transactional
+    public void handleTransferFailed(Transfer transfer) {
+
+    }
 
     private void handlePaymentSucceeded(Event event) {
         PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer()
@@ -169,6 +184,7 @@ public class StripeWebhookController {
         Event event;
         System.out.println(">>>> RAW PAYLOAD <<<<");
         System.out.println(payload);
+
         try {
             // Verify signature from Stripe
             event = Webhook.constructEvent(payload, signature, endpointSecret);
@@ -179,6 +195,8 @@ public class StripeWebhookController {
         }
 
         System.out.println(" Stripe Event Received: " + event.getType());
+        Transfer transfer = (Transfer) event.getDataObjectDeserializer()
+                .getObject().orElse(null);
         // Handle events from Stripe
         switch (event.getType()) {
             case "checkout.session.completed":
@@ -192,9 +210,16 @@ public class StripeWebhookController {
             case "payment_intent.payment_failed":
                 handlePaymentFailed(event);
                 break;
+
             case "checkout.session.expired":
                 handlePaymentFailed(event);
                 break;
+
+            case "transfer.created":
+                handleTransferSuccess(transfer);
+
+            case "transfer.failed":
+                handleTransferFailed(transfer);
 
             default:
                 System.out.println("⚠ Unhandled event type: " + event.getType());

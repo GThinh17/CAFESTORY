@@ -62,7 +62,6 @@
 
 /* ================= CELLS ================= */
 .avatarCell {
-  display: flex;
   align-items: center;
   padding-left: 0.75rem;
 }

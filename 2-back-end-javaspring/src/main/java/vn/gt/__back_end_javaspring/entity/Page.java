@@ -17,7 +17,7 @@ public class Page {
         private String id;
 
         @OneToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "user_id")
+        @JoinColumn(name = "user_id") //Cafe owner id
         private CafeOwner cafeOwner;
 
         @NotBlank

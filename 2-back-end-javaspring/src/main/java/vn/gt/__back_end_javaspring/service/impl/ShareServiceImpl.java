@@ -4,10 +4,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.EarningEventCreateDTO;
+import vn.gt.__back_end_javaspring.DTO.NotificationRequestDTO;
 import vn.gt.__back_end_javaspring.DTO.ShareCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.ShareReponse;
 import vn.gt.__back_end_javaspring.entity.*;
-import vn.gt.__back_end_javaspring.enums.SourceType;
+import vn.gt.__back_end_javaspring.enums.NotificationType;
 import vn.gt.__back_end_javaspring.exception.*;
 import vn.gt.__back_end_javaspring.mapper.ShareMapper;
 import vn.gt.__back_end_javaspring.repository.*;
@@ -33,6 +34,7 @@ public class ShareServiceImpl implements ShareService {
     private final PricingRuleRepository pricingRuleRepository;
     private final EarningEventService earningEventService;
     private final NotificationService notificationService;
+
     @Override
     public ShareReponse createShare(ShareCreateDTO dto) {
 
@@ -57,6 +59,9 @@ public class ShareServiceImpl implements ShareService {
         if(reviewerService.isReviewerByUserId(userId)){
             Reviewer reviewer = reviewerRepository.findByUser_Id(userId);
 
+            if(reviewer==null) {
+                throw new ReviewerNotFound("Reviewer not found");
+            }
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
             if (pricingRule == null) {
                 throw new PricingRuleNotFound("No active pricing rule");
@@ -75,12 +80,30 @@ public class ShareServiceImpl implements ShareService {
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
             earningEventCreateDTO.setReviewerId(reviewer.getId());
             earningEventCreateDTO.setAmount(amount);
-
+            earningEventCreateDTO.setShareId(saved.getId());
             earningEventService.create(earningEventCreateDTO);
 
         }
-        notificationService.notifySharePost(user, blog);
+        //Notification
+        NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+        String receiverId = blog.getUser().getId();
+        notificationRequestDTO.setSenderId(user.getId());
+        notificationRequestDTO.setReceiverId(receiverId);
+        notificationRequestDTO.setType(NotificationType.SHARE_POST);
+        notificationRequestDTO.setPostId(blog.getId());
+        notificationRequestDTO.setCommentId(null);
+        notificationRequestDTO.setPageId(null);
+        notificationRequestDTO.setWalletTransactionId(null);
+        notificationRequestDTO.setBadgeId(null);
+        notificationRequestDTO.setBody(user.getFullName() + " đã chia sẻ bài viết của bạn");
 
+        notificationService.sendNotification(receiverId, notificationRequestDTO);
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> feature
+//        notificationClient.sendNotification(notificationRequestDTO);
         return shareMapper.toResponse(saved);
     }
 
@@ -115,6 +138,9 @@ public class ShareServiceImpl implements ShareService {
         if (!share.getUser().getId().equals(userId)) {
             throw new UserNotFoundException("You are not allowed to delete this share");
         }
+
+        earningEventService.deleteShareEvent(share.getId());
+
         share.setIsDeleted(true);
         shareRepository.save(share);
     }

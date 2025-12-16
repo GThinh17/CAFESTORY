@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ChangeAvtModal } from "./ChangeAvtModal/changeAvtModal";
 import ProfileEditModal from "./EditProfile/editProfile";
+import { removeFcmToken } from "@/firebase/fcm";
 
 interface ProfileModalProps {
   open: boolean;
@@ -203,7 +204,7 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
       logout();
       router.push("/");
       return;
-    }
+}
 
     onClose();
   };
