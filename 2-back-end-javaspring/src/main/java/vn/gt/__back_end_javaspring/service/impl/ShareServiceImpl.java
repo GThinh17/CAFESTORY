@@ -99,7 +99,10 @@ public class ShareServiceImpl implements ShareService {
 
         notificationService.sendNotification(receiverId, notificationRequestDTO);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature
 //        notificationClient.sendNotification(notificationRequestDTO);
         return shareMapper.toResponse(saved);
     }

@@ -3,18 +3,65 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+<<<<<<< HEAD
+=======
+"use client";
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+>>>>>>> feature
 import Stats from "@/components/admin/Stats";
 import { MyBarChart } from "@/components/admin/barChart";
 import { ChartAreaStacked } from "@/components/admin/Chart";
 import { useAuth } from "@/context/AuthContext";
+<<<<<<< HEAD
+=======
+import { ChartAreaStacked } from "@/components/admin/Chart";
+import { useAuth } from "@/context/AuthContext";
+>>>>>>> feature
 
 export default function DashboardPage() {
   const [userCount, setUserCount] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [reviewerCount, setReviewerCount] = useState(0);
+<<<<<<< HEAD
   const { token } = useAuth();
 
   useEffect(() => {
+=======
+  const [balance, setBalance] = useState(0);
+
+  const { token } = useAuth();
+
+  useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/payments", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const payments = res.data.data || [];
+
+        const totalBalance = payments
+          .filter((p: any) => p.status === "SUCCESS")
+          .reduce((sum: number, p: any) => sum + (p.total || 0), 0);
+
+        setBalance(totalBalance);
+      } catch (error) {
+        console.error("Failed to fetch payments", error);
+      }
+    };
+
+    if (token) {
+      fetchPayments();
+    }
+  }, [token]);
+
+  useEffect(() => {
+>>>>>>> feature
     const fetchUsers = async () => {
       try {
         const res = await axios.get("http://localhost:8080/users", {
@@ -57,11 +104,22 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchReviewers = async () => {
       try {
+<<<<<<< HEAD
         const res = await axios.get("http://localhost:8080/api/reviewers/top/follower-desc", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+=======
+        const res = await axios.get(
+          "http://localhost:8080/api/reviewers/top/follower-desc",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+>>>>>>> feature
 
         setReviewerCount(res.data.data.length);
       } catch (error) {
@@ -83,11 +141,20 @@ export default function DashboardPage() {
         users={userCount}
         pages={pageCount}
         reviewers={reviewerCount}
+<<<<<<< HEAD
         balance={1}
+=======
+        balance={`${balance} USD`}
+>>>>>>> feature
       />
 
       <ChartAreaStacked />
       <MyBarChart />
+<<<<<<< HEAD
+=======
+      <ChartAreaStacked />
+      <MyBarChart />
+>>>>>>> feature
     </div>
   );
 }

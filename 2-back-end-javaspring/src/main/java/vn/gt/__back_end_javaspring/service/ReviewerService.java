@@ -21,6 +21,7 @@ public interface ReviewerService {
     List<ReviewerResponse> getReviewersFollowedByUser(String userId);
     List<String> getAllReviewerIds();
 
+
     List<ReviewerResponse> getReviewersFollowedByUserOrderByFollowerCountDesc(String userId);
 
     List<ReviewerResponse> getAllReviewersOrderByFollowerCountDesc();

@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableHeader,
@@ -18,6 +17,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import styles from "./UsersTable.module.css";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
+import PageDetailModal from "./components/PagesDetailedModal";
 
 interface Page {
   pageId: string;
@@ -34,8 +34,9 @@ interface Page {
 export default function PagesTable({ pages = [] }: { pages: Page[] }) {
   const { token } = useAuth();
   const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const [selectedPage, setSelectedPage] = useState<Page | null>(null);
 
-  // --- FILTER THEO SEARCH ---
   const filtered = useMemo(() => {
     return pages.filter((p) =>
       `${p.pageName ?? ""} ${p.contactEmail ?? ""}`
@@ -44,6 +45,7 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
     );
   }, [pages, query]);
 
+<<<<<<< HEAD
   // --- HÀM XEM CHI TIẾT PAGE THEO ID ---
   const handlePageById = async (pageId: string) => {
     try {
@@ -51,9 +53,16 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+=======
+  const handlePageById = async (pageId: string) => {
+    try {
+      const res = await axios.get(`http://localhost:8080/api/pages/${pageId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+>>>>>>> feature
       });
 
-      console.log("CHI TIẾT PAGE:", res.data.data);
+      setSelectedPage(res.data.data);
+      setOpen(true);
     } catch (error) {
       console.log("LỖI API:", error);
     }
@@ -66,6 +75,7 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
       </CardHeader>
 
       <CardContent>
+        {/* TOOLBAR */}
         <div className={styles.toolbar}>
           <Input
             placeholder="Search pages..."
@@ -75,34 +85,52 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
           />
         </div>
 
+        {/* TABLE */}
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Avatar</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Page email</TableHead>
-              <TableHead>Followers</TableHead>
-              <TableHead>Post Count</TableHead>
+              <TableHead className={styles.colProfile}>Avatar</TableHead>
+              <TableHead className={styles.colName}>Name</TableHead>
+              <TableHead className={styles.colEmail}>Page email</TableHead>
+              <TableHead className={styles.colStatus}>Followers</TableHead>
+              <TableHead className={styles.colRole}>Post Count</TableHead>
               <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
             {filtered.map((p) => (
-              <TableRow key={p.pageId}>
-                <TableCell>
-                  <Avatar>
+              <TableRow key={p.pageId} className={styles.tableRow}>
+                {/* AVATAR */}
+                <TableCell className={styles.avatarCell}>
+                  <Avatar className={styles.avatar}>
                     <AvatarImage src={p.avatarUrl} />
                   </Avatar>
                 </TableCell>
 
-                <TableCell>{p.pageName}</TableCell>
-                <TableCell>{p.contactEmail}</TableCell>
+                {/* NAME */}
+                <TableCell className={styles.nameCell}>{p.pageName}</TableCell>
 
+<<<<<<< HEAD
                 <TableCell>{p.followingCount}</TableCell>
                 <TableCell>{p.postCount}</TableCell>
+=======
+                {/* EMAIL */}
+                <TableCell className={styles.colEmail}>
+                  {p.contactEmail}
+                </TableCell>
 
-                <TableCell>
+                {/* FOLLOWERS */}
+                <TableCell className={styles.colEmail}>
+                  {p.followingCount}
+                </TableCell>
+>>>>>>> feature
+
+                {/* POSTS */}
+                <TableCell className={styles.colEmail}>{p.postCount}</TableCell>
+
+                {/* ACTION */}
+                <TableCell className={styles.TableCell}>
                   <Button
                     className={styles.button}
                     onClick={() => handlePageById(p.pageId)}
@@ -115,6 +143,13 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* MODAL */}
+      <PageDetailModal
+        open={open}
+        page={selectedPage}
+        onClose={() => setOpen(false)}
+      />
     </Card>
   );
 }

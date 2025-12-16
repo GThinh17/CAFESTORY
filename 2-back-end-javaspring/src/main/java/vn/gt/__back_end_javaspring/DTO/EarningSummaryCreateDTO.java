@@ -23,7 +23,11 @@ public class EarningSummaryCreateDTO {
 
     private Long totalSharesCount;
 
+<<<<<<< HEAD
     private Long totalFollowerCount;
+=======
+    private Long totalFollowersCount;
+>>>>>>> feature
 
     private BigDecimal totalEarningAmount;
 }

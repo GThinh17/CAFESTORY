@@ -52,7 +52,10 @@ public class Tag {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature
     @PrePersist
     void init() {
         this.createdAt = LocalDateTime.now();

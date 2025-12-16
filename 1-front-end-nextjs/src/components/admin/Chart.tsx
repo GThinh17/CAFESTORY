@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import styles from "./Chart.module.css";
+import { useAuth } from "@/context/AuthContext";
 
 import {
   Card,
@@ -15,91 +18,113 @@ import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart";
 
-export const description = "A stacked area chart";
-
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-  { month: "July", desktop: 186, mobile: 80 },
-  { month: "August", desktop: 305, mobile: 200 },
-  { month: "December", desktop: 237, mobile: 120 },
-  { month: "October", desktop: 73, mobile: 190 },
-  { month: "November", desktop: 209, mobile: 130 },
-  { month: "September", desktop: 214, mobile: 140 },
-];
+interface ChartItem {
+  month: string;
+  total: number;
+}
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  total: {
+    label: "Revenue",
     color: "var(--chart-1)",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 
 export function ChartAreaStacked() {
+  const { token } = useAuth();
+  const [chartData, setChartData] = useState<ChartItem[]>([]);
+
+  useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/payments", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const payments = res.data.data;
+
+        // 1️⃣ Danh sách 12 tháng (short name)
+        const months = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+
+        // 2️⃣ Init tất cả tháng = 0
+        const grouped: Record<string, number> = {};
+        months.forEach((m) => (grouped[m] = 0));
+
+        // 3️⃣ Lọc SUCCESS và cộng total theo tháng
+        payments
+          .filter((p: any) => p.status === "SUCCESS")
+          .forEach((p: any) => {
+            const month = new Date(p.processedAt).toLocaleString("en-US", {
+              month: "short",
+            });
+
+            grouped[month] += p.total;
+          });
+
+        // 4️⃣ Convert sang array cho chart
+        const formatted = months.map((month) => ({
+          month,
+          total: grouped[month],
+        }));
+
+        setChartData(formatted);
+      } catch (error) {
+        console.error("Fetch payments failed", error);
+      }
+    };
+
+    if (token) fetchPayments();
+  }, [token]);
+
   return (
     <Card className={styles.container}>
       <CardHeader className={styles.header}>
-        <CardTitle>Area Chart - Stacked</CardTitle>
-        <CardDescription>
-          Showing total users for the last 6 months
-        </CardDescription>
+        <CardTitle>Revenue by Month</CardTitle>
       </CardHeader>
+
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <AreaChart
-            accessibilityLayer
-            data={chartData}
-            
-            margin={{ left: 12, right: 12 }}
-          >
+          <AreaChart data={chartData} margin={{ left: 12, right: 12 }}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="month"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
             />
-            <ChartTooltip
-              
-            />
+            <ChartTooltip />
             <Area
-              dataKey="mobile"
+              dataKey="total"
               type="natural"
               fill="var(--chart-1)"
               fillOpacity={0.4}
               stroke="var(--chart-1)"
-              stackId="a"
-            />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="var(--chart-4)"
-              fillOpacity={0.4}
-              stroke="var(--chart-5)"
-              stackId="a"
             />
           </AreaChart>
         </ChartContainer>
       </CardContent>
+
       <CardFooter>
         <div className={styles.cardFooterContent}>
-          <div className={styles.cardFooterGrid}>
-            <div className={styles.cardFooterTrend}>
-              Trending up by 5.2% this month
-            </div>
-            <div className={styles.cardFooterMuted}>January - June 2024</div>
+          <div className={styles.cardFooterMuted}>
+            Only SUCCESS payments are counted
           </div>
         </div>
       </CardFooter>

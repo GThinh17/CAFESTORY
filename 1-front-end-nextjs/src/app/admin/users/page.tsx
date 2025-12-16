@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Stats from "@/components/admin/Stats";
 import UsersTable from "@/components/admin/UsersTable";
 import { useAuth } from "@/context/AuthContext";
@@ -49,7 +49,10 @@ export default function DashboardPage() {
         Overview & management
       </p>
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature
       <UsersTable users={userData} />
     </div>
   );

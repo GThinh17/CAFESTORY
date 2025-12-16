@@ -50,6 +50,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
 
+<<<<<<< HEAD
 
 
         blog.setLikesCount(blog.getLikesCount() + 1);
@@ -79,6 +80,12 @@ public class BlogLikeServiceImpl implements BlogLikeService {
             if(reviewer==null) {
                 throw new ReviewerNotFound("Reviewer not found");
             }
+=======
+        String useId = blog.getUser().getId();
+        if(reviewerService.isReviewerByUserId(userId)){
+            Reviewer reviewer = reviewerRepository.findByUser_Id(userId);
+            System.out.println("Reviewer:  " + reviewer);
+>>>>>>> feature
 
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
 
@@ -100,6 +107,26 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         }
 
 
+<<<<<<< HEAD
+=======
+        BlogLike bloglike = blogLikeMapper.toModel(request);
+        BlogLike saved = blogLikeRepository.save(bloglike);
+
+        //Notification
+        String senderId = user.getId();
+        String receiverId = blog.getUser().getId();
+        NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+        notificationRequestDTO.setSenderId(senderId);
+        notificationRequestDTO.setReceiverId(receiverId);
+        notificationRequestDTO.setType(NotificationType.LIKE_POST);
+        notificationRequestDTO.setPostId(blogId);
+        notificationRequestDTO.setCommentId(null);
+        notificationRequestDTO.setPageId(null);
+        notificationRequestDTO.setWalletTransactionId(null);
+        notificationRequestDTO.setBadgeId(null);
+        notificationRequestDTO.setBody(user.getFullName() + " đã thích bài viết của bạn");
+
+>>>>>>> feature
         notificationService.sendNotification(receiverId, notificationRequestDTO);
 
         return blogLikeMapper.toResponse(saved);

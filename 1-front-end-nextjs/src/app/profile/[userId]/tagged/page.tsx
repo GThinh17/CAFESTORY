@@ -1,7 +1,7 @@
 import styles from "./page.module.scss";
 import { Sidebar } from "@/components/side-bar/side-bar";
 import { ProfileInfo } from "@/components/profileHeader/profileInfo";
-import { SharedPostList } from "@/components/sharedPost/sharedPostList";
+import { TaggedPostList } from "@/components/profilePostTagged/profilePostTagList";
 export default function Profile() {
   return (
     <div className={styles.page}>
@@ -16,7 +16,7 @@ export default function Profile() {
           </div>
 
           <div className={styles.profileMain}>
-            <SharedPostList />
+            <TaggedPostList />
           </div>
         </div>
       </main>

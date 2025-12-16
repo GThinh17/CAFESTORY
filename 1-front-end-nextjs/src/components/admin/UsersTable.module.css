@@ -28,8 +28,8 @@
 
 /* Avatar cell center alignment */
 .avatarCell {
-  display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 /* Name cell bold */
@@ -86,7 +86,6 @@
 }
 
 .avatarCell {
-  padding-left: 0.5rem !important;
   /* tránh bị sát mép trái */
   display: flex;
 }
@@ -97,11 +96,132 @@
   align-items: center;
   justify-content: center;
   margin-right: 5px;
+<<<<<<< HEAD
+=======
+  margin-right: 5px;
+>>>>>>> feature
 }
 
 .TableCell {
+  padding: 1rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-direction: row;
   gap: 5px;
 }
+<<<<<<< HEAD
+=======
+
+/* ---------- HEADER ---------- */
+.Header {
+  margin: 0.75rem 1rem;
+}
+
+/* ---------- TOOLBAR ---------- */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+}
+
+.searchInput {
+  width: 18rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 14px;
+}
+
+/* ---------- TABLE ---------- */
+.tableRow {
+  transition: background-color 0.15s ease;
+}
+
+.tableRow:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+}
+
+/* ---------- CELLS ---------- */
+.TableCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.avatarCell {
+  display: flex;
+  align-items: center;
+
+  padding: 0.5rem !important;
+}
+
+.nameCell {
+  font-weight: 500;
+  color: #111827;
+}
+
+.colProfile {
+  width: 72px;
+}
+
+.colName {
+  width: 200px;
+}
+
+.colEmail {
+  width: 240px;
+  color: #4b5563;
+}
+
+.colRole {
+  width: 110px;
+}
+
+.colStatus {
+  width: 110px;
+}
+
+/* ---------- BADGES ---------- */
+.badgeRole,
+.badgeStatus {
+  padding: 0.25rem 0.6rem;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 999px;
+}
+
+.roleBadge {
+  background-color: #eef2ff;
+  color: #4338ca;
+}
+
+.statusBadge {
+  background-color: #ecfeff;
+  color: #0369a1;
+}
+
+/* ---------- ACTION BUTTON ---------- */
+.button {
+  min-width: 60px;
+  height: 28px;
+  font-size: 12px;
+  padding: 0 8px;
+}
+
+/* ---------- ROW ---------- */
+.tableBodyRow {
+  height: 52px;
+}
+
+/* ---------- FILTER BUTTON ---------- */
+.filterBtn {
+  padding: 0.45rem 0.6rem;
+}
+
+.avatar {
+  object-fit: cover;
+}
+>>>>>>> feature

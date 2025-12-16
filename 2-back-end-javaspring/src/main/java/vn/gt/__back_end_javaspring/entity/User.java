@@ -62,7 +62,12 @@ public class User { // Check
     private String vertifiedBank;
 
     @Column(name = "fcm_token")
+<<<<<<< HEAD
     private String fcmToken; //Neu ma dùng  tren nhieu thiet bi thi se tao bang rieng
+=======
+    private String fcmToken; // Neu ma dùng tren nhieu thiet bi thi se tao bang rieng
+
+>>>>>>> feature
     @Column(name = "location")
     private String location;
 

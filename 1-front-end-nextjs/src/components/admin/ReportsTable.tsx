@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableHeader,
@@ -11,8 +12,6 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +19,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import styles from "./UsersTable.module.css";
+
 interface Reports {
   id: string;
   reportingUserId: string;
@@ -37,8 +37,8 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
   const [open, setOpen] = useState(false);
 
   const filtered = useMemo(() => {
-    return reports.filter((p) =>
-      `${p.problem ?? ""} ${p.description ?? ""}`
+    return reports.filter((r) =>
+      `${r.problem ?? ""} ${r.description ?? ""}`
         .toLowerCase()
         .includes(query.toLowerCase())
     );
@@ -52,6 +52,7 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
   return (
     <>
       <Card>
+<<<<<<< HEAD
         <CardHeader
           style={{
             display: "flex",
@@ -60,29 +61,43 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
             margin: "auto",
           }}
         >
+=======
+        <CardHeader className={styles.Header}>
+>>>>>>> feature
           <CardTitle>Reports</CardTitle>
         </CardHeader>
 
         <CardContent>
-          <Input
-            placeholder="Search reports..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className={styles.searchInput}
-          />
-          <Button> Duyệt bài</Button>
+          <div className={styles.toolbar}>
+            <Input
+              placeholder="Search reports..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className={styles.searchInput}
+            />
+            <Button className={styles.button}>Duyệt bài</Button>
+          </div>
+
           <Table>
             <TableHeader>
               <TableRow>
+<<<<<<< HEAD
                 <TableHead>Report Type</TableHead>
                 <TableHead>Problem</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Tools</TableHead>
+=======
+                <TableHead className={styles.colRole}>Report Type</TableHead>
+                <TableHead className={styles.colName}>Problem</TableHead>
+                <TableHead className={styles.colEmail}>Description</TableHead>
+                <TableHead className={styles.colStatus}>Tools</TableHead>
+>>>>>>> feature
               </TableRow>
             </TableHeader>
 
             <TableBody>
               {filtered.map((r) => (
+<<<<<<< HEAD
                 <TableRow key={r.id}>
                   <TableCell>{r.reportType}</TableCell>
                   <TableCell>{r.problem}</TableCell>
@@ -90,6 +105,23 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
 
                   <TableCell>
                     <Button onClick={() => handleOpenModal(r)}>View</Button>
+=======
+                <TableRow key={r.id} className={styles.tableRow}>
+                  <TableCell className={styles.TableCell}>
+                    {r.reportType}
+                  </TableCell>
+                  <TableCell className={styles.nameCell}>{r.problem}</TableCell>
+                  <TableCell className={styles.colEmail}>
+                    {r.description}
+                  </TableCell>
+                  <TableCell className={styles.TableCell}>
+                    <Button
+                      className={styles.button}
+                      onClick={() => handleOpenModal(r)}
+                    >
+                      View
+                    </Button>
+>>>>>>> feature
                   </TableCell>
                 </TableRow>
               ))}
@@ -98,9 +130,9 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
         </CardContent>
       </Card>
 
-      {/* 🔥 Modal chi tiết report */}
+      {/* Modal chi tiết report */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent className="space-y-3">
           <DialogHeader>
             <DialogTitle>Report Details</DialogTitle>
           </DialogHeader>
@@ -111,7 +143,11 @@ export default function ReportsTable({ reports = [] }: { reports: Reports[] }) {
                 <strong>ID:</strong> {selectedReport.id}
               </p>
               <p>
+<<<<<<< HEAD
                 <strong>Reporting User:</strong>
+=======
+                <strong>Reporting User:</strong>{" "}
+>>>>>>> feature
                 {selectedReport.reportingUserId}
               </p>
               <p>

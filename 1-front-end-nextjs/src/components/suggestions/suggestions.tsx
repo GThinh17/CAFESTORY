@@ -5,19 +5,20 @@ import "./suggestions.css";
 import Image from "next/image";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export function Suggestions() {
   const router = useRouter();
   const [users, setUsers] = useState([]);
+  const [userLocation, setUserLocation] = useState();
+  const { user, token } = useAuth();
 
   useEffect(() => {
     async function fetchTopFollowers() {
       try {
-        const res = await axios.get(
-          "http://localhost:8080/api/pages/top-followers"
-        );
+        const res = await axios.get(`http://localhost:8080/users/${user?.id}`);
         if (res.data?.data) {
-          setUsers(res.data.data);
+          setUserLocation(res.data.data.location);
         }
       } catch (err) {
         console.error("API Error:", err);
@@ -25,7 +26,38 @@ export function Suggestions() {
     }
 
     fetchTopFollowers();
-  }, []);
+  }, [user?.id]);
+
+  useEffect(() => {
+    async function fetchTopFollowers() {
+      if (!userLocation) {
+        try {
+          const res = await axios.get(
+            "http://localhost:8080/api/pages/top-followers"
+          );
+          if (res.data?.data) {
+            setUsers(res.data.data);
+          }
+        } catch (err) {
+          console.error("API Error:", err);
+        }
+      } else {
+        try {
+          const res = await axios.get(
+            `http://localhost:8080/api/pages/search?location=${userLocation}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          if (res.data?.data) {
+            setUsers(res.data.data);
+          }
+        } catch (err) {
+          console.error("API Error:", err);
+        }
+      }
+    }
+
+    fetchTopFollowers();
+  }, [token, userLocation]);
 
   console.log(users);
   function goToCafe(cafeOwnerId: string) {

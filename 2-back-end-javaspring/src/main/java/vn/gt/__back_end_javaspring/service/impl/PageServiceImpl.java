@@ -89,7 +89,11 @@ public class PageServiceImpl implements PageService {
     @Override
     public List<PageResponse> getAllPagesOrderByFollowersDesc() {
         List<Page> pages = pageRepository.findAllOrderByFollowingCountDesc();
+<<<<<<< HEAD
         if(pages.isEmpty()){
+=======
+        if (pages.isEmpty()) {
+>>>>>>> feature
 
             throw new PageNotFoundException("Page not found");
         }
@@ -134,7 +138,10 @@ public class PageServiceImpl implements PageService {
         return page.getCafeOwner().getId();
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature
     public List<PageResponse> searchPageByLocation(String location) {
         List<Page> list = this.pageRepository.findByLocationContainingIgnoreCaseAndIsDeletedFalse(location);
         List<PageResponse> listPage = pageMapper.toResponse(list);

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Stats from "@/components/admin/Stats";
 import UsersTable from "@/components/admin/PagesTable";
 import { useAuth } from "@/context/AuthContext";
@@ -25,9 +25,12 @@ export default function DashboardPage() {
 
   const handleGetAllPage = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/pages/top-followers`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `http://localhost:8080/api/pages/top-followers`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       console.log("DATA NÈ:", response.data.data);
 
@@ -49,8 +52,6 @@ export default function DashboardPage() {
       <p className="text-sm text-muted-foreground mb-6">
         Overview & management
       </p>
-
-      <Stats total={4} active={2} editors={2} pending={1} />
 
       <PagesTable pages={pageData} />
     </div>

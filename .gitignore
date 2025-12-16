@@ -11,5 +11,9 @@
 **/config/serviceAccountKey.json
 2-back-end-javaspring/src/main/resources/firebase-service-account.json
 2-back-end-javaspring/src/main/resources/serviceAccountKey.json
+<<<<<<< HEAD
 **/config/serviceAccountKey.json2-back-end-javaspring/
+=======
+**/config/serviceAccountKey.json
+>>>>>>> feature
 target/
