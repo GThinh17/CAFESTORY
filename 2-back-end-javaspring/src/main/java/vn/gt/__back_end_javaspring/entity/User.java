@@ -64,7 +64,7 @@ public class User { // Check
     @Column(name = "fcm_token")
 
     private String fcmToken; // Neu ma dùng tren nhieu thiet bi thi se tao bang rieng
-
+    
     @Column(name = "location")
     private String location;
 
