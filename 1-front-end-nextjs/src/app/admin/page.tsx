@@ -3,8 +3,15 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+"use client";
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 import Stats from "@/components/admin/Stats";
 import { MyBarChart } from "@/components/admin/barChart";
+import { ChartAreaStacked } from "@/components/admin/Chart";
+import { useAuth } from "@/context/AuthContext";
 import { ChartAreaStacked } from "@/components/admin/Chart";
 import { useAuth } from "@/context/AuthContext";
 
@@ -117,6 +124,8 @@ export default function DashboardPage() {
         balance={`${balance} USD`}
       />
 
+      <ChartAreaStacked />
+      <MyBarChart />
       <ChartAreaStacked />
       <MyBarChart />
     </div>

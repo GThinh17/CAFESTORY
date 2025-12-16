@@ -81,4 +81,10 @@ public class ReviewerController {
         List<ReviewerResponse> responses = reviewerService.getAllReviewersOrderByFollowerCountDesc();
         return ResponseEntity.ok(responses);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> SearchReviewerByLocation(@RequestParam("location") String param) {
+        return ResponseEntity.ok().body(this.reviewerService.searchReviewerByLocation(param));
+    }
+
 }

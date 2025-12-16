@@ -31,6 +31,12 @@ export default function DashboardPage() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      const response = await axios.get(
+        `http://localhost:8080/api/reviewers/top/follower-desc`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       console.log("DATA NÈ:", response.data.data);
 

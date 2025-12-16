@@ -26,5 +26,7 @@ public interface ReviewerService {
     List<ReviewerResponse> getAllReviewersOrderByFollowerCountDesc();
     String getUserId(String reviewerId);
 
+    public List<ReviewerResponse> searchReviewerByLocation(String location);
+
 }
 

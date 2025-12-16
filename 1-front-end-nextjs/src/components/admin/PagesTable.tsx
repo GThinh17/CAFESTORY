@@ -94,7 +94,7 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
                 {/* AVATAR */}
                 <TableCell className={styles.avatarCell}>
                   <Avatar className={styles.avatar}>
-                    <AvatarImage src={p.avatarUrl } />
+                    <AvatarImage src={p.avatarUrl} />
                   </Avatar>
                 </TableCell>
 
