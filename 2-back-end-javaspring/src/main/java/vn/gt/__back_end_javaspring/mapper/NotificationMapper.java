@@ -15,6 +15,7 @@ public interface NotificationMapper {
     @Mapping(source = "receiver.id", target = "receiverId")
     @Mapping(source = "sender.id", target = "senderId")
     @Mapping(source = "sender.fullName", target = "senderName")
+    @Mapping(source = "sender.avatar", target = "senderAvatar")
     NotificationResponse toResponse(Notification notification);
 
 

@@ -1,6 +1,5 @@
 package vn.gt.__back_end_javaspring.entity;
 
-<<<<<<< HEAD
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,9 +37,5 @@ public class FollowRule { //Tao chay
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
-
-=======
-
-public class FollowRule {
->>>>>>> feature
 }
+

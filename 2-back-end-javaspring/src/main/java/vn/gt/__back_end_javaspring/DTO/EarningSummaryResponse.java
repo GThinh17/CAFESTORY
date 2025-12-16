@@ -19,15 +19,11 @@ import java.time.LocalDateTime;
 public class EarningSummaryResponse {
     private String id;
 
-<<<<<<< HEAD
     private String reviewerId;
 
     private String userId;
 
     private String userName;
-=======
-    private Reviewer reviewerId;
->>>>>>> feature
 
     private Integer year;
 
@@ -39,7 +35,6 @@ public class EarningSummaryResponse {
 
     private Long totalSharesCount;
 
-<<<<<<< HEAD
     private Long totalFollowerCount;
 
     private String followRuleId;
@@ -50,8 +45,6 @@ public class EarningSummaryResponse {
 
     private BigDecimal bonusAmount;
 
-=======
->>>>>>> feature
     private BigDecimal totalEarningAmount;
 
     private EarningSummaryStatus status;
