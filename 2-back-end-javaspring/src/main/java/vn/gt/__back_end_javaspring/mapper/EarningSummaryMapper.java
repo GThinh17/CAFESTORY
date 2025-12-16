@@ -21,7 +21,7 @@ public interface EarningSummaryMapper {
 
     List<EarningSummaryResponse> toResponseList(List<EarningSummary> entity);
 
-
-//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-//    void toUpdateEntity(@MappingTarget EarningSummary entity, );
+    // @BeanMapping(nullValuePropertyMappingStrategy =
+    // NullValuePropertyMappingStrategy.IGNORE)
+    // void toUpdateEntity(@MappingTarget EarningSummary entity, );
 }

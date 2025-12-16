@@ -29,29 +29,31 @@ public class NotificationServiceImpl implements NotificationService {
     private final UserDeviceRepository userDeviceRepository;
     private final NotificationMapper notificationMapper;
     private final UserRepository userRepository;
-    private  final NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public void sendNotification(String receiverId, NotificationRequestDTO dto) {
-        try{
-            System.out.println("User device "+ receiverId);
-            this.createNotification(dto); //Create in database
+        try {
+            System.out.println("User device toi day roio " + receiverId);
 
-            UserDevice userDevice = userDeviceRepository.findUserDeviceByUser_Id(receiverId);//Find token
+            UserDevice userDevice = userDeviceRepository.findUserDeviceByUser_Id(receiverId);// Find token
 
-            System.out.println("User device "+ userDevice.getFcmToken());
-            if(userDevice==null){
-                throw new IllegalStateException("UserDevice not found");
+            if (userDevice == null) {
+                return;
             }
-
+            System.out.println("User device " + userDevice.toString());
             Map<String, String> data = new HashMap<>();
             data.put("senderId", dto.getSenderId());
             data.put("receiverId", dto.getReceiverId());
             data.put("type", dto.getType().name());
 
-            if (dto.getPostId() != null) data.put("postId", dto.getPostId());
-            if (dto.getCommentId() != null) data.put("commentId", dto.getCommentId());
-            if (dto.getPageId() != null) data.put("pageId", dto.getPageId());
+            if (dto.getPostId() != null)
+                data.put("postId", dto.getPostId());
+            if (dto.getCommentId() != null)
+                data.put("commentId", dto.getCommentId());
+            if (dto.getPageId() != null)
+                data.put("pageId", dto.getPageId());
+            System.out.println("User device " + userDevice.getFcmToken());
             String token = userDevice.getFcmToken();
 
             Message message = Message.builder()
@@ -66,13 +68,14 @@ public class NotificationServiceImpl implements NotificationService {
                             .build())
                     .build();
 
-           var response = FirebaseMessaging.getInstance().sendAsync(message);
+            var response = FirebaseMessaging.getInstance().sendAsync(message);
             System.out.println("Gui thong bao thanh cong " + response);
 
+            this.createNotification(dto); // Create in database
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-                System.out.println("Loi trong viec send Notification " + e.getMessage());
+            System.out.println("Loi trong viec send Notification " + e.getMessage());
         }
     }
 
@@ -80,13 +83,13 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationResponse createNotification(NotificationRequestDTO notificationRequestDTO) {
 
         User sender = userRepository.findById(notificationRequestDTO.getSenderId())
-                .orElseThrow(()-> new UserNotFoundException("Sender not found"));
+                .orElseThrow(() -> new UserNotFoundException("Sender not found"));
 
         User receiver = userRepository.findById(notificationRequestDTO.getReceiverId())
-                .orElseThrow(()-> new UserNotFoundException("Receiver not found"));
+                .orElseThrow(() -> new UserNotFoundException("Receiver not found"));
 
-
-        vn.gt.__back_end_javaspring.entity.Notification notification = notificationMapper.toModel(notificationRequestDTO);
+        vn.gt.__back_end_javaspring.entity.Notification notification = notificationMapper
+                .toModel(notificationRequestDTO);
 
         notification.setSender(sender);
         notification.setReceiver(receiver);
@@ -99,10 +102,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public List<NotificationResponse> getNoticationByUserId(String userId) {
         User receiver = userRepository.findById(userId)
-                .orElseThrow(()-> new UserNotFoundException("Receiver not found"));
+                .orElseThrow(() -> new UserNotFoundException("Receiver not found"));
 
-        List<vn.gt.__back_end_javaspring.entity.Notification> notifications =
-                notificationRepository.findByReceiver_IdOrderByCreatedAtDesc(userId);
+        List<vn.gt.__back_end_javaspring.entity.Notification> notifications = notificationRepository
+                .findByReceiver_IdOrderByCreatedAtDesc(userId);
 
         return notificationMapper.toResponseList(notifications);
     }
@@ -110,8 +113,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void deleteNotification(String notificationId) {
         vn.gt.__back_end_javaspring.entity.Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(()-> new NotificationNotFound("Notification not found"));
-
+                .orElseThrow(() -> new NotificationNotFound("Notification not found"));
 
         notificationRepository.delete(notification);
 
@@ -120,7 +122,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void markUnread(String notificationId) {
         vn.gt.__back_end_javaspring.entity.Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(()-> new NotificationNotFound("Notification not found"));
+                .orElseThrow(() -> new NotificationNotFound("Notification not found"));
 
         notification.setRead(false);
         notificationRepository.save(notification);
@@ -129,7 +131,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void markRead(String notificationId) {
         vn.gt.__back_end_javaspring.entity.Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(()-> new NotificationNotFound("Notification not found"));
+                .orElseThrow(() -> new NotificationNotFound("Notification not found"));
 
         notification.setRead(true);
         notificationRepository.save(notification);
@@ -138,12 +140,12 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void markAllRead(String userId) {
         User receiver = userRepository.findById(userId)
-                .orElseThrow(()-> new UserNotFoundException("Receiver not found"));
+                .orElseThrow(() -> new UserNotFoundException("Receiver not found"));
 
-        List<vn.gt.__back_end_javaspring.entity.Notification> notifications =
-                notificationRepository.findByReceiver_IdOrderByCreatedAtDesc(userId);
+        List<vn.gt.__back_end_javaspring.entity.Notification> notifications = notificationRepository
+                .findByReceiver_IdOrderByCreatedAtDesc(userId);
 
-        for(vn.gt.__back_end_javaspring.entity.Notification notification : notifications){
+        for (vn.gt.__back_end_javaspring.entity.Notification notification : notifications) {
             notification.setRead(true);
             notificationRepository.save(notification);
         }

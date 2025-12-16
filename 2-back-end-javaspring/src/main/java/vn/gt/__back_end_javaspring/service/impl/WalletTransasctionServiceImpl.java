@@ -70,6 +70,7 @@ public class WalletTransasctionServiceImpl implements WalletTransactionService {
         tx.setBalanceAfter(balanceAfter);
 
         WalletTransaction saved = walletTransactionRepository.save(tx);
+        System.out.println("TAOOOODDDDDDDDDDDDDDDDDDDDDDD TỚI ĐÂY");
         return walletTransactionMapper.toResponse(saved);
     }
 
@@ -122,5 +123,14 @@ public class WalletTransasctionServiceImpl implements WalletTransactionService {
         List<WalletTransaction> walletTransactions = walletTransactionRepository
                 .findByWalletIdAndStatus(walletId, status);
         return walletTransactionMapper.toResponseList(walletTransactions);
+    }
+
+    @Override
+    public void updateStatuc(String walletTransactionId, TransactionStatus type) {
+        WalletTransaction walletTransaction = this.walletTransactionRepository.findById(walletTransactionId)
+                .orElseThrow(() -> new RuntimeException("Not found"));
+
+        walletTransaction.setStatus(type);
+
     }
 }

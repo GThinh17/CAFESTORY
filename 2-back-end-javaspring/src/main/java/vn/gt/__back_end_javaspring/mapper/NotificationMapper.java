@@ -18,6 +18,5 @@ public interface NotificationMapper {
     @Mapping(source = "sender.avatar", target = "senderAvatar")
     NotificationResponse toResponse(Notification notification);
 
-
     List<NotificationResponse> toResponseList(List<Notification> notifications);
 }
