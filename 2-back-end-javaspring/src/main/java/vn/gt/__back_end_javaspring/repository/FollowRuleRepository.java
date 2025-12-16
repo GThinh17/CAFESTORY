@@ -7,7 +7,7 @@ import vn.gt.__back_end_javaspring.entity.FollowRule;
 
 import java.util.Optional;
 
-public interface FollowRuleRepository extends JpaRepository<FollowRule, Long> {
+public interface FollowRuleRepository extends JpaRepository<FollowRule, String> {
 
     @Query("""
         SELECT r FROM FollowRule r
