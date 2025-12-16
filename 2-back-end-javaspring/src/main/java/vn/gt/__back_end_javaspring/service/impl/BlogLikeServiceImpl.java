@@ -114,17 +114,21 @@ public class BlogLikeServiceImpl implements BlogLikeService {
 
         blog.setLikesCount(blog.getLikesCount() - 1);
 
-        System.out.println("blogId: " + blogId + ", userId: " + userId);
 
         if (!blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
             throw new LikeNotFoundException("Like not exists");
         }
 
-        blogLikeRepository.deleteByUserAndBlog(userId, blogId);
+
+        System.out.println("blogId: " + blogId + ", userId: " + userId);
 
         //Xoa EarningEvent
-        BlogLike blogLike = blogLikeRepository.findBlogLikesByUser_IdAndBlog_Id(userId, blogId);
+        BlogLike blogLike = blogLikeRepository.findByUser_IdAndBlog_Id(userId, blogId)
+                        .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
         earningEventService.deleteLikeEvent(blogLike.getId());
+
+        blogLikeRepository.deleteByUserAndBlog(userId, blogId);
+
     }
 
     @Override

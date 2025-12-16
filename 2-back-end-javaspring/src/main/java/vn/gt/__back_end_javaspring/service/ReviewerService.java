@@ -18,7 +18,7 @@ public interface ReviewerService {
     ReviewerResponse extendReviewer(String reviewerId, ReviewerCreateDTO reviewerCreateDTO);
     ReviewerResponse updateReviewer(String reviewerId, ReviewerUpdateDTO dto);
     List<ReviewerResponse> getReviewersFollowedByUser(String userId);
-
+    List<String> getAllReviewerIds();
 
     List<ReviewerResponse> getReviewersFollowedByUserOrderByFollowerCountDesc(String userId);
 

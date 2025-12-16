@@ -19,7 +19,6 @@ public interface BlogLikeRepository extends JpaRepository<BlogLike, String> {
 
     List<BlogLike> findByBlog_Id(String blogId);
 
-    BlogLike findBlogLikesByUser_IdAndBlog_Id(String userId, String blogId);
 
     @Modifying
     @Transactional

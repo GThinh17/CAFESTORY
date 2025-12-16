@@ -2,25 +2,31 @@ package vn.gt.__back_end_javaspring.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.EarningSummaryCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.EarningSummaryResponse;
+import vn.gt.__back_end_javaspring.DTO.WalletTransactionCreateDTO;
 import vn.gt.__back_end_javaspring.entity.*;
 import vn.gt.__back_end_javaspring.enums.EarningSummaryStatus;
+import vn.gt.__back_end_javaspring.enums.SourceType;
+import vn.gt.__back_end_javaspring.enums.TransactionType;
 import vn.gt.__back_end_javaspring.exception.ReviewerNotFound;
 import vn.gt.__back_end_javaspring.exception.UserNotFoundException;
 import vn.gt.__back_end_javaspring.mapper.EarningSummaryMapper;
-import vn.gt.__back_end_javaspring.repository.EarningSummaryRepository;
-import vn.gt.__back_end_javaspring.repository.FollowRuleRepository;
-import vn.gt.__back_end_javaspring.repository.ReviewerRepository;
-import vn.gt.__back_end_javaspring.repository.UserRepository;
+import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.EarningSummaryService;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
+import vn.gt.__back_end_javaspring.service.WalletService;
+import vn.gt.__back_end_javaspring.service.WalletTransactionService;
 
 import java.math.BigDecimal;
 import java.security.InvalidParameterException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -31,8 +37,10 @@ public class EarningSummaryServiceImpl implements EarningSummaryService {
     private final EarningSummaryMapper earningSummaryMapper;
     private final UserRepository userRepository;
     private final ReviewerService reviewerService;
-
-
+    private final EarningEventRepository earningEventRepository;
+    private final WalletService walletService;
+    private final WalletRepository walletRepository;
+    private final WalletTransactionService walletTransactionService;
     @Override
     public EarningSummaryResponse createSummary(EarningSummaryCreateDTO dto) {
         Reviewer reviewer = reviewerRepository.findById(dto.getReviewerId())
@@ -110,6 +118,70 @@ public class EarningSummaryServiceImpl implements EarningSummaryService {
     public List<EarningSummaryResponse> getSummaryByYear(Long year) {
         List<EarningSummary> earningSummaries = earningSummaryRepository.findAllByYear(year);
         return earningSummaryMapper.toResponseList(earningSummaries);
+    }
+
+    @Override
+    public void generateMonthlySummary(String reviewerId, Integer year, Integer month) {
+        if (earningSummaryRepository
+                .existsByReviewer_IdAndYearAndMonth(reviewerId, year, month)) {
+            throw new RuntimeException("EarningSummary already exists");
+        }
+
+        LocalDateTime start = LocalDate.of(year, month, 1).atStartOfDay();
+        LocalDateTime end = start.plusMonths(1);
+        System.out.println("Thoi gian bat dau : " + start);
+        System.out.println("Thoi gian ket thuc : " + end);
+
+
+        List<EarningEvent> earningEvents = earningEventRepository.findMonthlyEvents(reviewerId, start, end);
+        System.out.println("earningEvents size: " + earningEvents.size());
+
+        Reviewer reviewer = reviewerRepository.findById(reviewerId)
+                .orElseThrow(()-> new ReviewerNotFound("Reviewer not found"));
+
+        User user =reviewer.getUser();
+
+        Long totalLikesCount = earningEvents.stream()
+                .filter(e->e.getSourceType() == SourceType.LIKE)
+                .count();
+
+        Long totalCommentsCount = earningEvents.stream()
+                .filter(e-> e.getSourceType() == SourceType.COMMENT)
+                .count();
+        Long totalSharesCount = earningEvents.stream()
+                .filter(e->e.getSourceType()==SourceType.SHARE)
+                .count();
+
+        Long totalFollowerCount = user.getFollowerCount().longValue();
+
+        BigDecimal totalEarningAmount = BigDecimal.ZERO;
+
+        for(EarningEvent earningEvent : earningEvents) {
+            BigDecimal amount = earningEvent.getAmount();
+            totalEarningAmount = totalEarningAmount.add(amount);
+        }
+
+
+        EarningSummaryCreateDTO dto = new EarningSummaryCreateDTO();
+        dto.setReviewerId(reviewerId);
+        dto.setYear(year);
+        dto.setMonth(month);
+        dto.setTotalLikesCount(totalLikesCount);
+        dto.setTotalCommentsCount(totalCommentsCount);
+        dto.setTotalSharesCount(totalSharesCount);
+        dto.setTotalFollowerCount(totalFollowerCount);
+        dto.setTotalEarningAmount(totalEarningAmount);
+
+        EarningSummaryResponse saved = createSummary(dto);
+        updateStatusSummary(saved.getId(), EarningSummaryStatus.CLOSED.toString());
+
+        Wallet wallet = walletRepository.findWalletByUser_Id(user.getId());
+
+        WalletTransactionCreateDTO walletTransactionCreateDTO = new WalletTransactionCreateDTO();
+        walletTransactionCreateDTO.setWalletId(wallet.getId());
+        walletTransactionCreateDTO.setAmount(totalEarningAmount);
+        walletTransactionCreateDTO.setTransactionType(TransactionType.DEPOSIT);
+
     }
 
 

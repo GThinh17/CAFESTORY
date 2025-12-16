@@ -9,4 +9,5 @@ public interface EarningSummaryRepository extends JpaRepository<EarningSummary, 
     List<EarningSummary> findAllByReviewer_Id(String reviewerId);
     List<EarningSummary> findAllByMonth(Long month);
     List<EarningSummary> findAllByYear(Long year);
+    Boolean existsByReviewer_IdAndYearAndMonth(String reviewerId, Integer year, Integer month);
 }

@@ -123,6 +123,12 @@ public class ReviewerServiceImpl implements ReviewerService {
     }
 
     @Override
+    public List<String> getAllReviewerIds() {
+        List<Reviewer> reviewers = reviewerRepository.findAll();
+        return reviewers.stream().map(Reviewer::getId).collect(Collectors.toList());
+    }
+
+    @Override
     public List<ReviewerResponse> getReviewersFollowedByUserOrderByFollowerCountDesc(String userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));

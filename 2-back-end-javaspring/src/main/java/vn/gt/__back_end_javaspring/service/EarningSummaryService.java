@@ -13,4 +13,5 @@ public interface EarningSummaryService {
     EarningSummaryResponse getSummaryByEarningSummaryId(String earningSummaryId);
     List<EarningSummaryResponse> getSummaryByMonth(Long month);
     List<EarningSummaryResponse> getSummaryByYear(Long year);
+    void generateMonthlySummary(String reviewerId, Integer year, Integer month);
 }
