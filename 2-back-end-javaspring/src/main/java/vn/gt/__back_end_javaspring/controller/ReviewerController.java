@@ -94,18 +94,6 @@ public class ReviewerController {
         return ResponseEntity.ok(responses);
     }
 
-<<<<<<< HEAD
-    @GetMapping("/getUser")
-    public ResponseEntity<User> getUser(
-            @RequestParam String reviewerId
-    ) {
-        return ResponseEntity.ok(reviewerService.getUser(reviewerId));
-    }
-
-
-
-=======
->>>>>>> feature
     @GetMapping("/search")
     public ResponseEntity<?> SearchReviewerByLocation(@RequestParam("location") String param) {
         return ResponseEntity.ok().body(this.reviewerService.searchReviewerByLocation(param));

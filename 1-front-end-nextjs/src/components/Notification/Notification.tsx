@@ -1,6 +1,8 @@
 import Image from "next/image";
 import "../suggestions/suggestions.css";
-// Định nghĩa type cho 1 notification
+import { ApiNotification } from "./components/notification-modal";
+
+// UI type
 interface NotificationItemProps {
   avatar: string;
   username: string;
@@ -10,7 +12,7 @@ interface NotificationItemProps {
   thumbnail?: string;
 }
 
-// Component riêng cho 1 notification item
+// Item component (GIỮ NGUYÊN)
 const NotificationItem: React.FC<NotificationItemProps> = ({
   avatar,
   username,
@@ -20,7 +22,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   thumbnail,
 }) => {
   return (
-    <div className="notification-item flex items-start gap-4 p-3 rounded-xl ">
+    <div className="notification-item flex items-start gap-4 p-3 rounded-xl">
       <Image
         src={avatar}
         alt="Avatar"
@@ -48,79 +50,32 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   );
 };
 
-const Notifications: React.FC = () => {
-  // List data
-  const notifications: NotificationItemProps[] = [
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgnferdy.lindsgn",
-      actionText: "replied to your comment on ferdy.lindsgn's post:",
-      tag: "@thnhvu_2 🔥🔥",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-  ];
+// ---------------- LIST ----------------
+const Notifications = ({
+  notifications,
+  loading,
+}: {
+  notifications: ApiNotification[];
+  loading: boolean;
+}) => {
+  if (loading) {
+    return <div className="p-4 text-center">Đang tải...</div>;
+  }
+
+  if (notifications.length === 0) {
+    return <div className="p-4 text-center">Không có thông báo</div>;
+  }
+
+  const mapped = [...notifications].reverse().map((n) => ({
+    username: n.senderName ?? "Thông báo: ",
+    actionText: n.title,
+    date: new Date(n.createdAt).toLocaleDateString("vi-VN"),
+  }));
 
   return (
-    <div className="w-full max-w-md p-4 space-y-4 ">
+    <div className="w-full max-w-md p-4 space-y-4">
       <div className="space-y-4">
-        {notifications.map((item, index) => (
+        {mapped.map((item, index) => (
           <NotificationItem key={index} {...item} />
         ))}
       </div>

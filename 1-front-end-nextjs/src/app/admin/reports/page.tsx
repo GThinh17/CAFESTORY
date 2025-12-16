@@ -53,8 +53,6 @@ export default function DashboardPage() {
         Overview & management
       </p>
 
-=======
->>>>>>> feature
       <ReportsTable reports={reportsData} />
     </div>
   );

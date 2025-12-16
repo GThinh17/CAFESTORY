@@ -49,8 +49,6 @@ export default function DashboardPage() {
         Overview & management
       </p>
 
-=======
->>>>>>> feature
       <UsersTable users={userData} />
     </div>
   );

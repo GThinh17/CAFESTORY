@@ -12,5 +12,5 @@ public enum NotificationType {
     PAGE_NEW_POST,
     WALLET_TRANSACTION,
     BADGE_GRANTED,
-
+    NEW_FOLLOWER
 }

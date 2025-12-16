@@ -3,23 +3,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-<<<<<<< HEAD
-=======
-"use client";
-
-import { useEffect, useState } from "react";
-import axios from "axios";
-
->>>>>>> feature
 import Stats from "@/components/admin/Stats";
 import { MyBarChart } from "@/components/admin/barChart";
 import { ChartAreaStacked } from "@/components/admin/Chart";
 import { useAuth } from "@/context/AuthContext";
-<<<<<<< HEAD
-=======
-import { ChartAreaStacked } from "@/components/admin/Chart";
-import { useAuth } from "@/context/AuthContext";
->>>>>>> feature
 
 export default function DashboardPage() {
   const [userCount, setUserCount] = useState(0);
@@ -132,11 +119,6 @@ export default function DashboardPage() {
 
       <ChartAreaStacked />
       <MyBarChart />
-<<<<<<< HEAD
-=======
-      <ChartAreaStacked />
-      <MyBarChart />
->>>>>>> feature
     </div>
   );
 }
