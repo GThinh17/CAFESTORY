@@ -166,7 +166,7 @@ export function TaggedPostList() {
   return (
     <>
       <div className={styles.list}>
-        {posts.map((p) => (
+        {[...posts].reverse().map((p) => (
           <ProfilePostTag
             key={p.shareId}
             image={p.mediaUrls[0]}

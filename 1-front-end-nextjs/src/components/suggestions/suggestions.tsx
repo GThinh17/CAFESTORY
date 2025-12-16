@@ -59,7 +59,6 @@ export function Suggestions() {
     fetchTopFollowers();
   }, [token, userLocation]);
 
-  console.log(users);
   function goToCafe(cafeOwnerId: string) {
     router.push(`/cafe/${cafeOwnerId}`);
   }
@@ -67,9 +66,9 @@ export function Suggestions() {
   return (
     <div className="suggestions">
       <div className="suggestions-header">
-        <span className="title">Suggestions for you</span>
-        <a href="#" className="see-all">
-          See All
+        <span className="title">Quán cà phê đề xuất</span>
+        <a href="/explore/page" className="see-all">
+          Xem thêm
         </a>
       </div>
 
@@ -93,12 +92,12 @@ export function Suggestions() {
               <div>
                 <div className="username-suggest">{user.pageName}</div>
                 <div className="followers">
-                  {user.followingCount ?? 0} followers
+                  {user.followingCount ?? 0} Người theo dõi
                 </div>
               </div>
             </div>
 
-            <button className="follow-btn">Follow</button>
+            <button className="follow-btn">Theo dõi</button>
           </li>
         ))}
       </ul>

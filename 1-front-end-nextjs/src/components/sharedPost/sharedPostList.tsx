@@ -163,7 +163,7 @@ export function SharedPostList() {
   return (
     <>
       <div className={styles.list}>
-        {posts.map((p) => (
+        {posts.reverse().map((p) => (
           <SharedPost
             key={p.shareId}
             image={p.mediaUrls[0]}

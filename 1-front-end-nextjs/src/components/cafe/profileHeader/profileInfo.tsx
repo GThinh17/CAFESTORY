@@ -116,7 +116,7 @@ export function ProfileInfo() {
       }
       isMe={pageId === cfOwnerId}
       description={me?.description}
-      address={me?.slug}
+      address={me?.location}
       backgroundImg={me?.coverUrl}
     />
   );

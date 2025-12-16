@@ -1,0 +1,296 @@
+.suggestions {
+  width: 470px;
+  font-family: Arial, sans-serif;
+  color: var(--foreground);
+  background-color: var(--background);
+  margin-top: 10px;
+}
+
+.suggestions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.suggestions-header .title {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.suggestions-header .see-all {
+  font-size: 13px;
+  font-weight: bold;
+  text-decoration: none;
+  color: var(--muted-foreground);
+}
+
+.user-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.user-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.avatar-suggest {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.username-suggest {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.followers {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.follow-btn {
+  background: none;
+  border: none;
+  color: #0095f6;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.notification-item {
+  padding: 10px;
+  min-width: 730px;
+}
+
+.top-input {
+  padding: 8px 12px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  gap: 5px;
+}
+
+.top-input input {
+  padding: 10px;
+  width: 50%;
+  align-self: center;
+  margin-bottom: 40px;
+}
+
+.big-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.explore-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--muted-foreground);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+/* hover */
+.explore-btn:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+/* active (đang ở route đó) */
+.explore-btn.active {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+/* click effect */
+.explore-btn:active {
+  transform: scale(0.95);
+}
+
+.not-found {
+  padding: 12px;
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 14px;
+}
+
+.suggestions {
+  width: 80%;
+  font-family: Arial, sans-serif;
+  color: var(--foreground);
+  background-color: var(--background);
+}
+
+/* ===== SEARCH + TAB ===== */
+.topInput {
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topInput input {
+  flex: 1;
+  padding: 10px;
+}
+
+/* ===== TAB BUTTON ===== */
+.exploreBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--muted-foreground);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exploreBtn:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.active {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+/* ===== LIST ===== */
+.suggestionsHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-weight: 600;
+}
+
+.userList {
+  list-style: none;
+  padding: 0;
+}
+
+.userItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.userLeft {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.username {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.followers {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.followBtn {
+  border: none;
+  background: none;
+  color: #0095f6;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.notFound {
+  text-align: center;
+  padding: 12px;
+  color: var(--muted-foreground);
+}
+
+.Btn {
+  color: var(--color-muted-foreground);
+  font-size: 15px;
+}
+
+.active1 {
+  color: var(--color-foreground);
+  font-weight: 900px;
+}
+
+.ButtonTabsCon {
+  display: flex;
+  gap: 5px;
+}
+
+.ButtonTabsCon {
+  display: flex;
+  align-items: center;
+}
+
+.Btn {
+  position: relative;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* 👇 đường gạch dọc */
+.withDivider::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background-color: #ddd;
+}
+
+.active1 {
+  color: var(--color-primary);
+  font-weight: 600;
+}

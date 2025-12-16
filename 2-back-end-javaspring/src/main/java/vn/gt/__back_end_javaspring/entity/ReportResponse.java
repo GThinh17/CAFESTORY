@@ -22,4 +22,6 @@ public class ReportResponse {
     private String problem;
 
     private String description;
+
+    private String feedback;
 }

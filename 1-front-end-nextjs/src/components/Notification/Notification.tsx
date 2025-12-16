@@ -1,26 +1,30 @@
 import Image from "next/image";
 import "../suggestions/suggestions.css";
-// Định nghĩa type cho 1 notification
+import { ApiNotification } from "./components/notification-modal";
+import { useRouter } from "next/navigation";
+import { ApiNotification } from "../NotificationModal";
+
+// UI type
 interface NotificationItemProps {
   avatar: string;
   username: string;
   actionText: string;
-  tag?: string;
   date: string;
-  thumbnail?: string;
+  onClick?: () => void;
 }
 
-// Component riêng cho 1 notification item
 const NotificationItem: React.FC<NotificationItemProps> = ({
   avatar,
   username,
   actionText,
-  tag,
   date,
-  thumbnail,
+  onClick,
 }) => {
   return (
-    <div className="notification-item flex items-start gap-4 p-3 rounded-xl ">
+    <div
+      className="notification-item flex items-start gap-4 p-3 rounded-xl cursor-pointer hover:bg-muted transition"
+      onClick={onClick}
+    >
       <Image
         src={avatar}
         alt="Avatar"
@@ -30,100 +34,53 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       />
 
       <div className="flex-1 text-sm leading-snug">
-        <span className="font-medium">{username}</span> {actionText}{" "}
-        {tag && <span className="text-primary">{tag}</span>}
+        <span className="font-medium">{actionText}</span>
         <div className="text-muted-foreground">{date}</div>
       </div>
-
-      {thumbnail && (
-        <Image
-          src={thumbnail}
-          alt="Post thumbnail"
-          width={48}
-          height={48}
-          className="rounded-md object-cover h-8 w-12"
-        />
-      )}
     </div>
   );
 };
 
-const Notifications: React.FC = () => {
-  // List data
-  const notifications: NotificationItemProps[] = [
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgnferdy.lindsgn",
-      actionText: "replied to your comment on ferdy.lindsgn's post:",
-      tag: "@thnhvu_2 🔥🔥",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-    {
-      avatar: "/testPost.jpg",
-      username: "ferdy.lindsgn",
-      actionText: "liked your comment: 😍😍😍",
-      date: "Oct 09",
-      thumbnail: "/testPost.jpg",
-    },
-  ];
+// ---------------- LIST ----------------
+const Notifications = ({
+  notifications,
+  loading,
+}: {
+  notifications: ApiNotification[];
+  loading: boolean;
+}) => {
+  const router = useRouter();
+
+  if (loading) {
+    return <div className="p-4 text-center">Đang tải...</div>;
+  }
+
+  if (notifications.length === 0) {
+    return <div className="p-4 text-center">Không có thông báo</div>;
+  }
 
   return (
-    <div className="w-full max-w-md p-4 space-y-4 ">
-      <div className="space-y-4">
-        {notifications.map((item, index) => (
-          <NotificationItem key={index} {...item} />
+    <div className="w-full max-w-md p-4 space-y-4">
+      {notifications
+        .slice()
+
+        .map((n) => (
+          <NotificationItem
+            key={n.id}
+            avatar={
+              n.senderAvatar ||
+              "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
+            }
+            username={n.senderName || "System"}
+            actionText={n.body || n.title || ""}
+            date={new Date(n.createdAt).toLocaleString("vi-VN")}
+            onClick={() => {
+              if (n.senderId) {
+                router.push(`/profile/${n.senderId}`);
+              }
+            }}
+          />
         ))}
-      </div>
     </div>
   );
 };

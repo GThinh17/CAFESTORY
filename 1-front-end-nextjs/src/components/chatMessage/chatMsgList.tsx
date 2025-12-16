@@ -37,13 +37,19 @@ export const ChatMessageList: React.FC = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMessages(res.data);
-      } catch (err) {
-        console.error(err);
+      } catch (err: any) {
+        console.error("Error sending message:", err);
+        if (err.response) console.error("Server response:", err.response.data);
       }
     };
 
     // gọi ngay khi mở
-    fetchMessages();
+
+    const interval = setInterval(() => {
+      fetchMessages();
+    }, 1000);
+    return () => clearInterval(interval);
+    // cleanup khi component unmount
   }, [chatId, token]);
 
   // ---- FORMAT TIME ----
@@ -67,7 +73,7 @@ export const ChatMessageList: React.FC = () => {
       const res = await axios.post(
         "http://localhost:8081/message/send",
         {
-          senderId: user?.id, // ⬅ so sánh user.id trong useAuth
+          senderId: user?.id,
           chatId: chatId,
           content: text,
         },
@@ -80,46 +86,51 @@ export const ChatMessageList: React.FC = () => {
 
       // push message vào UI
       setMessages((prev) => [...prev, newMsg]);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error sending message:", err);
+      if (err.response) console.error("Server response:", err.response.data);
     }
   };
 
   return (
-    <>{chatId&&(
-      <div className="Con">
-        <div className="messageCon">
-          <MessageList>
-            {messages.length > 0 && (
-              <div className="sep">
-                <MessageSeparator content={formatTime(messages[0].timestamp)} />
-              </div>
-            )}
+    <>
+      {chatId && (
+        <div className="Con">
+          <div className="messageCon">
+            <MessageList>
+              {messages.length > 0 && (
+                <div className="sep">
+                  <MessageSeparator
+                    content={formatTime(messages[0].timestamp)}
+                  />
+                </div>
+              )}
 
-            {messages.map((msg, i) => (
-              <Message
-                key={i}
-                model={{
-                  message: msg.content,
-                  sentTime: formatTime(msg.timestamp),
-                  direction:
-                    msg.senderId === user?.id ? "outgoing" : "incoming",
-                  position: "single",
-                }}
-              />
-            ))}
-          </MessageList>
-        </div>
+              {messages.map((msg, i) => (
+                <Message
+                  key={i}
+                  model={{
+                    message: msg.content,
+                    sentTime: formatTime(msg.timestamp),
+                    direction:
+                      msg.senderId === user?.id ? "outgoing" : "incoming",
+                    position: "single",
+                  }}
+                />
+              ))}
+            </MessageList>
+          </div>
 
-        {/* INPUT SEND */}
-        <div className="inputCon">
-          <MessageInput
-            placeholder="Type a message..."
-            attachButton={false}
-            onSend={handleSend}
-          />
+          {/* INPUT SEND */}
+          <div className="inputCon">
+            <MessageInput
+              placeholder="Type a message..."
+              attachButton={false}
+              onSend={handleSend}
+            />
+          </div>
         </div>
-      </div>)}
+      )}
     </>
   );
 };

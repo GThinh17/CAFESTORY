@@ -1,10 +1,10 @@
 "use client";
+"use client";
 import Stats from "@/components/admin/Stats";
 import UsersTable from "@/components/admin/UsersTable";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
 
 interface User {
   id: string;
@@ -49,10 +49,6 @@ export default function DashboardPage() {
         Overview & management
       </p>
 
-<<<<<<< HEAD
-
-=======
->>>>>>> feature
       <UsersTable users={userData} />
     </div>
   );

@@ -291,7 +291,7 @@ export function PostModal({ open, onClose, post, blogId }: PostModalProps) {
                   onClick={() => getComments(nextCursor!)}
                   className="LoadMoreBtn"
                 >
-                  Load more...
+                  Tải thêm...
                 </button>
               )}
             </div>
@@ -299,7 +299,7 @@ export function PostModal({ open, onClose, post, blogId }: PostModalProps) {
             {/* Comment input */}
             <div className="PostInput">
               <input
-                placeholder="Add a comment..."
+                placeholder="Thêm bình luận..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 onKeyDown={(e) => {
@@ -309,7 +309,7 @@ export function PostModal({ open, onClose, post, blogId }: PostModalProps) {
                   }
                 }}
               />
-              <button onClick={handleComment}>Send</button>
+              <button onClick={handleComment}>Gửi</button>
             </div>
           </div>
         </div>

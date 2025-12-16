@@ -200,7 +200,9 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(comment);
 
         //Xoa earningEvent
+        if(reviewerService.isReviewerByUserId(blog.getUser().getId())){
         earningEventService.deleteCommentEvent(commentId);
+        }
 
         return commentMapper.toResponse(commentRepository.save(comment));
     }

@@ -45,22 +45,14 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
     );
   }, [pages, query]);
 
-<<<<<<< HEAD
-  // --- HÀM XEM CHI TIẾT PAGE THEO ID ---
-  const handlePageById = async (pageId: string) => {
-    try {
-      const res = await axios.get(`http://localhost:8080/api/pages/${pageId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-=======
   const handlePageById = async (pageId: string) => {
     try {
       const res = await axios.get(`http://localhost:8080/api/pages/${pageId}`, {
         headers: { Authorization: `Bearer ${token}` },
->>>>>>> feature
       });
 
+      setSelectedPage(res.data.data);
+      setOpen(true);
       setSelectedPage(res.data.data);
       setOpen(true);
     } catch (error) {
@@ -76,6 +68,7 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
 
       <CardContent>
         {/* TOOLBAR */}
+        {/* TOOLBAR */}
         <div className={styles.toolbar}>
           <Input
             placeholder="Search pages..."
@@ -85,6 +78,7 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
           />
         </div>
 
+        {/* TABLE */}
         {/* TABLE */}
         <Table>
           <TableHeader>
@@ -111,10 +105,6 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
                 {/* NAME */}
                 <TableCell className={styles.nameCell}>{p.pageName}</TableCell>
 
-<<<<<<< HEAD
-                <TableCell>{p.followingCount}</TableCell>
-                <TableCell>{p.postCount}</TableCell>
-=======
                 {/* EMAIL */}
                 <TableCell className={styles.colEmail}>
                   {p.contactEmail}
@@ -124,7 +114,6 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
                 <TableCell className={styles.colEmail}>
                   {p.followingCount}
                 </TableCell>
->>>>>>> feature
 
                 {/* POSTS */}
                 <TableCell className={styles.colEmail}>{p.postCount}</TableCell>
@@ -143,6 +132,13 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* MODAL */}
+      <PageDetailModal
+        open={open}
+        page={selectedPage}
+        onClose={() => setOpen(false)}
+      />
 
       {/* MODAL */}
       <PageDetailModal

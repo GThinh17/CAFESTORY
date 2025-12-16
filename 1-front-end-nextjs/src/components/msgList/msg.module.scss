@@ -9,10 +9,10 @@
   overflow-y: scroll;
 }
 
-
 .list {
   display: flex;
   flex-direction: column;
+  padding: 5px;
 }
 
 .item {
@@ -62,10 +62,10 @@
   font-weight: 500;
   color: var(--foreground);
   text-overflow: ellipsis;
-   overflow: hidden;
-   white-space: nowrap;
-   @include small {
-   width: 110px;
+  overflow: hidden;
+  white-space: nowrap;
+  @include small {
+    width: 110px;
   }
 }
 
@@ -83,6 +83,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   @include small {
-   width: 110px;
+    width: 110px;
   }
 }

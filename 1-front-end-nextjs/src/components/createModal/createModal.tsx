@@ -43,6 +43,7 @@ export function CreateModal({
   const [isPostCf, setIsPostCf] = useState(false);
   const [pageId, setPageId] = useState("");
   const [cfOwnerId, setCfOwnerId] = useState("");
+
   const { user, token } = useAuth();
   const username = user?.username;
   const avatar = user?.avatar;
@@ -114,6 +115,7 @@ export function CreateModal({
         console.log("fetch status fail");
       }
     };
+
     fetchStatus();
   }, [open, user?.id, token]);
 
@@ -135,6 +137,7 @@ export function CreateModal({
         console.log("fetch status fail");
       }
     };
+
     fetchCfOwnerId();
   }, [open, user?.id, token]);
 
@@ -143,6 +146,7 @@ export function CreateModal({
     const fetchPage = async () => {
       try {
         if (!cfOwnerId) return;
+
         const res = await axios.get(
           `http://localhost:8080/api/pages/cafe-owner/${cfOwnerId}`,
           {
@@ -157,6 +161,7 @@ export function CreateModal({
         console.log("fetch status fail");
       }
     };
+
     fetchPage();
   }, [cfOwnerId, token]);
 
@@ -167,10 +172,12 @@ export function CreateModal({
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", "upload");
+
       const res = await axios.post(
         "https://api.cloudinary.com/v1_1/dwdjlzl9h/image/upload",
         formData
       );
+
       if (res.data.secure_url) urls.push(res.data.secure_url);
     }
     return urls;
@@ -181,40 +188,42 @@ export function CreateModal({
     try {
       setLoadingUp(true);
 
-      // 1️⃣ Upload ảnh
       let mediaUrls: string[] = [];
       if (mediaFiles.length > 0) mediaUrls = await uploadImages();
 
-      // 2️⃣ Tạo blog
+      const payload: any = {
+        caption,
+        mediaUrls,
+        visibility,
+        allowComment,
+        isPin,
+        locationId,
+      };
+
+      if (isPostCf) {
+        payload.pageId = pageId;
+        payload.userId = userId; // bài viết của quán
+      } else {
+        payload.userId = userId; // bài viết cá nhân
+      }
+
       const blogRes = await axios.post(
         "http://localhost:8080/api/blogs",
-        {
-          caption: caption,
-          mediaUrls: mediaUrls,
-          visibility: "PUBLIC",
-          allowComment: true,
-          isPin: false,
-          locationId: null,
-          userId: userId,
-        },
+        payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       const blogId = blogRes.data.data.id;
 
-      // 3️⃣ Tag collaborators
       await Promise.all(
         selectedCollaborators.map((collab) => {
           const payload: any = {
-            userId, // người tạo post
+            userId,
             blogIdTag: blogId,
           };
 
-          if (collab.type === "USER") {
-            payload.userIdTag = collab.userId;
-          } else if (collab.type === "PAGE") {
-            payload.pageTagId = collab.userId;
-          }
+          if (collab.type === "USER") payload.userIdTag = collab.userId;
+          if (collab.type === "PAGE") payload.pageTagId = collab.userId;
 
           return axios.post("http://localhost:8080/api/tags", payload, {
             headers: { Authorization: `Bearer ${token}` },
@@ -222,7 +231,6 @@ export function CreateModal({
         })
       );
 
-      // Reset
       setcaption("");
       setMediaFiles([]);
       setSelectedCollaborators([]);
@@ -239,11 +247,10 @@ export function CreateModal({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="modalContainer">
         <DialogHeader className="modalHeader">
-          <DialogTitle>Create new post</DialogTitle>
+          <DialogTitle>Tạo bài viết mới</DialogTitle>
         </DialogHeader>
 
         <div className="modalBody">
-          {/* LEFT */}
           <div className="createLeft">
             {!isImg && (
               <input
@@ -258,6 +265,7 @@ export function CreateModal({
                 }}
               />
             )}
+
             {isImg && (
               <div className="imgGrid">
                 {mediaFiles.map((file, idx) => (
@@ -272,47 +280,38 @@ export function CreateModal({
             )}
           </div>
 
-          {/* RIGHT */}
           <div className="createRight">
-            {/* Avatar + tên */}
             <div className="userRow">
               <img src={avatar} alt="avatar" className="userAvatar" />
               <span className="username">{username}</span>
             </div>
 
-            {/* Caption */}
             <textarea
-              placeholder="Write a caption..."
+              placeholder="Thêm mô tả..."
               className="captionInput"
               maxLength={2200}
               value={caption}
               onChange={(e) => setcaption(e.target.value)}
             />
 
-            {/* Add Location */}
-            <div className="optionRow">
-              <span>Add location</span>
-            </div>
-
-            {/* Add collaborators */}
             <div
               className="optionRow"
               onClick={() => setShowCollaboratorsModal(true)}
             >
-              <span>Add collaborators</span>
+              <span>Thêm người sáng tạo</span>
               <input
                 type="text"
                 readOnly
                 value={selectedCollaborators.map((c) => c.userName).join(", ")}
-                placeholder="Select collaborators..."
+                placeholder="Chọn một người..."
               />
             </div>
 
-            {/* Switch: Đăng bài cho cafe */}
             {isCfOwner && (
               <div className="optionRow switchRow">
-                <Label htmlFor="post-cf">Cafe Post</Label>
+                <Label htmlFor="post-cf">Bài viết của quán cà phê</Label>
                 <Switch
+                  className="Switch"
                   id="post-cf"
                   checked={isPostCf}
                   onCheckedChange={(v) => setIsPostCf(v)}
@@ -320,39 +319,31 @@ export function CreateModal({
               </div>
             )}
 
-            {/* Share button */}
             <div className="btnShare">
-              <Button
-                disabled={loadingUp}
-                onClick={handleSharePost}
-                className="btnShare"
-              >
-                {loadingUp ? "Sharing..." : "Share"}
+              <Button disabled={loadingUp} onClick={handleSharePost}>
+                {loadingUp ? "Đăng tải..." : "Chia sẻ"}
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Collaborators Modal */}
         {showCollaboratorsModal && (
           <Dialog
             open={showCollaboratorsModal}
             onOpenChange={() => setShowCollaboratorsModal(false)}
-            className="collaboratorsDialog"
           >
             <DialogContent className="collaboratorsDialogContent">
-              <DialogHeader className="collaboratorsDialogHeader">
-                <DialogTitle className="collaboratorsDialogTitle">
-                  Select collaborators
-                </DialogTitle>
+              <DialogHeader>
+                <DialogTitle>Chọn người sáng tạo</DialogTitle>
               </DialogHeader>
+
               <div className="collaboratorsList">
                 {reviewers.map((r) => (
                   <div
                     key={r.id}
                     className="collaboratorRow"
                     onClick={() => {
-                      if (r.type !== "USER") return; // Chỉ cho phép chọn USER
+                      if (r.type !== "USER") return;
                       setSelectedCollaborators((prev) =>
                         prev.find((c) => c.id === r.id)
                           ? prev.filter((c) => c.id !== r.id)
@@ -360,7 +351,14 @@ export function CreateModal({
                       );
                     }}
                   >
-                    <img src={r.userAvatarUrl} width={30} height={30} />
+                    <img
+                      src={
+                        r.userAvatarUrl ||
+                        "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
+                      }
+                      width={30}
+                      height={30}
+                    />
                     <span>{r.userName}</span>
                     {selectedCollaborators.find((c) => c.id === r.id) && (
                       <Check />

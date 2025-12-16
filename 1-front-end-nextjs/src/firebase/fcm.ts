@@ -5,7 +5,8 @@ import axios from "axios";
 import { app } from "../api/config/firebase";
 import axiosClient from "@/api/config/axiosClient";
 
-const VAPID_KEY = "BBOLiiSbwHTslCoEGOpbj-KVkF6e_RWg4ZoefUDDvbeu3Sm5g2NMvrDo4S89NfYcGgNahoRkdt3ARiSGypEXgnQ";
+const VAPID_KEY =
+  "BBOLiiSbwHTslCoEGOpbj-KVkF6e_RWg4ZoefUDDvbeu3Sm5g2NMvrDo4S89NfYcGgNahoRkdt3ARiSGypEXgnQ";
 
 export const registerFcm = async (userId: string) => {
   if (typeof window === "undefined" || !("Notification" in window)) return;
@@ -20,7 +21,7 @@ export const registerFcm = async (userId: string) => {
     const messaging = getMessaging(app);
 
     const token = await getToken(messaging, {
-      vapidKey: VAPID_KEY
+      vapidKey: VAPID_KEY,
     });
 
     if (!token) {
@@ -34,12 +35,12 @@ export const registerFcm = async (userId: string) => {
       "/fcm/token",
       {
         fcmToken: token,
-        platform: "WEB"
+        platform: "WEB",
       },
       {
         headers: {
-          "X-USER-ID": userId
-        }
+          "X-USER-ID": userId,
+        },
       }
     );
 
@@ -49,11 +50,10 @@ export const registerFcm = async (userId: string) => {
   }
 };
 
-
 export const removeFcmToken = (fcmToken: string) => {
   return axiosClient.delete("/fcm/token", {
     data: {
-      fcmToken: fcmToken
-    }
+      fcmToken: fcmToken,
+    },
   });
 };

@@ -264,3 +264,10 @@
   display: flex;
   gap: 5px;
 }
+
+.tabDivider {
+  margin: 0 8px;
+  color: #aaa;
+  font-weight: 500;
+  user-select: none;
+}

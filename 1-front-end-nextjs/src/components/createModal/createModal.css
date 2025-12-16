@@ -139,3 +139,11 @@
 .collaboratorRow .lucide-check {
   color: #4caf50;
 }
+
+.optionRow input {
+  padding-left: 5px;
+}
+
+.Switch {
+  margin-top: 5px;
+}

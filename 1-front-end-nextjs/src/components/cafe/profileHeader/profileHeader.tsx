@@ -169,11 +169,11 @@ export default function ProfileHeader({
                   </button>
                 )}
               </div>
-
-              <p className={styles.subInfo}>
-                {posts} post • {followingCount} followers
-              </p>
-
+              <Link href={`/cafe/${realPageId}/followSearching`}>
+                <p className={styles.subInfo}>
+                  {posts} Bài viết • {followingCount} Người theo dõi
+                </p>
+              </Link>
               {address && (
                 <Link
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -192,7 +192,7 @@ export default function ProfileHeader({
               )}
               {userId && cfOwnerName && (
                 <Link href={`/profile/${userId}`} className={styles.owner}>
-                  Owner: {cfOwnerName}
+                  Chủ quán: {cfOwnerName}
                 </Link>
               )}
             </div>
@@ -206,7 +206,7 @@ export default function ProfileHeader({
                   className={`${styles.btn} ${styles.msgBtn}`}
                   onClick={localFollow ? handleUnfollow : handleFollow}
                 >
-                  {localFollow ? "Following" : "Follow"}
+                  {localFollow ? "Đang theo dõi" : "Theo dõi"}
                 </button>
 
                 <button

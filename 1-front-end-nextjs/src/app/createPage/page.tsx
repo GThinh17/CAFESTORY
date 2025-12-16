@@ -24,7 +24,7 @@ export default function CreatePage() {
 
   const [form, setForm] = useState({
     pageName: "",
-    slug: "",
+    location: "",
     description: "",
     contactEmail: "",
     contactPhone: "",
@@ -96,7 +96,7 @@ export default function CreatePage() {
       const body = {
         cafeOwnerId: cfOwnerId,
         pageName: form.pageName,
-        slug: form.slug, // lấy giá trị user nhập
+        location: form.location, // lấy giá trị user nhập
         description: form.description,
         contactPhone: form.contactPhone,
         contactEmail: form.contactEmail,
@@ -156,7 +156,7 @@ export default function CreatePage() {
           <div className={styles.field}>
             <Label>Address</Label>
             <Input
-              name="slug"
+              name="location"
               type="text"
               placeholder=""
               onChange={handleChange}
