@@ -7,17 +7,13 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const processReports = async (req, res) => {
     try {
         const token = req.token;
-<<<<<<< HEAD
         console.log(">>>>>>>>>>>>>>TOKEN<<<<<<<<<<", token);
-=======
->>>>>>> 2422a0eb409408b2b4af3f4acc769483694311ad
         const { reports, thread_id } = req.body;
 
         if (!thread_id) return res.status(400).json({ error: "Missing thread_id" });
         if (!Array.isArray(reports)) return res.status(400).json({ error: "reports must be an array" });
 
         const assistantId = process.env.OPENAI_REPORT_ASSISTANT_ID;
-<<<<<<< HEAD
         console.log("🔥 BODY RECEIVED:", req.body);
         // =======================================
         // 🔥 1) Build enrichedReports FIRST
@@ -87,15 +83,6 @@ const processReports = async (req, res) => {
         // =======================================
         // 🔥 3) Run assistant
         // =======================================
-=======
-
-        // Send reports to AI
-        await openai.beta.threads.messages.create(thread_id, {
-            role: "user",
-            content: `Dưới đây là danh sách Report cần phân tích, hãy trả về JSON thuần không chứa text bao ngoài.\n${JSON.stringify(reports)}`
-        });
-
->>>>>>> 2422a0eb409408b2b4af3f4acc769483694311ad
         const run = await openai.beta.threads.runs.createAndPoll(thread_id, {
             assistant_id: assistantId,
         });
@@ -103,13 +90,9 @@ const processReports = async (req, res) => {
         const messages = await openai.beta.threads.messages.list(run.thread_id);
         const resultJSON = messages.data[0]?.content?.[0]?.text?.value || "";
 
-<<<<<<< HEAD
         // =======================================
         // 🔥 4) Parse JSON từ Assistant
         // =======================================
-=======
-        // Assistant must return valid JSON
->>>>>>> 2422a0eb409408b2b4af3f4acc769483694311ad
         let decisions;
         try {
             decisions = JSON.parse(resultJSON);
@@ -118,18 +101,14 @@ const processReports = async (req, res) => {
             return res.status(500).json({ error: "AI returned invalid JSON", raw: resultJSON });
         }
 
-<<<<<<< HEAD
         // =======================================
         // 🔥 5) Apply AI decisions bằng Patch API
         // =======================================
-=======
->>>>>>> 2422a0eb409408b2b4af3f4acc769483694311ad
         let success = [];
         let failed = [];
 
         for (const d of decisions) {
             try {
-<<<<<<< HEAD
                 console.log(">>>>>>>>>>>>>>>>>>ID <<<<<<<<<<", d.reportId)
                 const response = await axios.patch(
                     `http://localhost:8080/api/report/${d.reportId}`,
@@ -150,30 +129,6 @@ const processReports = async (req, res) => {
             }
         }
 
-=======
-                console.log(d);
-                const response = await axios.patch(`http://localhost:8080/api/report/${d.reportId}`, {
-                    feedback: d.Feedback,
-                    isFlagged: d.isFlagged,
-                    isDeleted: d.isDeleted,
-                    isBanned: d.isBanned
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-
-
-                success.push({ id: d.reportId, status: response.status });
-            } catch (err) {
-                failed.push({
-                    id: d.reportId,
-                    error: err.message
-                });
-            }
-        }
-        // console.log(success);
->>>>>>> 2422a0eb409408b2b4af3f4acc769483694311ad
         return res.json({
             status: "DONE",
             processed: decisions.length,

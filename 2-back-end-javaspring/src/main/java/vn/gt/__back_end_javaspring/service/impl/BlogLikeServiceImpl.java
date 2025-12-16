@@ -120,8 +120,12 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         // Xoa EarningEvent
         BlogLike blogLike = blogLikeRepository.findByUser_IdAndBlog_Id(userId, blogId)
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
-        earningEventService.deleteLikeEvent(blogLike.getId());
 
+        if(reviewerService.isReviewerByUserId(userId)){
+            earningEventService.deleteLikeEvent(blogLike.getId());
+
+        }
+        
         blogLikeRepository.deleteByUserAndBlog(userId, blogId);
 
     }

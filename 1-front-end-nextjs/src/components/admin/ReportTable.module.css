@@ -97,3 +97,38 @@
     max-width: 100%;
   }
 }
+
+.tableCellBreak {
+  white-space: pre-wrap; /* giữ xuống dòng, khoảng trắng */
+  word-break: break-word; /* xuống dòng nếu từ quá dài */
+  max-width: 200px; /* giới hạn chiều ngang cell */
+}
+
+/* Nhóm nút filter */
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Style chung cho từng nút */
+.filterBtn {
+  padding: 6px 14px; /* 👈 gọn, admin-style */
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  height: 36px;
+  min-width: 100px;
+  transition: all 0.2s ease;
+}
+
+/* Hover nhẹ */
+.filterBtn:hover {
+  transform: translateY(-1px);
+}
+
+/* Nút active (variant default) */
+.filterBtn[data-state="active"],
+.filterBtn.bg-primary {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}

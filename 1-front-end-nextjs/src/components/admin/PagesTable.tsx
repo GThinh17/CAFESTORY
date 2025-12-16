@@ -88,11 +88,6 @@ export default function PagesTable({ pages = [] }: { pages: Page[] }) {
               <TableHead className={styles.colEmail}>Page email</TableHead>
               <TableHead className={styles.colStatus}>Followers</TableHead>
               <TableHead className={styles.colRole}>Post Count</TableHead>
-              <TableHead className={styles.colProfile}>Avatar</TableHead>
-              <TableHead className={styles.colName}>Name</TableHead>
-              <TableHead className={styles.colEmail}>Page email</TableHead>
-              <TableHead className={styles.colStatus}>Followers</TableHead>
-              <TableHead className={styles.colRole}>Post Count</TableHead>
               <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>

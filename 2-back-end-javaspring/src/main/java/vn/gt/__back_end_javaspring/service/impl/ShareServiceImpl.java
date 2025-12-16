@@ -133,7 +133,10 @@ public class ShareServiceImpl implements ShareService {
             throw new UserNotFoundException("You are not allowed to delete this share");
         }
 
-        earningEventService.deleteShareEvent(share.getId());
+        if(reviewerService.isReviewerByUserId(userId)){
+            earningEventService.deleteShareEvent(share.getId());
+
+        }
 
         share.setIsDeleted(true);
         shareRepository.save(share);
