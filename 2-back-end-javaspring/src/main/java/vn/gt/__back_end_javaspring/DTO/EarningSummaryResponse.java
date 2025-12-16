@@ -11,7 +11,6 @@ import vn.gt.__back_end_javaspring.enums.EarningSummaryStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

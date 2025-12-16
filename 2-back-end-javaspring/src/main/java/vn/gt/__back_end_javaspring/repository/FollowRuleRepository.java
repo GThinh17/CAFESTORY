@@ -9,13 +9,12 @@ import java.util.Optional;
 
 public interface FollowRuleRepository extends JpaRepository<FollowRule, String> {
 
-    @Query("""
-        SELECT r FROM FollowRule r
-        WHERE r.isActive = true
-          AND :followCount >= r.minFollow
-          AND (r.maxFollow IS NULL OR :followCount <= r.maxFollow)
-    """)
-    Optional<FollowRule> findMatchingRule(
-            @Param("followCount") Long followCount);
+  @Query("""
+          SELECT r FROM FollowRule r
+          WHERE r.isActive = true
+            AND :followCount >= r.minFollow
+            AND (r.maxFollow IS NULL OR :followCount <= r.maxFollow)
+      """)
+  Optional<FollowRule> findMatchingRule(
+      @Param("followCount") Long followCount);
 }
-

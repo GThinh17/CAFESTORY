@@ -2,6 +2,7 @@ package vn.gt.__back_end_javaspring.controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.StripeObject;
 import com.stripe.model.Transfer;
 import com.stripe.net.Webhook;
 import com.google.gson.JsonObject;
@@ -27,6 +29,7 @@ import vn.gt.__back_end_javaspring.entity.*;
 import vn.gt.__back_end_javaspring.enums.PaymentStatus;
 import vn.gt.__back_end_javaspring.enums.ProductionType;
 import vn.gt.__back_end_javaspring.enums.RoleType;
+import vn.gt.__back_end_javaspring.enums.TransactionStatus;
 import vn.gt.__back_end_javaspring.repository.RoleRepository;
 import vn.gt.__back_end_javaspring.repository.UserRepository;
 import vn.gt.__back_end_javaspring.repository.UserRoleRepository;
@@ -46,21 +49,43 @@ public class StripeWebhookController {
     private final RoleRepository roleRepository;
     private final UserRoleService userRoleService;
     private final CafeOwnerService cafeOwnerService;
+    private final WalletTransactionService walletTransactionService;
+    private final PayOutService payOutService;
 
     @Value("${stripe.endPointSecret.key}")
     private String endpointSecret;
-    private PayOutService payOutService;
     private final PaymentService paymentService;
 
     @Transactional
-    public void handleTransferSuccess(Transfer transfer) {
+    public void handleTransferSuccess(Event event) {
 
-        String transferId = transfer.getId();
+        EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+
+        String rawJson = deserializer.getRawJson();
+
+        if (rawJson == null) {
+            throw new IllegalStateException("Stripe webhook rawJson is null");
+        }
+
+        JsonObject stripeObject = JsonParser
+                .parseString(rawJson)
+                .getAsJsonObject();
+        JsonObject metadata = stripeObject.getAsJsonObject("metadata");
+
+        String walletTransactionId = metadata
+                .get("walletTransactionId")
+                .getAsString();
+
+        String payOutId = metadata
+                .get("payOutId")
+                .getAsString();
+        this.walletTransactionService.updateStatuc(walletTransactionId, TransactionStatus.SUCCESS);
+        this.payOutService.UpdateStatusSuccess(payOutId, "SUCCESS");
 
     }
 
     @Transactional
-    public void handleTransferFailed(Transfer transfer) {
+    public void handleTransferFailed(Event event) {
 
     }
 
@@ -195,8 +220,7 @@ public class StripeWebhookController {
         }
 
         System.out.println(" Stripe Event Received: " + event.getType());
-        Transfer transfer = (Transfer) event.getDataObjectDeserializer()
-                .getObject().orElse(null);
+
         // Handle events from Stripe
         switch (event.getType()) {
             case "checkout.session.completed":
@@ -216,10 +240,10 @@ public class StripeWebhookController {
                 break;
 
             case "transfer.created":
-                handleTransferSuccess(transfer);
+                handleTransferSuccess(event);
 
             case "transfer.failed":
-                handleTransferFailed(transfer);
+                handleTransferFailed(event);
 
             default:
                 System.out.println("⚠ Unhandled event type: " + event.getType());

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "follow_rule")
-public class FollowRule { //Tao chay
+public class FollowRule { // Tao chay
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "follow_rule_id")

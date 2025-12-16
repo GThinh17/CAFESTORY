@@ -58,7 +58,7 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         BlogLike bloglike = blogLikeMapper.toModel(request);
         BlogLike saved = blogLikeRepository.save(bloglike);
 
-        //Notification
+        // Notification
         String senderId = user.getId();
         String receiverId = blog.getUser().getId();
 
@@ -73,14 +73,13 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         notificationRequestDTO.setBadgeId(null);
         notificationRequestDTO.setBody(user.getFullName() + " đã thích bài viết của bạn");
 
-        //Set EarningEvent
+        // Set EarningEvent
         String userReviewerId = blog.getUser().getId();
-        if(reviewerService.isReviewerByUserId(userReviewerId)){
+        if (reviewerService.isReviewerByUserId(userReviewerId)) {
             Reviewer reviewer = reviewerRepository.findByUser_Id(userReviewerId);
-            if(reviewer==null) {
+            if (reviewer == null) {
                 throw new ReviewerNotFound("Reviewer not found");
             }
-
 
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
 
@@ -94,9 +93,9 @@ public class BlogLikeServiceImpl implements BlogLikeService {
             earningEventCreateDTO.setPricingRuleId(pricingRule.getId());
             earningEventCreateDTO.setReviewerId(reviewer.getId());
             earningEventCreateDTO.setAmount(weight.multiply(unitPrice));
-            System.out.println("saved : "+ saved.getId());
+            System.out.println("saved : " + saved.getId());
             earningEventCreateDTO.setLikeId(saved.getId());
-            System.out.println("after saved : "+ earningEventCreateDTO.getLikeId());
+            System.out.println("after saved : " + earningEventCreateDTO.getLikeId());
 
             earningEventService.create(earningEventCreateDTO);
         }
@@ -115,17 +114,15 @@ public class BlogLikeServiceImpl implements BlogLikeService {
 
         blog.setLikesCount(blog.getLikesCount() - 1);
 
-
         if (!blogLikeRepository.existsByUser_IdAndBlog_id(userId, blogId)) {
             throw new LikeNotFoundException("Like not exists");
         }
 
-
         System.out.println("blogId: " + blogId + ", userId: " + userId);
 
-        //Xoa EarningEvent
+        // Xoa EarningEvent
         BlogLike blogLike = blogLikeRepository.findByUser_IdAndBlog_Id(userId, blogId)
-                        .orElseThrow(()-> new BlogNotFoundException("Blog not found!"));
+                .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
         earningEventService.deleteLikeEvent(blogLike.getId());
 
         blogLikeRepository.deleteByUserAndBlog(userId, blogId);

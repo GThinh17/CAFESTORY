@@ -13,9 +13,10 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.AccountLink;
 import com.stripe.model.Transfer;
-
+import com.stripe.net.RequestOptions;
 import com.stripe.param.AccountCreateParams;
 import com.stripe.param.AccountLinkCreateParams;
+import com.stripe.param.PayoutCreateParams;
 import com.stripe.param.TransferCreateParams;
 
 import jakarta.annotation.PostConstruct;
@@ -101,13 +102,20 @@ public class PayOutServiceImpl implements PayOutService {
          * ==============================
          */
         public Transfer transferToReviewer(
-                        Long amount,
-                        String reviewerStripeAccountId) throws StripeException {
+                        Long amountUsd,
+                        String reviewerStripeAccountId,
+                        String walletTransactionId,
+                        String payOutId) throws StripeException {
+
+                Stripe.apiKey = secretKey; // PLATFORM KEY
 
                 TransferCreateParams params = TransferCreateParams.builder()
-                                .setAmount(amount) // đơn vị CENT
+
+                                .setAmount(amountUsd) // USD → cents
                                 .setCurrency("usd")
                                 .setDestination(reviewerStripeAccountId)
+                                .putMetadata("walletTransactionId", walletTransactionId)
+                                .putMetadata("payOutId", payOutId) // acct_xxx
                                 .build();
 
                 return Transfer.create(params);
@@ -130,8 +138,7 @@ public class PayOutServiceImpl implements PayOutService {
                 WalletTransaction walletTransaction = this.walletTransactionService
                                 .findById(payOutDTO.getWalletTransactionId()).orElseThrow();
                 BigDecimal amount = payOutDTO.getAmount();
-                String currency = payOutDTO.getCurrency();
-                String status = payOutDTO.getStatus();
+                String currency = "USD";
                 String note = payOutDTO.getNote();
 
                 Payout payout = new Payout();
@@ -139,9 +146,9 @@ public class PayOutServiceImpl implements PayOutService {
                 payout.setWallet(wallet);
                 payout.setWalletTransaction(walletTransaction);
                 payout.setAmount(payOutDTO.getAmount());
-                payout.setCurrency(payOutDTO.getCurrency());
+                payout.setCurrency(currency);
                 payout.setStatus("PENDING"); // lúc mới tạo
-                payout.setNote(payOutDTO.getNote());
+                payout.setNote("Bắt đầu rút tiền");
                 payout.setRequestedAt(LocalDateTime.now());
                 this.payOutRepository.save(payout);
 
@@ -179,5 +186,19 @@ public class PayOutServiceImpl implements PayOutService {
 
                 return payOutMapper.toResponse(updated);
 
+        }
+
+        @Override
+        public com.stripe.model.Payout payoutToReviewer(Long amount, String connectedAccountId) throws StripeException {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'payoutToReviewer'");
+        }
+
+        @Override
+        public void UpdateStatusSuccess(String payString, String status) {
+                Payout payout = this.payOutRepository.findById(payString)
+                                .orElseThrow(() -> new RuntimeException("Loi ne ni"));
+                payout.setStatus(status);
+                this.payOutRepository.save(payout);
         }
 }

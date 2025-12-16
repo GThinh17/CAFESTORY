@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PayOutResponse {
+    private String id;
     private String reviewerId;
 
     private String walletId;

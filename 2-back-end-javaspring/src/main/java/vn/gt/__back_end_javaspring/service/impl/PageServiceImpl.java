@@ -113,8 +113,6 @@ public class PageServiceImpl implements PageService {
 
     }
 
-
-
     @Override
     public List<PageResponse> getAllPagesFollowedByUserSortedAsc(String userId) {
         userRepository.findById(userId)
@@ -130,7 +128,7 @@ public class PageServiceImpl implements PageService {
     @Override
     public String getCafeOwnerId(String pageId) {
         Page page = pageRepository.findById(pageId)
-                .orElseThrow(()-> new PageNotFoundException("Page not found"));
+                .orElseThrow(() -> new PageNotFoundException("Page not found"));
 
         return page.getCafeOwner().getId();
     }
