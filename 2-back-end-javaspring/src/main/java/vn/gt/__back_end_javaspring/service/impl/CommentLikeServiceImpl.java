@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.CommentLikeCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.CommentLikeResponse;
+import vn.gt.__back_end_javaspring.DTO.NotificationRequestDTO;
 import vn.gt.__back_end_javaspring.entity.Comment;
 import vn.gt.__back_end_javaspring.entity.CommentLike;
 import vn.gt.__back_end_javaspring.entity.User;
+import vn.gt.__back_end_javaspring.enums.NotificationType;
 import vn.gt.__back_end_javaspring.exception.CommentNotFoundException;
 import vn.gt.__back_end_javaspring.exception.LikeExist;
 import vn.gt.__back_end_javaspring.exception.LikeNotFoundException;
@@ -33,10 +35,14 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     private final CommentLikeMapper commentLikeMapper;
     private final NotificationService notificationService;
 
+
     @Override
     public CommentLikeResponse likeComment(CommentLikeCreateDTO dto) {
         boolean exists = commentLikeRepository.existsById(dto.getCommentId());
        if(commentLikeRepository.existsByUser_IdAndComment_Id(dto.getUserId(), dto.getCommentId())) {
+            throw new LikeExist("Like exists alreadyy");
+        }
+        if(commentLikeRepository.existsByUser_IdAndComment_Id(dto.getUserId(), dto.getCommentId())) {
             throw new LikeExist("Like exists alreadyy");
         }
         User user = userRepository.findById(dto.getUserId())
@@ -47,14 +53,31 @@ public class CommentLikeServiceImpl implements CommentLikeService {
         comment.setLikesCount(comment.getLikesCount() + 1);
        commentRepository.save(comment);
 
-        notificationService.notifyLikeComment(user, comment);
+        //Notification
+        String senderId =dto.getUserId();
+        String receiverId =comment.getUser().getId();
 
-        notificationService.notifyLikeComment(user, comment);
+        NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+        notificationRequestDTO.setSenderId(senderId);
+        notificationRequestDTO.setReceiverId(receiverId);
+        notificationRequestDTO.setType(NotificationType.LIKE_COMMENT);
+        notificationRequestDTO.setPostId(null);
+        notificationRequestDTO.setCommentId(comment.getId());
+        notificationRequestDTO.setPageId(null);
+        notificationRequestDTO.setWalletTransactionId(null);
+        notificationRequestDTO.setBadgeId(null);
+        notificationRequestDTO.setBody(user.getFullName() + " đã thích comment của bạn");
+
+        notificationService.sendNotification(receiverId, notificationRequestDTO);
+
+
+//        notificationService.sendNotification();
 
         CommentLike commentLike = commentLikeMapper.toModel(dto);
         commentLike.setComment(comment);
         commentLike.setUser(user);
         CommentLike saved =  commentLikeRepository.save(commentLike);
+
 
 
         return commentLikeMapper.toResponse(saved);

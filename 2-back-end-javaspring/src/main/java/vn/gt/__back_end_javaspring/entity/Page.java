@@ -17,7 +17,7 @@ public class Page {
         private String id;
 
         @OneToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "user_id")
+        @JoinColumn(name = "user_id") //Cafe owner id
         private CafeOwner cafeOwner;
 
         @NotBlank
@@ -66,6 +66,9 @@ public class Page {
 
         @Column(name = "is_deleted")
         private Boolean isDeleted;
+
+        @Column(name = "location")
+        private String location;
 
         @PrePersist
         private void prePersist() {

@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.gt.__back_end_javaspring.DTO.*;
 import vn.gt.__back_end_javaspring.entity.*;
+import vn.gt.__back_end_javaspring.enums.NotificationType;
 import vn.gt.__back_end_javaspring.exception.*;
 import vn.gt.__back_end_javaspring.mapper.CommentMapper;
 import vn.gt.__back_end_javaspring.repository.*;
 import vn.gt.__back_end_javaspring.service.CommentService;
 import vn.gt.__back_end_javaspring.service.EarningEventService;
+import vn.gt.__back_end_javaspring.service.NotificationService;
 import vn.gt.__back_end_javaspring.service.ReviewerService;
 import vn.gt.__back_end_javaspring.util.CursorUtil;
 
@@ -32,6 +34,7 @@ public class CommentServiceImpl implements CommentService {
     private final ReviewerRepository reviewerRepository;
     private final PricingRuleRepository pricingRuleRepository;
     private final EarningEventService earningEventService;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional(readOnly = true)
@@ -78,6 +81,7 @@ public class CommentServiceImpl implements CommentService {
         if (dto.getCommentParentId() != null && !dto.getCommentParentId().isBlank()) {
             parent = commentRepository.findById(dto.getCommentParentId())
                     .orElseThrow(() -> new CommentNotFoundException("Parent comment not found"));
+
         }
 
         CommentImage commentImage = null;
@@ -102,9 +106,41 @@ public class CommentServiceImpl implements CommentService {
         comment.setCommentImage(commentImage);
 
         Comment saved = commentRepository.save(comment);
+        NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+        String senderId = user.getId();
 
+        //Notification
+        if(parent == null) {
+            String receiverId = blog.getUser().getId();
+            notificationRequestDTO.setSenderId(senderId);
+            notificationRequestDTO.setReceiverId(receiverId);
+            notificationRequestDTO.setType(NotificationType.COMMENT_POST);
+            notificationRequestDTO.setPostId(blog.getId());
+            notificationRequestDTO.setCommentId(null);
+            notificationRequestDTO.setPageId(null);
+            notificationRequestDTO.setWalletTransactionId(null);
+            notificationRequestDTO.setBadgeId(null);
+            notificationRequestDTO.setBody(user.getFullName() + " đã bình luận bài viết của bạn");
+
+            notificationService.sendNotification(receiverId, notificationRequestDTO);
+        } else{
+            String receiverId = parent.getUser().getId();
+            notificationRequestDTO.setSenderId(senderId);
+            notificationRequestDTO.setReceiverId(receiverId);
+            notificationRequestDTO.setType(NotificationType.REPLY_COMMENT);
+            notificationRequestDTO.setPostId(null);
+            notificationRequestDTO.setCommentId(parent.getId());
+            notificationRequestDTO.setPageId(null);
+            notificationRequestDTO.setWalletTransactionId(null);
+            notificationRequestDTO.setBadgeId(null);
+            notificationRequestDTO.setBody(user.getFullName() + " đã trả lời bình luận của bạn");
+
+            notificationService.sendNotification(receiverId, notificationRequestDTO);
+
+        }
         // Giữ logic earning event như cũ
-           String userId = blog.getUser().getId();
+        String userId = blog.getUser().getId();
+
         if (reviewerService.isReviewerByUserId(userId)) {
             Reviewer reviewer = reviewerRepository.findByUser_Id(userId);
             if(reviewer==null) {

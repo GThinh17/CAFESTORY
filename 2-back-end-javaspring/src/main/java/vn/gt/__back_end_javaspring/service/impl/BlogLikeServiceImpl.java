@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.BlogLikeCreateDTO;
 import vn.gt.__back_end_javaspring.DTO.BlogLikeResponse;
 import vn.gt.__back_end_javaspring.DTO.EarningEventCreateDTO;
+import vn.gt.__back_end_javaspring.DTO.NotificationRequestDTO;
 import vn.gt.__back_end_javaspring.entity.*;
+import vn.gt.__back_end_javaspring.enums.NotificationType;
 import vn.gt.__back_end_javaspring.exception.*;
 import vn.gt.__back_end_javaspring.mapper.BlogLikeMapper;
 import vn.gt.__back_end_javaspring.repository.*;
@@ -49,8 +51,10 @@ public class BlogLikeServiceImpl implements BlogLikeService {
                 .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
 
         String useId = blog.getUser().getId();
-        if (reviewerService.isReviewerByUserId(userId)) {
+        if(reviewerService.isReviewerByUserId(userId)){
             Reviewer reviewer = reviewerRepository.findByUser_Id(userId);
+            System.out.println("Reviewer:  " + reviewer);
+
             PricingRule pricingRule = pricingRuleRepository.findFirstByIsActiveTrue();
 
             EarningEventCreateDTO earningEventCreateDTO = new EarningEventCreateDTO();
@@ -73,8 +77,21 @@ public class BlogLikeServiceImpl implements BlogLikeService {
         BlogLike bloglike = blogLikeMapper.toModel(request);
         BlogLike saved = blogLikeRepository.save(bloglike);
 
-        // Notification
-        notificationService.notifyLikePost(user, blog);
+        //Notification
+        String senderId = user.getId();
+        String receiverId = blog.getUser().getId();
+        NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+        notificationRequestDTO.setSenderId(senderId);
+        notificationRequestDTO.setReceiverId(receiverId);
+        notificationRequestDTO.setType(NotificationType.LIKE_POST);
+        notificationRequestDTO.setPostId(blogId);
+        notificationRequestDTO.setCommentId(null);
+        notificationRequestDTO.setPageId(null);
+        notificationRequestDTO.setWalletTransactionId(null);
+        notificationRequestDTO.setBadgeId(null);
+        notificationRequestDTO.setBody(user.getFullName() + " đã thích bài viết của bạn");
+
+        notificationService.sendNotification(receiverId, notificationRequestDTO);
 
         return blogLikeMapper.toResponse(saved);
 

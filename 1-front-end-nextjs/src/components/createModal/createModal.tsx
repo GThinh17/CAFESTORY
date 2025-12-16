@@ -14,6 +14,15 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Check } from "lucide-react";
+
+interface Reviewer {
+  id: string;
+  userId: string;
+  userName: string;
+  userAvatarUrl: string;
+  type: "USER" | "PAGE";
+}
 
 export function CreateModal({
   open,
@@ -38,116 +47,58 @@ export function CreateModal({
   const username = user?.username;
   const avatar = user?.avatar;
   const userId = user?.id;
-  const uploadImages = async () => {
-    const urls: string[] = [];
 
-    for (const file of mediaFiles) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "upload");
+  const [reviewers, setReviewers] = useState<Reviewer[]>([]);
+  const [selectedCollaborators, setSelectedCollaborators] = useState<
+    Reviewer[]
+  >([]);
+  const [showCollaboratorsModal, setShowCollaboratorsModal] = useState(false);
 
-      const res = await axios.post(
-        "https://api.cloudinary.com/v1_1/dwdjlzl9h/image/upload",
-        formData
-      );
+  const router = useRouter();
 
-      if (res.data.secure_url) {
-        urls.push(res.data.secure_url);
-      }
-    }
-
-    return urls;
-  };
-
-  const handlehandleCreateBlog = async () => {
-    try {
-      setLoadingUp(true);
-
-      // 1. Upload ảnh -> nhận URL
-      let mediaUrls: string[] = [];
-      if (mediaFiles.length > 0) {
-        mediaUrls = await uploadImages();
-      }
-
-      // 2. Gửi bài viết về API backend
-      const res = await axios.post(
-        "http://localhost:8080/api/blogs",
-        {
-          caption: caption,
-          mediaUrls: mediaUrls,
-          visibility: "PUBLIC",
-          allowComment: true,
-          isPin: false,
-          locationId: null,
-          userId: userId,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log("Created Blog:", res.data.data);
-
-      // Reset
-      setcaption("");
-      setMediaFiles([]);
-      onClose();
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setLoadingUp(false);
-    }
-  };
-
-  const handleCreateBlogCF = async () => {
-    try {
-      setLoadingUp(true);
-
-      // 1. Upload ảnh -> nhận URL
-      let mediaUrls: string[] = [];
-      if (mediaFiles.length > 0) {
-        mediaUrls = await uploadImages();
-      }
-
-      // 2. Gửi bài viết về API backend
-      const res = await axios.post(
-        "http://localhost:8080/api/blogs",
-        {
-          caption: caption,
-          mediaUrls: mediaUrls,
-          visibility: "PUBLIC",
-          allowComment: true,
-          isPin: false,
-          locationId: null,
-          userId: userId,
-          pageId: pageId,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log("Created Blog:", res.data.data);
-
-      // Reset
-      setcaption("");
-      setMediaFiles([]);
-      onClose();
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setLoadingUp(false);
-    }
-  };
-
+  // ------------------- FETCH FOLLOWINGS -------------------
   useEffect(() => {
-    const fetchstatus = async () => {
+    if (!user?.id || !token || !showCollaboratorsModal) return;
+
+    async function fetchFollowings() {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/follows/users/${userId}/following`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        const mappedData: Reviewer[] = res.data.data.map((item: any) => {
+          if (item.followType === "USER") {
+            return {
+              id: item.followId,
+              userId: item.userFollowedId,
+              userName: item.userFollowedFullName,
+              userAvatarUrl: item.userFollowedAvatar,
+              type: "USER",
+            };
+          }
+
+          return {
+            id: item.followId,
+            userId: item.pageFollowedId,
+            userName: item.pageFollowedName,
+            userAvatarUrl: item.pageFollowedAvatar,
+            type: "PAGE",
+          };
+        });
+
+        setReviewers(mappedData);
+      } catch (error) {
+        console.error("Fetch followings failed:", error);
+      }
+    }
+
+    fetchFollowings();
+  }, [user?.id, token, showCollaboratorsModal]);
+
+  // ------------------- FETCH CAFE OWNER STATUS -------------------
+  useEffect(() => {
+    const fetchStatus = async () => {
       try {
         const res = await axios.get(
           `http://localhost:8080/api/cafe-owners/user/${user?.id}/exists`,
@@ -158,16 +109,15 @@ export function CreateModal({
             },
           }
         );
-
         setIsCfOwner(res.data.data);
       } catch (err) {
         console.log("fetch status fail");
       }
     };
-
-    fetchstatus();
+    fetchStatus();
   }, [open, user?.id, token]);
 
+  // ------------------- FETCH CAFE OWNER ID -------------------
   useEffect(() => {
     const fetchCfOwnerId = async () => {
       try {
@@ -180,19 +130,19 @@ export function CreateModal({
             },
           }
         );
-
         setCfOwnerId(res.data.data.id);
       } catch (err) {
         console.log("fetch status fail");
       }
     };
-
     fetchCfOwnerId();
   }, [open, user?.id, token]);
 
+  // ------------------- FETCH PAGE ID -------------------
   useEffect(() => {
-    const fetchstatus = async () => {
+    const fetchPage = async () => {
       try {
+        if (!cfOwnerId) return;
         const res = await axios.get(
           `http://localhost:8080/api/pages/cafe-owner/${cfOwnerId}`,
           {
@@ -202,17 +152,89 @@ export function CreateModal({
             },
           }
         );
-        console.log(res);
         setPageId(res.data.data.pageId);
       } catch (err) {
         console.log("fetch status fail");
       }
     };
+    fetchPage();
+  }, [cfOwnerId, token]);
 
-    fetchstatus();
-  }, [open, user?.id, token]);
+  // ------------------- UPLOAD IMAGES -------------------
+  const uploadImages = async () => {
+    const urls: string[] = [];
+    for (const file of mediaFiles) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "upload");
+      const res = await axios.post(
+        "https://api.cloudinary.com/v1_1/dwdjlzl9h/image/upload",
+        formData
+      );
+      if (res.data.secure_url) urls.push(res.data.secure_url);
+    }
+    return urls;
+  };
 
-  const router = useRouter();
+  // ------------------- CREATE BLOG AND TAG COLLABORATORS -------------------
+  const handleSharePost = async () => {
+    try {
+      setLoadingUp(true);
+
+      // 1️⃣ Upload ảnh
+      let mediaUrls: string[] = [];
+      if (mediaFiles.length > 0) mediaUrls = await uploadImages();
+
+      // 2️⃣ Tạo blog
+      const blogRes = await axios.post(
+        "http://localhost:8080/api/blogs",
+        {
+          caption: caption,
+          mediaUrls: mediaUrls,
+          visibility: "PUBLIC",
+          allowComment: true,
+          isPin: false,
+          locationId: null,
+          userId: userId,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const blogId = blogRes.data.data.id;
+
+      // 3️⃣ Tag collaborators
+      await Promise.all(
+        selectedCollaborators.map((collab) => {
+          const payload: any = {
+            userId, // người tạo post
+            blogIdTag: blogId,
+          };
+
+          if (collab.type === "USER") {
+            payload.userIdTag = collab.userId;
+          } else if (collab.type === "PAGE") {
+            payload.pageTagId = collab.userId;
+          }
+
+          return axios.post("http://localhost:8080/api/tags", payload, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+        })
+      );
+
+      // Reset
+      setcaption("");
+      setMediaFiles([]);
+      setSelectedCollaborators([]);
+      setIsImg(false);
+      onClose();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingUp(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="modalContainer">
@@ -223,7 +245,6 @@ export function CreateModal({
         <div className="modalBody">
           {/* LEFT */}
           <div className="createLeft">
-            {/* ✅ Ảnh preview */}
             {!isImg && (
               <input
                 className="button11"
@@ -266,7 +287,7 @@ export function CreateModal({
               maxLength={2200}
               value={caption}
               onChange={(e) => setcaption(e.target.value)}
-            ></textarea>
+            />
 
             {/* Add Location */}
             <div className="optionRow">
@@ -274,9 +295,19 @@ export function CreateModal({
             </div>
 
             {/* Add collaborators */}
-            <div className="optionRow">
+            <div
+              className="optionRow"
+              onClick={() => setShowCollaboratorsModal(true)}
+            >
               <span>Add collaborators</span>
+              <input
+                type="text"
+                readOnly
+                value={selectedCollaborators.map((c) => c.userName).join(", ")}
+                placeholder="Select collaborators..."
+              />
             </div>
+
             {/* Switch: Đăng bài cho cafe */}
             {isCfOwner && (
               <div className="optionRow switchRow">
@@ -289,10 +320,11 @@ export function CreateModal({
               </div>
             )}
 
+            {/* Share button */}
             <div className="btnShare">
               <Button
                 disabled={loadingUp}
-                onClick={isPostCf ? handleCreateBlogCF : handlehandleCreateBlog}
+                onClick={handleSharePost}
                 className="btnShare"
               >
                 {loadingUp ? "Sharing..." : "Share"}
@@ -300,6 +332,45 @@ export function CreateModal({
             </div>
           </div>
         </div>
+
+        {/* Collaborators Modal */}
+        {showCollaboratorsModal && (
+          <Dialog
+            open={showCollaboratorsModal}
+            onOpenChange={() => setShowCollaboratorsModal(false)}
+            className="collaboratorsDialog"
+          >
+            <DialogContent className="collaboratorsDialogContent">
+              <DialogHeader className="collaboratorsDialogHeader">
+                <DialogTitle className="collaboratorsDialogTitle">
+                  Select collaborators
+                </DialogTitle>
+              </DialogHeader>
+              <div className="collaboratorsList">
+                {reviewers.map((r) => (
+                  <div
+                    key={r.id}
+                    className="collaboratorRow"
+                    onClick={() => {
+                      if (r.type !== "USER") return; // Chỉ cho phép chọn USER
+                      setSelectedCollaborators((prev) =>
+                        prev.find((c) => c.id === r.id)
+                          ? prev.filter((c) => c.id !== r.id)
+                          : [...prev, r]
+                      );
+                    }}
+                  >
+                    <img src={r.userAvatarUrl} width={30} height={30} />
+                    <span>{r.userName}</span>
+                    {selectedCollaborators.find((c) => c.id === r.id) && (
+                      <Check />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </DialogContent>
     </Dialog>
   );

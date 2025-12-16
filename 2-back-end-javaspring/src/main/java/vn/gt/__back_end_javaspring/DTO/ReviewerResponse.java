@@ -29,5 +29,5 @@ public class ReviewerResponse {
     private LocalDateTime expiredAt;
     private Boolean isDeleted;
     private String status;
+    private String location;
 }
-

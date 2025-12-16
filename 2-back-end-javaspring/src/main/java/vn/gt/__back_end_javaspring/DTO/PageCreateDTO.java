@@ -26,7 +26,7 @@ public class PageCreateDTO {
     private String avatarUrl;
     private String coverUrl;
     private String contactPhone;
-
+    private String location;
     @Email
     private String contactEmail;
 

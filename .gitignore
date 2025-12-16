@@ -9,5 +9,7 @@
 .vscode/
 2-back-end-javaspring/src/main/resources/application.properties/
 **/node_modules
-**/config/serviceAccountKey.json2-back-end-javaspring/
-target/
+**/config/serviceAccountKey.json
+2-back-end-javaspring/src/main/resources/firebase-service-account.json
+2-back-end-javaspring/src/main/resources/serviceAccountKey.json
+**/target/

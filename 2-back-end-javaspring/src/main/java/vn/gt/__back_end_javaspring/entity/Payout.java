@@ -24,6 +24,10 @@ public class Payout {
     @JoinColumn(name = "reviewer_id", nullable = false)
     private Reviewer reviewer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wallet_id", nullable = false)
+    private Wallet wallet;
+
     @Column(nullable = false)
     private BigDecimal amount;
 
@@ -43,11 +47,13 @@ public class Payout {
     private LocalDateTime paidAt;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id", unique = true)
-    private Payment payment;
-
-    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wallet_transaction_id", unique = true)
     private WalletTransaction walletTransaction;
+
+    @PrePersist
+    public void prePersist() {
+        paidAt = LocalDateTime.now();
+
+    }
 
 }

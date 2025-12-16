@@ -18,6 +18,7 @@ public class PageResponse {
     private String pageName;
     private Long postCount;
     private String slug;
+    private String location;
     private Long followersCount;
     private Long followingCount;
     private String description;

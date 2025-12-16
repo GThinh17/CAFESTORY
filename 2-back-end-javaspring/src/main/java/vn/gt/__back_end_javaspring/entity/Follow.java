@@ -41,7 +41,8 @@ public class Follow {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "followed_reviewer_id")
-    private Reviewer followedReviewer; //Thang duoc follow
+    private Reviewer followedReviewer;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "followed_page_id")

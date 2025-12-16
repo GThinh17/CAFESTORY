@@ -90,6 +90,7 @@ public class PageServiceImpl implements PageService {
     public List<PageResponse> getAllPagesOrderByFollowersDesc() {
         List<Page> pages = pageRepository.findAllOrderByFollowingCountDesc();
         if (pages.isEmpty()) {
+
             throw new PageNotFoundException("Page not found");
         }
 
@@ -108,6 +109,7 @@ public class PageServiceImpl implements PageService {
                 .filter(Objects::nonNull)
                 .map(pageMapper::toResponse)
                 .collect(Collectors.toList());
+
     }
 
     @Override
@@ -130,4 +132,10 @@ public class PageServiceImpl implements PageService {
         return page.getCafeOwner().getId();
     }
 
+    public List<PageResponse> searchPageByLocation(String location) {
+        List<Page> list = this.pageRepository.findByLocationContainingIgnoreCaseAndIsDeletedFalse(location);
+        List<PageResponse> listPage = pageMapper.toResponse(list);
+        return listPage;
+
+    }
 }

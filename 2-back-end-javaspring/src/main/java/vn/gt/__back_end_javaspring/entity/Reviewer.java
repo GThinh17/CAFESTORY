@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 public class Reviewer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "reviewer_id")
@@ -53,6 +52,9 @@ public class Reviewer {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ReviewerStatus status;
+
+    @Column(name = "location")
+    private String location;
 
     @PrePersist
     public void prePersist() {

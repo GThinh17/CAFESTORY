@@ -25,6 +25,7 @@ app.use((req, res, next) => {
 
 app.use("/chat", require("./controller/chats"));
 app.use("/message", require("./controller/messages"));
+app.use("/notification", require("./controller/notifications"));
 
 
 app.get("/", (req, res) => {

@@ -2,6 +2,7 @@ package vn.gt.__back_end_javaspring.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import vn.gt.__back_end_javaspring.enums.EarningSummaryStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -44,13 +45,14 @@ public class EarningSummary {
     private BigDecimal totalEarningAmount;
 
     @Column(name = "status", length = 50)
-    private String status; // OPEN / CLOSED / PAID...
+    private EarningSummaryStatus status; // OPEN / CLOSED / PAID...
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @PrePersist
     public void prePersist() {
+        status = EarningSummaryStatus.OPEN;
         createdAt = LocalDateTime.now();
     }
 }

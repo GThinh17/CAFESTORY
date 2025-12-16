@@ -12,4 +12,6 @@ public interface PageRepository extends JpaRepository<Page, String> {
 
     @Query("SELECT p FROM Page p ORDER BY p.followingCount DESC")
     List<Page> findAllOrderByFollowingCountDesc();
+
+    List<Page> findByLocationContainingIgnoreCaseAndIsDeletedFalse(String location);
 }
