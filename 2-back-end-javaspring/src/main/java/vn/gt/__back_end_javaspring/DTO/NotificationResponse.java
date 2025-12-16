@@ -1,4 +1,5 @@
 package vn.gt.__back_end_javaspring.DTO;
+
 import jakarta.persistence.*;
 import lombok.*;
 import vn.gt.__back_end_javaspring.entity.User;
@@ -16,6 +17,8 @@ public class NotificationResponse {
     private String receiverId;
 
     private String senderId;
+
+    private String senderAvatar;
 
     private String senderName;
 

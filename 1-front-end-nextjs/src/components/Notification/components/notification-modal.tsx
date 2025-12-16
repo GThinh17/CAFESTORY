@@ -17,8 +17,9 @@ export interface ApiNotification {
   receiverId: string;
   senderId: string | null;
   senderName: string | null;
+  senderAvatar?: string | null;
   type: string;
-  title: string;
+  title: string | null;
   body: string | null;
   read: boolean;
   createdAt: string;
@@ -41,13 +42,10 @@ export function NotificationModal({
     async function fetchNotifications() {
       try {
         setLoading(true);
-        const res = await axios.get(
-          "http://localhost:8080/api/notifications",
-          {
-            params: { userId: user?.id },
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const res = await axios.get("http://localhost:8080/api/notifications", {
+          params: { userId: user?.id },
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         setNotifications(res.data.data);
       } catch (err) {
@@ -68,10 +66,7 @@ export function NotificationModal({
         </DialogHeader>
 
         <div className="NoteCon">
-          <Notifications
-            notifications={notifications}
-            loading={loading}
-          />
+          <Notifications notifications={notifications} loading={loading} />
         </div>
       </DialogContent>
     </Dialog>

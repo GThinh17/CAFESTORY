@@ -1,28 +1,30 @@
 import Image from "next/image";
 import "../suggestions/suggestions.css";
 import { ApiNotification } from "./components/notification-modal";
+import { useRouter } from "next/navigation";
+import { ApiNotification } from "../NotificationModal";
 
 // UI type
 interface NotificationItemProps {
   avatar: string;
   username: string;
   actionText: string;
-  tag?: string;
   date: string;
-  thumbnail?: string;
+  onClick?: () => void;
 }
 
-// Item component (GIỮ NGUYÊN)
 const NotificationItem: React.FC<NotificationItemProps> = ({
   avatar,
   username,
   actionText,
-  tag,
   date,
-  thumbnail,
+  onClick,
 }) => {
   return (
-    <div className="notification-item flex items-start gap-4 p-3 rounded-xl">
+    <div
+      className="notification-item flex items-start gap-4 p-3 rounded-xl cursor-pointer hover:bg-muted transition"
+      onClick={onClick}
+    >
       <Image
         src={avatar}
         alt="Avatar"
@@ -32,20 +34,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       />
 
       <div className="flex-1 text-sm leading-snug">
-        <span className="font-medium">{username}</span> {actionText}{" "}
-        {tag && <span className="text-primary">{tag}</span>}
+        <span className="font-medium">{actionText}</span>
         <div className="text-muted-foreground">{date}</div>
       </div>
-
-      {thumbnail && (
-        <Image
-          src={thumbnail}
-          alt="Post thumbnail"
-          width={48}
-          height={48}
-          className="rounded-md object-cover h-8 w-12"
-        />
-      )}
     </div>
   );
 };
@@ -58,6 +49,8 @@ const Notifications = ({
   notifications: ApiNotification[];
   loading: boolean;
 }) => {
+  const router = useRouter();
+
   if (loading) {
     return <div className="p-4 text-center">Đang tải...</div>;
   }
@@ -66,19 +59,28 @@ const Notifications = ({
     return <div className="p-4 text-center">Không có thông báo</div>;
   }
 
-  const mapped = [...notifications].reverse().map((n) => ({
-    username: n.senderName ?? "Thông báo: ",
-    actionText: n.title,
-    date: new Date(n.createdAt).toLocaleDateString("vi-VN"),
-  }));
-
   return (
     <div className="w-full max-w-md p-4 space-y-4">
-      <div className="space-y-4">
-        {mapped.map((item, index) => (
-          <NotificationItem key={index} {...item} />
+      {notifications
+        .slice()
+
+        .map((n) => (
+          <NotificationItem
+            key={n.id}
+            avatar={
+              n.senderAvatar ||
+              "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
+            }
+            username={n.senderName || "System"}
+            actionText={n.body || n.title || ""}
+            date={new Date(n.createdAt).toLocaleString("vi-VN")}
+            onClick={() => {
+              if (n.senderId) {
+                router.push(`/profile/${n.senderId}`);
+              }
+            }}
+          />
         ))}
-      </div>
     </div>
   );
 };

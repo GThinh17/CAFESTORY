@@ -11,6 +11,7 @@ import vn.gt.__back_end_javaspring.enums.NotificationType;
 public class NotificationRequestDTO {
     private String senderId;
     private String receiverId;
+    
     @Enumerated(EnumType.STRING)
     private NotificationType type;
     private String postId;

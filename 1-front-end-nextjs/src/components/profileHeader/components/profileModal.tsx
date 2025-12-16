@@ -174,7 +174,7 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
     fetchPageInf();
   }, [open, cfOwnerId]);
 
-  const handleClick = (item: string) => {
+  const handleClick = async(item: string) => {
     if (item === "Đổi ảnh đại diện") {
       setOpenChangeAvt(true); // Mở modal Change Avatar
       return;
@@ -201,10 +201,23 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
     }
 
     if (item === "Đăng xuất") {
+      const fcmToken = localStorage.getItem("fcm_token");
+
+      if (fcmToken) {
+        try {
+          console.log("Goi ham")
+          await removeFcmToken(fcmToken);
+          
+          localStorage.removeItem("fcm_token");
+        } catch (e) {
+          console.error("Remove FCM token failed", e);
+        }
+      }
+
       logout();
       router.push("/");
       return;
-}
+    }
 
     onClose();
   };

@@ -35,6 +35,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void sendNotification(String receiverId, NotificationRequestDTO dto) {
         try{
             System.out.println("User device "+ receiverId);
+            this.createNotification(dto); //Create in database
 
             UserDevice userDevice = userDeviceRepository.findUserDeviceByUser_Id(receiverId);//Find token
 
@@ -68,7 +69,6 @@ public class NotificationServiceImpl implements NotificationService {
            var response = FirebaseMessaging.getInstance().sendAsync(message);
             System.out.println("Gui thong bao thanh cong " + response);
 
-            this.createNotification(dto); //Create in database
 
         }catch(Exception e){
             e.printStackTrace();
