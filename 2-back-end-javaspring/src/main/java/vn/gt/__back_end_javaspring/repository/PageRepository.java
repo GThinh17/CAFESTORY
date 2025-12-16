@@ -14,8 +14,4 @@ public interface PageRepository extends JpaRepository<Page, String> {
     List<Page> findAllOrderByFollowingCountDesc();
 
     List<Page> findByLocationContainingIgnoreCaseAndIsDeletedFalse(String location);
-<<<<<<< HEAD
-
-=======
->>>>>>> feature
 }
