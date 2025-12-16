@@ -202,4 +202,11 @@ public class ReviewerServiceImpl implements ReviewerService {
                 Reviewer saved = reviewerRepository.save(reviewer);
                 return reviewerMapper.toResponse(saved);
         }
+
+        public List<ReviewerResponse> searchReviewerByLocation(String location) {
+                List<Reviewer> list = this.reviewerRepository
+                                .findByLocationContainingIgnoreCaseAndIsDeletedFalse(location);
+                List<ReviewerResponse> listReviewer = reviewerMapper.toResponseList(list);
+                return listReviewer;
+        }
 }
