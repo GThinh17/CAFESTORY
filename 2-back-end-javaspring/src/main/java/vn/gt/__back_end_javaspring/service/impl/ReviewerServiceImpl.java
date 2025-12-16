@@ -198,6 +198,7 @@ public class ReviewerServiceImpl implements ReviewerService {
 
                 reviewer.setStatus(ReviewerStatus.ACTIVE);
                 reviewer.setUser(user);
+                reviewer.setLocation(user.getLocation());
 
                 Reviewer saved = reviewerRepository.save(reviewer);
                 return reviewerMapper.toResponse(saved);

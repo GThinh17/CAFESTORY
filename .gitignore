@@ -1,5 +1,4 @@
 # ignore vs code file
-<<<<<<<<< Temporary merge branch 1
 *.env
 =========
 .vscode/
@@ -12,4 +11,5 @@
 **/config/serviceAccountKey.json
 2-back-end-javaspring/src/main/resources/firebase-service-account.json
 2-back-end-javaspring/src/main/resources/serviceAccountKey.json
-**/target/
+**/config/serviceAccountKey.json
+target/
