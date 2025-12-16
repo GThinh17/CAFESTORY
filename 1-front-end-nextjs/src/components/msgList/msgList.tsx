@@ -6,7 +6,7 @@ import styles from "./msg.module.scss";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-
+import { useMessageSearch } from "@/context/MessageSearchContext";
 // ----- TYPES -----
 interface ChatApi {
   chatId: string;
@@ -39,12 +39,13 @@ export function MessageList() {
   const [messages, setMessages] = useState<MessageUI[]>([]);
   const { token, user } = useAuth();
   const router = useRouter();
+  const { keyword } = useMessageSearch();
   const currentUserId = user?.id;
 
   const handleClick = (chatId: string) => {
     router.push(`/messages/${chatId}`);
   };
-  
+
   useEffect(() => {
     const fetchChats = async () => {
       if (!token || !currentUserId) return;
@@ -81,7 +82,7 @@ export function MessageList() {
                     },
                   }
                 );
-        
+
                 userInfo = {
                   name: userRes.data.data.fullName || "Người dùng",
                   avatar:
@@ -115,17 +116,26 @@ export function MessageList() {
 
     fetchChats();
   }, [token, currentUserId]);
+  const filteredMessages = messages.filter(
+    (msg) =>
+      msg.name.toLowerCase().includes(keyword.toLowerCase()) ||
+      msg.lastMessage.toLowerCase().includes(keyword.toLowerCase())
+  );
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.list}>
-        {messages.map((msg) => (
+        {filteredMessages.map((msg) => (
           <MessageItem
             key={msg.id}
             {...msg}
             onClick={() => handleClick(msg.id)}
           />
         ))}
+
+        {filteredMessages.length === 0 && (
+          <div className={styles.empty}>Không tìm thấy</div>
+        )}
       </div>
     </div>
   );
@@ -136,8 +146,8 @@ function convertTimestamp(seconds: number): string {
   const now = Math.floor(Date.now() / 1000);
   const diff = now - seconds;
 
-  if (diff < 60) return `${diff}s ago`;
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return `${Math.floor(diff / 86400)}d ago`;
+  if (diff < 60) return `${diff}giây`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}phút`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}giờ`;
+  return `${Math.floor(diff / 86400)}ngày`;
 }

@@ -56,9 +56,9 @@ export function SuggestionsReviewers() {
   return (
     <div className="suggestions">
       <div className="suggestions-header">
-        <span className="title">Top Reviewers</span>
-        <a href="#" className="see-all">
-          See All
+        <span className="title">Reviewer hàng đầu</span>
+        <a href="/explore/page" className="see-all">
+          Xem thêm
         </a>
       </div>
 
@@ -84,11 +84,11 @@ export function SuggestionsReviewers() {
 
               <div>
                 <div className="username-suggest">{user.userName}</div>
-                <div className="followers">{user.followerCount} followers</div>
+                <div className="followers">{user.followerCount} Người theo dõi</div>
               </div>
             </div>
 
-            <button className="follow-btn">Follow</button>
+            <button className="follow-btn">Theo dõi</button>
           </li>
         ))}
       </ul>

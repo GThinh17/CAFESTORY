@@ -265,9 +265,32 @@
   gap: 5px;
 }
 
-.tabDivider {
-  margin: 0 8px;
-  color: #aaa;
+.ButtonTabsCon {
+  display: flex;
+  align-items: center;
+}
+
+.Btn {
+  position: relative;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
   font-weight: 500;
-  user-select: none;
+}
+
+/* 👇 đường gạch dọc */
+.withDivider::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background-color: #ddd;
+}
+
+.active1 {
+  color: var(--color-primary);
+  font-weight: 600;
 }

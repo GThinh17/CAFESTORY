@@ -96,7 +96,9 @@ export function SuggestionsExplore() {
       <div className={styles.topInput}>
         <Input
           placeholder={
-            activeTab === "page" ? "Search page cafe..." : "Search reviewers..."
+            activeTab === "page"
+              ? "Tìm quán cà phê..."
+              : "Tìm kiếm reviewers..."
           }
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -130,8 +132,9 @@ export function SuggestionsExplore() {
             setSearch("");
           }}
         >
-          Page
-        </button>{" "}
+          Quán cà phê
+        </button>
+        <span className={styles.tabDivider}>|</span>
         <button
           className={`${styles.Btn} ${
             activeTab === "reviewer" ? styles.active1 : ""
@@ -165,14 +168,14 @@ export function SuggestionsExplore() {
                     <div>
                       <div className="username-suggest">{page.pageName}</div>
                       <div className="followers">
-                        {page.followingCount ?? 0} followers
+                        {page.followingCount ?? 0} Người theo dõi
                       </div>
                     </div>
                   </div>
-                  <button className="follow-btn">Follow</button>
+                  <button className="follow-btn">Theo dõi</button>
                 </li>
               ))
-            : search.trim() && <li className="not-found">No page found</li>)}
+            : search.trim() && <li className="not-found">Không tìm thấy</li>)}
 
         {activeTab === "reviewer" &&
           (filteredReviewers.length > 0
@@ -196,16 +199,14 @@ export function SuggestionsExplore() {
                     <div>
                       <div className="username-suggest">{user.userName}</div>
                       <div className="followers">
-                        {user.followerCount} followers
+                        {user.followerCount} Người theo dõi
                       </div>
                     </div>
                   </div>
-                  <button className="follow-btn">Follow</button>
+                  <button className="follow-btn">Theo dõi</button>
                 </li>
               ))
-            : search.trim() && (
-                <li className="not-found">No reviewer found</li>
-              ))}
+            : search.trim() && <li className="not-found">Không tìm thấy</li>)}
       </ul>
     </div>
   );

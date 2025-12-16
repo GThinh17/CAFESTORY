@@ -31,12 +31,12 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
   const [isWallet, setIsWallet] = useState(false);
 
   const options: string[] = [
-    "Change Avatar",
-    "Edit profile",
-    "Cafe Page",
-    "Dashboard",
-    "Log Out",
-    "Cancel",
+    "Đổi ảnh đại diện",
+    "Cập nhật thông tin cá nhân",
+    "Quán cà phê",
+    "Thống kê",
+    "Đăng xuất",
+    "Hủy bỏ",
   ];
 
   useEffect(() => {
@@ -174,15 +174,15 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
   }, [open, cfOwnerId]);
 
   const handleClick = (item: string) => {
-    if (item === "Change Avatar") {
+    if (item === "Đổi ảnh đại diện") {
       setOpenChangeAvt(true); // Mở modal Change Avatar
       return;
     }
-    if (item === "Edit profile") {
+    if (item === "Cập nhật thông tin cá nhân") {
       setOpenEdit(true); // Mở modal Change Avatar
       return;
     }
-    if (item === "Cafe Page") {
+    if (item === "Quán cà phê") {
       if (page === null) {
         router.push("/createPage");
         return;
@@ -190,7 +190,7 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
       router.push(`/cafe/${cfOwnerId}`);
       return;
     }
-    if (item === "Dashboard") {
+    if (item === "Thống kê") {
       if (!isWallet) {
         createWalletAndGoReviewer();
         return;
@@ -199,7 +199,7 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
       return;
     }
 
-    if (item === "Log Out") {
+    if (item === "Đăng xuất") {
       logout();
       router.push("/");
       return;
@@ -209,10 +209,10 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
   };
 
   const filteredOptions = options.filter((item) => {
-    if (!isCfOwner && item === "Cafe Page") {
+    if (!isCfOwner && item === "Quán cà phê") {
       return false;
     }
-    if (!isReviewer && item === "Dashboard") {
+    if (!isReviewer && item === "Thống kê") {
       return false;
     }
     return true;
@@ -230,8 +230,9 @@ export function ProfileModal({ open, onClose }: ProfileModalProps) {
             {filteredOptions.map((item) => (
               <button
                 key={item}
-                className={`ProfileItem ${item === "Cancel" ? "CancelItem" : ""
-                  }`}
+                className={`ProfileItem ${
+                  item === "Hủy bỏ" ? "CancelItem" : ""
+                }`}
                 onClick={() => handleClick(item)}
               >
                 {item}

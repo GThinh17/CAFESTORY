@@ -198,7 +198,7 @@ export function Post({
         </div>
 
         {/* Likes */}
-        <div className="likes">{localLikes} likes</div>
+        <div className="likes">{localLikes} lượt thích</div>
 
         {/* Caption */}
         <div className="caption-container">
@@ -209,7 +209,7 @@ export function Post({
 
         {/* Comment input */}
         <div className="add-comment">
-          <Input placeholder="Add a comment" onClick={onOpenPost} />
+          <Input placeholder="Thêm bình luận" onClick={onOpenPost} />
         </div>
       </div>
       <ShareModal

@@ -202,14 +202,18 @@ export function ProfileHeader({
 
           <div className={styles.profileStats}>
             <span>
-              <strong>{posts}</strong> posts
+              <strong>{posts}</strong> bài viết
             </span>
-            <span>
-              <strong>{followers}</strong> followers
-            </span>
-            <span>
-              <strong>{followingCount}</strong> following
-            </span>
+            <Link href={`/profile/${profileUserId}/followSearching`}>
+              <span>
+                <strong>{followers}</strong> Người theo dõi
+              </span>
+            </Link>
+            <Link href={`/profile/${profileUserId}/followSearching`}>
+              <span>
+                <strong>{followingCount}</strong> Đang theo dõi
+              </span>
+            </Link>
           </div>
           <div className={styles.profileBio}>
             {cfOwnerId && pageName && (
@@ -224,14 +228,14 @@ export function ProfileHeader({
                 className={`${styles.btn} ${styles.followBtn}`}
                 onClick={localFollow ? handleUnfollow : handleFollow}
               >
-                {localFollow ? "Following" : "Follow"}
+                {localFollow ? "Đang theo dõi" : "Theo dõi"}
               </button>
 
               <button
                 className={`${styles.btn} ${styles.messageBtn}`}
                 onClick={handleCreateChat}
               >
-                Message
+                Nhắn tin
               </button>
               <button
                 onClick={() => setOpenReport(true)}

@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import styles from "./msgHeader.module.css";
 import { useEffect, useState } from "react";
+import { useMessageSearch } from "@/context/MessageSearchContext";
 
 export function MsgHeader() {
   const [username, setUsername] = useState("");
+  const { keyword, setKeyword } = useMessageSearch();
 
   useEffect(() => {
     const raw = localStorage.getItem("user");
@@ -42,6 +44,8 @@ export function MsgHeader() {
           type="text"
           placeholder="Search"
           className={styles.searchInput}
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
         />
       </div>
     </div>

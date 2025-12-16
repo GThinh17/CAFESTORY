@@ -239,7 +239,7 @@ export function CreateModal({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="modalContainer">
         <DialogHeader className="modalHeader">
-          <DialogTitle>Create new post</DialogTitle>
+          <DialogTitle>Tạo bài viết mới</DialogTitle>
         </DialogHeader>
 
         <div className="modalBody">
@@ -282,7 +282,7 @@ export function CreateModal({
 
             {/* Caption */}
             <textarea
-              placeholder="Write a caption..."
+              placeholder="Thêm mô tả..."
               className="captionInput"
               maxLength={2200}
               value={caption}
@@ -290,28 +290,25 @@ export function CreateModal({
             />
 
             {/* Add Location */}
-            <div className="optionRow">
-              <span>Add location</span>
-            </div>
 
             {/* Add collaborators */}
             <div
               className="optionRow"
               onClick={() => setShowCollaboratorsModal(true)}
             >
-              <span>Add collaborators</span>
+              <span>thêm người sáng tạo</span>
               <input
                 type="text"
                 readOnly
                 value={selectedCollaborators.map((c) => c.userName).join(", ")}
-                placeholder="Select collaborators..."
+                placeholder="Chọn một người..."
               />
             </div>
 
             {/* Switch: Đăng bài cho cafe */}
             {isCfOwner && (
               <div className="optionRow switchRow">
-                <Label htmlFor="post-cf">Cafe Post</Label>
+                <Label htmlFor="post-cf">Bài viết của quán cà phê</Label>
                 <Switch
                   id="post-cf"
                   checked={isPostCf}
@@ -327,7 +324,7 @@ export function CreateModal({
                 onClick={handleSharePost}
                 className="btnShare"
               >
-                {loadingUp ? "Sharing..." : "Share"}
+                {loadingUp ? "Đăng tải..." : "Chia sẻ"}
               </Button>
             </div>
           </div>
@@ -343,7 +340,7 @@ export function CreateModal({
             <DialogContent className="collaboratorsDialogContent">
               <DialogHeader className="collaboratorsDialogHeader">
                 <DialogTitle className="collaboratorsDialogTitle">
-                  Select collaborators
+                  Chọn người sáng tạo
                 </DialogTitle>
               </DialogHeader>
               <div className="collaboratorsList">

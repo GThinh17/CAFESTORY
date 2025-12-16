@@ -34,13 +34,13 @@ export function Sidebar() {
   const router = useRouter();
 
   const menuItems = [
-    { href: "/", icon: Home, label: "Home" },
-    { href: "/explore/page", icon: Search, label: "Search" },
-    { href: "/explore/post", icon: Compass, label: "Explore" },
-    { icon: MessageCircle, label: "Messages", modal: true },
-    { icon: Heart, label: "Notifications", modal: true },
-    { icon: PlusSquare, label: "Create", modal: true },
-    { icon: User, label: "Profile", modal: true },
+    { href: "/", icon: Home, label: "Trang chủ" },
+    { href: "/explore/page", icon: Search, label: "Tìm kiếm" },
+    { href: "/explore/post", icon: Compass, label: "Khám phá" },
+    { icon: MessageCircle, label: "Tin nhắn", modal: true },
+    { icon: Heart, label: "Thông báo", modal: true },
+    { icon: PlusSquare, label: "Sáng tạo", modal: true },
+    { icon: User, label: "Thông tin", modal: true },
   ];
 
   return (
@@ -66,7 +66,7 @@ export function Sidebar() {
                       e.preventDefault();
                       e.stopPropagation();
 
-                      if (label === "Notifications") {
+                      if (label === "Thông báo") {
                         if (!token) {
                           router.push("/login");
                           return;
@@ -75,7 +75,7 @@ export function Sidebar() {
                         return;
                       }
 
-                      if (label === "Create") {
+                      if (label === "Sáng tạo") {
                         if (!token) {
                           router.push("/login");
                           return;
@@ -84,7 +84,7 @@ export function Sidebar() {
                         return;
                       }
 
-                      if (label === "Profile") {
+                      if (label === "Thông tin") {
                         if (!token) {
                           router.push("/login");
                           return;
@@ -93,7 +93,7 @@ export function Sidebar() {
                         return;
                       }
 
-                      if (label === "Messages") {
+                      if (label === "Tin nhắn") {
                         if (!token) {
                           router.push("/login");
                           return;
@@ -126,11 +126,11 @@ export function Sidebar() {
           </li>
 
           <li>
-            <Menu size={22} /> <span className="sidebarComp">More</span>
+            <Menu size={22} /> <span className="sidebarComp">Thêm</span>
           </li>
           <li onClick={() => setIsOpenPricing(true)}>
             <Crown size={22} className="crown" />{" "}
-            <span className="sidebarComp">Go pro</span>
+            <span className="sidebarComp">Nâng cấp</span>
           </li>
         </div>
       </div>
