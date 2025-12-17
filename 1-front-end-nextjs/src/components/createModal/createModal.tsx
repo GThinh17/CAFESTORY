@@ -267,7 +267,15 @@ export function CreateModal({
             )}
 
             {isImg && (
-              <div className="imgGrid">
+              <div
+                className={`imgGrid ${
+                  mediaFiles.length === 1
+                    ? "oneImg"
+                    : mediaFiles.length === 2
+                    ? "twoImg"
+                    : "multiImg"
+                }`}
+              >
                 {mediaFiles.map((file, idx) => (
                   <div className="imgCon" key={idx}>
                     <img

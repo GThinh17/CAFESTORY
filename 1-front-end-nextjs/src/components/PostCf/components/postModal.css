@@ -184,3 +184,18 @@
 .MoreBtn:hover {
   color: #262626;
 }
+
+.PostLikeBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  margin-left: 5px;
+  cursor: pointer;
+  color: #555;
+}
+
+.PostLikeBtn.liked {
+  color: red;
+}

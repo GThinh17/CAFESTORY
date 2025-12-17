@@ -66,14 +66,14 @@ export function Suggestions() {
   return (
     <div className="suggestions">
       <div className="suggestions-header">
-        <span className="title">Quán cà phê đề xuất</span>
+        <span className="title">Quán cà phê gần bạn</span>
         <a href="/explore/page" className="see-all">
           Xem thêm
         </a>
       </div>
 
       <ul className="user-list">
-        {users.map((user: any) => (
+        {users.slice(0, 5).map((user: any) => (
           <li
             key={user.pageId}
             className="user-item"
@@ -88,7 +88,6 @@ export function Suggestions() {
                 height={30}
                 className="avatar-suggest"
               />
-
               <div>
                 <div className="username-suggest">{user.pageName}</div>
                 <div className="followers">

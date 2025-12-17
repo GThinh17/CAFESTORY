@@ -13,7 +13,7 @@ import { Heart, MoreHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
-
+import { useRouter } from "next/navigation";
 interface PostModalProps {
   open: boolean;
   onClose: () => void;
@@ -23,12 +23,80 @@ interface PostModalProps {
 
 export function PostModal({ open, onClose, post, blogId }: PostModalProps) {
   if (!post) return null;
-
+  const { user, token } = useAuth();
   const [comments, setComments] = useState<any[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [comment, setComment] = useState("");
+  const [likedPost, setLikedPost] = useState(false);
+  const [likeCountPost, setLikeCountPost] = useState(0);
+  const router = useRouter();
+  useEffect(() => {
+    if (!open || !user?.id || !token) return;
 
-  const { user, token } = useAuth();
+    const fetchPostLikes = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8080/api/blog-likes/by-blog",
+          {
+            params: { blogId },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const likes = res.data.data || [];
+
+        setLikeCountPost(likes.length);
+        setLikedPost(likes.some((l: any) => l.userId === user.id));
+      } catch (err) {
+        console.error("Fetch blog likes failed", err);
+      }
+    };
+
+    fetchPostLikes();
+  }, [open, blogId, user?.id, token]);
+
+  const handleLikePost = async () => {
+    if (!user?.id || !token) {
+      router.push("/login");
+      return;
+    }
+    try {
+      // -------- UNLIKE --------
+      if (likedPost) {
+        await axios.delete("http://localhost:8080/api/blog-likes", {
+          params: {
+            userId: user?.id,
+            blogId: blogId,
+          },
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setLikedPost(false);
+        setLikeCountPost((prev) => Math.max(prev - 1, 0));
+      }
+      // -------- LIKE --------
+      else {
+        await axios.post(
+          "http://localhost:8080/api/blog-likes",
+          {
+            userId: user.id,
+            blogId: blogId,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        setLikedPost(true);
+        setLikeCountPost((prev) => prev + 1);
+      }
+    } catch (err: any) {
+      console.error(
+        "Toggle blog like failed",
+        err.response?.data || err.message
+      );
+    }
+  };
 
   // ------------------------------------------
   // GET COMMENTS
@@ -142,7 +210,10 @@ export function PostModal({ open, onClose, post, blogId }: PostModalProps) {
   }, [comments]);
 
   const handleLikeComment = async (commentId: string) => {
-    if (!user?.id || !token) return;
+    if (!user?.id || !token) {
+      router.push("/login");
+      return;
+    }
 
     const current = comments.find((c) => c.commentId === commentId);
     if (!current) return;
@@ -245,11 +316,18 @@ export function PostModal({ open, onClose, post, blogId }: PostModalProps) {
                 <img className="Avatar" src={post.avatar} alt="avatar" />
                 <span className="UserName">{post.username} : </span>
               </div>
+
               <div className="status">
                 <span className="Author">{post.caption}</span>
               </div>
+            </div>{" "}
+            <div
+              className={`PostLikeBtn ${likedPost ? "liked" : ""}`}
+              onClick={handleLikePost}
+            >
+              <Heart size={20} fill={likedPost ? "currentColor" : "none"} />{" "}
+              <span>{likeCountPost}</span>
             </div>
-
             {/* Caption */}
             <div className="PostComments">
               {/* Render comments */}
@@ -295,7 +373,6 @@ export function PostModal({ open, onClose, post, blogId }: PostModalProps) {
                 </button>
               )}
             </div>
-
             {/* Comment input */}
             <div className="PostInput">
               <input

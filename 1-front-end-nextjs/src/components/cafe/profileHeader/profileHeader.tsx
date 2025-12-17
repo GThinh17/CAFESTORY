@@ -9,6 +9,7 @@ import { useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { ProfileModal } from "./components/profileModal";
 import { ReportModal } from "./components/reportModal/reportModal";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 interface ProfileHeaderProps {
   username: string;
@@ -51,7 +52,7 @@ export default function ProfileHeader({
   const [realPageId, setRealPageId] = useState();
   const { pageId } = useParams();
   const [openReport, setOpenReport] = useState(false);
-
+  const router = useRouter();
   useEffect(() => {
     const fetchPage = async () => {
       try {
@@ -89,6 +90,10 @@ export default function ProfileHeader({
   }, [realPageId]);
 
   async function handleFollow() {
+    if (!token) {
+      router.push("/login");
+      return;
+    }
     try {
       await axios.post(
         "http://localhost:8080/api/follows",

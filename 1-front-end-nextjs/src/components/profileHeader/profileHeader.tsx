@@ -73,6 +73,10 @@ export function ProfileHeader({
   }, [profileUserId]);
 
   async function handleFollow() {
+    if (!token) {
+      router.push("/login");
+      return;
+    }
     try {
       await axios.post(
         "http://localhost:8080/api/follows",
