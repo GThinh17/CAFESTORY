@@ -12,6 +12,7 @@ export function PostList() {
   const [cursor, setCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [filterCategory, setFilterCategory] = useState<string>("");
   const { user } = useAuth();
 
   const fetchPosts = async () => {
@@ -23,6 +24,7 @@ export function PostList() {
         params: {
           size: 10,
           cursor: cursor ?? undefined,
+          category: filterCategory || undefined,
         },
       });
 
@@ -76,10 +78,18 @@ export function PostList() {
     }
   };
 
-  // fetch lần đầu và lần scroll
+  // Reset and fetch when filter changes
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    setPosts([]);
+    setCursor(null);
+    setHasMore(true);
+  }, [filterCategory]);
+
+  useEffect(() => {
+    if (posts.length === 0 && hasMore) {
+        fetchPosts();
+    }
+  }, [posts.length, hasMore]);
 
   // infinite scroll
   useEffect(() => {
@@ -109,6 +119,22 @@ export function PostList() {
 
   return (
     <>
+      <div className="flex justify-between items-center mb-6 pl-2 pr-2">
+        <h2 className="text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Bản Tin Cafe</h2>
+        <select 
+          className="select"
+          value={filterCategory}
+          onChange={(e) => setFilterCategory(e.target.value)}
+        >
+          <option value="">Tất cả chủ đề</option>
+          <option value="study_cafe">📚 Học tập</option>
+          <option value="pet_cafe">🐶 Thú cưng</option>
+          <option value="garden_cafe">🌿 Sân vườn</option>
+          <option value="aesthetic_cafe">✨ Chụp ảnh</option>
+          <option value="food_cafe">🍕 Ăn uống</option>
+        </select>
+      </div>
+
       {posts.map((p) => (
         <Post
           key={p.id}
@@ -120,8 +146,9 @@ export function PostList() {
           likes={p.likeCount}
           caption={p.caption}
           time={new Date(p.createdAt).toLocaleString()}
+          category={p.category}
           onOpenPost={() => openPost(p)}
-          userIdLogin={user?.id}
+          userIdLogin={user?.id || ""}
           onLikeUpdate={(id) => {
             setPosts((prev) =>
               prev.map((pp) =>

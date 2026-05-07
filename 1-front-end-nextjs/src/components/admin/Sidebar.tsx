@@ -176,6 +176,13 @@ export default function Sidebar() {
             >
               Sản phẩm
             </Button>
+             <Button
+              onClick={() => router.push("/admin/review-queue")}
+              variant="ghost"
+              className={styles.navBtn}
+            >
+              Bài viết không đạt
+            </Button>
             <Button
               onClick={() => {
                 logout();

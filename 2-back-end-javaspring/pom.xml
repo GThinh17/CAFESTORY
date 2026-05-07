@@ -80,12 +80,7 @@
             <version>24.10.0</version>
         </dependency>
 
-        <!-- Firebase -->
-        <dependency>
-            <groupId>com.google.firebase</groupId>
-            <artifactId>firebase-admin</artifactId>
-            <version>9.2.0</version>
-        </dependency>
+
 
         <!-- DevTools -->
         <dependency>

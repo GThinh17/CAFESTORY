@@ -18,19 +18,22 @@ public interface BlogRepository extends JpaRepository<Blog, String> {
         SELECT b FROM Blog b
         WHERE b.visibility = vn.gt.__back_end_javaspring.enums.Visibility.PUBLIC
           AND (b.isDeleted IS NULL OR b.isDeleted = false)
+          AND (:category IS NULL OR :category = '' OR b.category = :category)
         ORDER BY b.createdAt DESC, b.id DESC
     """)
-    List<Blog> firstPage(Pageable pageable);
+    List<Blog> firstPage(@Param("category") String category, Pageable pageable);
 
     @Query("""
         SELECT b FROM Blog b
         WHERE b.visibility = vn.gt.__back_end_javaspring.enums.Visibility.PUBLIC
           AND (b.isDeleted IS NULL OR b.isDeleted = false)
+          AND (:category IS NULL OR :category = '' OR b.category = :category)
           AND (b.createdAt < :lastCreatedAt
                OR (b.createdAt = :lastCreatedAt AND b.id < :lastId))
         ORDER BY b.createdAt DESC, b.id DESC
     """)
     List<Blog> nextPage(
+            @Param("category") String category,
             @Param("lastCreatedAt") LocalDateTime lastCreatedAt,
             @Param("lastId") String lastId,
             Pageable pageable
@@ -74,5 +77,13 @@ public interface BlogRepository extends JpaRepository<Blog, String> {
     Page<Blog> findByUser_IdAndPage_IdNullOrderByCreatedAtDescIdDesc(String userId, Pageable pageable);
     Page<Blog> findByUser_IdAndPage_IdNotNullOrderByCreatedAtDescIdDesc(String userId, Pageable pageable);
     Page<Blog> findByPage_IdOrderByCreatedAtDescIdDesc(String pageId, Pageable pageable);
+
+    @Query("""
+        SELECT b FROM Blog b
+        WHERE b.moderationStatus = :status
+          AND (b.isDeleted IS NULL OR b.isDeleted = false)
+        ORDER BY b.createdAt DESC, b.id DESC
+    """)
+    Page<Blog> findByModerationStatus(@Param("status") String status, Pageable pageable);
 
 }

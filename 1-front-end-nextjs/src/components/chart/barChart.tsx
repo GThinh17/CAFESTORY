@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   BarChart,
@@ -9,51 +12,113 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+
+import { ChartTooltip } from "@/components/ui/chart";
+import { useAuth } from "@/context/AuthContext";
 import styles from "./barChart.module.css";
 
-import {
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-
-const chartData = [
-  { month: "January", desktop: 18622, mobile: 3380 },
-  { month: "February", desktop: 30523, mobile: 23200 },
-  { month: "March", desktop: 23799, mobile: 54120 },
-  { month: "April", desktop: 73222, mobile: 22190 },
-  { month: "May", desktop: 20659, mobile: 13044 },
-  { month: "June", desktop: 21443, mobile: 52140 },
-  { month: "July", desktop: 18611, mobile: 80222 },
-  { month: "August", desktop: 30522, mobile: 32200 },
-  { month: "December", desktop: 23768, mobile: 12033 },
-  { month: "October", desktop: 7343, mobile: 19033 },
-  { month: "November", desktop: 20933, mobile: 51330 },
-  { month: "September", desktop: 21423, mobile: 34140 },
-];
+type ChartItem = {
+  month: string;
+  desktop: number;
+  mobile: number;
+};
 
 export function MyBarChart() {
+  const { user, token } = useAuth();
+  const [chartData, setChartData] = useState<ChartItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/earning-summary/user/${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const apiData = res.data.data;
+
+        const currentYear = new Date().getFullYear();
+
+        // 1️⃣ Tạo sẵn 12 tháng với giá trị 0
+        const fullYearData: ChartItem[] = Array.from(
+          { length: 12 },
+          (_, i) => ({
+            month: `${i + 1}/${currentYear}`,
+            desktop: 0,
+            mobile: 0,
+          })
+        );
+
+        // 2️⃣ Map dữ liệu API vào đúng tháng
+        apiData.forEach((item: any) => {
+          const monthIndex = item.month - 1;
+
+          fullYearData[monthIndex] = {
+            month: `${item.month}/${item.year}`,
+            desktop: item.totalEarningAmount ?? 0,
+            mobile: item.bonusAmount ?? 0,
+          };
+        });
+
+        setChartData(fullYearData);
+      } catch (error) {
+        console.error("Fetch earning summary error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [user?.id, token]);
+
   return (
     <Card className={styles.cardContainer}>
       <CardHeader className={styles.cardHeader}>
         <CardTitle className={styles.cardTitle}>Doanh số theo tháng</CardTitle>
       </CardHeader>
+
       <CardContent className={styles.cardContent}>
-        <ResponsiveContainer width="100%" height={500}>
-          <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={10}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <YAxis />
-            <ChartTooltip/>
-            <Bar dataKey="desktop" fill="var(--chart-2)" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="mobile" fill="var(--chart-3)" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+        {loading ? (
+          <p>Đang tải dữ liệu...</p>
+        ) : (
+          <ResponsiveContainer width="100%" height={500}>
+            <BarChart data={chartData}>
+              <CartesianGrid vertical={false} />
+
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={10}
+              />
+
+              <YAxis />
+
+              <ChartTooltip />
+
+              <Bar
+                dataKey="desktop"
+                name="Tổng thu nhập"
+                fill="var(--chart-2)"
+                radius={[4, 4, 0, 0]}
+              />
+
+              <Bar
+                dataKey="mobile"
+                name="Thưởng"
+                fill="var(--chart-3)"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </CardContent>
     </Card>
   );

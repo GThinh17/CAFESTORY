@@ -26,13 +26,14 @@ public class BlogController {
 
     @GetMapping("")
     public ResponseEntity<CursorPage<BlogResponse>> getNewBlogs(
+            @RequestParam(required = false) String category,
             @RequestParam(required = false) String userId,
             @RequestParam(required = false) String cursor,
             @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
 
         if (userId == null) {
             RestResponse<CursorPage<BlogResponse>> restResponse = new RestResponse<>();
-            CursorPage<BlogResponse> data = blogService.findNewestBlog(cursor, size);
+            CursorPage<BlogResponse> data = blogService.findNewestBlog(category, cursor, size);
             return ResponseEntity.ok().body(data);
         } else {
             RestResponse<CursorPage<BlogResponse>> restResponse = new RestResponse<>();
@@ -105,5 +106,37 @@ public class BlogController {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<BlogResponse> blogPage = blogService.getBlogsForPage(pageId, pageRequest);
         return ResponseEntity.ok(blogPage);
+    }
+
+    @GetMapping("/admin/review-queue")
+    public ResponseEntity<Page<BlogResponse>> getReviewQueue(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<BlogResponse> blogPage = blogService.getPendingReviewBlogs(pageRequest);
+        return ResponseEntity.ok(blogPage);
+    }
+
+    @PostMapping("/{id}/approve")
+    public ResponseEntity<BlogResponse> approveBlog(
+            @PathVariable String id) {
+        BlogResponse blogResponse = blogService.approveBlog(id);
+        return ResponseEntity.ok(blogResponse);
+    }
+
+    @PostMapping("/predict")
+    public ResponseEntity<Object> predictCategories(@RequestBody java.util.Map<String, Object> request) {
+        try {
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            org.springframework.http.ResponseEntity<Object> response = restTemplate.postForEntity(
+                    "http://localhost:8000/api/v1/predict_urls",
+                    request,
+                    Object.class
+            );
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(java.util.Map.of("error", e.getMessage()));
+        }
     }
 }

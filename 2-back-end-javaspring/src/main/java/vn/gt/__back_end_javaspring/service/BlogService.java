@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface BlogService {
      BlogResponse createBlog(BlogCreateDTO blogCreateDTO) ;
-     CursorPage<BlogResponse> findNewestBlog(String cursor, int size);
+     CursorPage<BlogResponse> findNewestBlog(String category, String cursor, int size);
      CursorPage<BlogResponse> findUserBlog(String userId, String cursor, int size);
      void deleteBlog(String id);
      BlogResponse getBlogById(String id);
@@ -17,5 +17,7 @@ public interface BlogService {
      Page<BlogResponse> getBlogsForUser(String userId, PageRequest pageRequest);
      Page<BlogResponse> getBlogsForReviewer(String reviewerId, PageRequest pageRequest);
      Page<BlogResponse> getBlogsForPage(String pageId, PageRequest pageRequest);
+     Page<BlogResponse> getPendingReviewBlogs(PageRequest pageRequest);
+     BlogResponse approveBlog(String id);
 }
 

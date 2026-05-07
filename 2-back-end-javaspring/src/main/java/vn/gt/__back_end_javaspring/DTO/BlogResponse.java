@@ -17,7 +17,9 @@ public class BlogResponse {
 
     private String id;
     private String caption;
-
+    private String category;
+    private Double safeScore;
+    
     private List<String> mediaUrls;
 
     private Visibility visibility;

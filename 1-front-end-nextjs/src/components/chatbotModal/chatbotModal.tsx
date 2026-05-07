@@ -9,8 +9,51 @@ import styles from "./chatbot.module.css";
 import axios from "axios";
 
 type Message = {
-  text: string;
   role: "user" | "ai";
+  text: string;
+};
+
+/* ================================
+   PARSE MARKDOWN IMAGE
+================================ */
+const parseMessage = (text: string) => {
+  const parts: Array<
+    | { type: "text"; content: string }
+    | { type: "image"; src: string; alt: string }
+  > = [];
+
+  const regex = /!\[(.*?)\]\((.*?)\)/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    // text trước ảnh
+    if (match.index > lastIndex) {
+      parts.push({
+        type: "text",
+        content: text.slice(lastIndex, match.index),
+      });
+    }
+
+    // ảnh
+    parts.push({
+      type: "image",
+      src: match[2],
+      alt: match[1] || "image",
+    });
+
+    lastIndex = regex.lastIndex;
+  }
+
+  // text còn lại
+  if (lastIndex < text.length) {
+    parts.push({
+      type: "text",
+      content: text.slice(lastIndex),
+    });
+  }
+
+  return parts;
 };
 
 export default function ChatbotModalWidget() {
@@ -18,7 +61,7 @@ export default function ChatbotModalWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "ai",
-      text: "Xin chào! Tôi là trợ lý AI. Tôi có thể giúp bạn tìm sản phẩm hoặc kiểm tra giá cả.",
+      text: "Xin chào! Tôi là trợ lý AI. Tôi có thể giúp bạn tìm quán cà phê, sản phẩm hoặc giá cả.",
     },
   ]);
 
@@ -31,7 +74,6 @@ export default function ChatbotModalWidget() {
 
     const userMessage = input;
 
-    // push user message
     setMessages((prev) => [...prev, { role: "user", text: userMessage }]);
     setInput("");
     setLoading(true);
@@ -39,23 +81,25 @@ export default function ChatbotModalWidget() {
     try {
       let currentThreadId = threadId;
 
-      // 👉 LẦN ĐẦU: tạo thread
+      // Tạo thread lần đầu
       if (!currentThreadId) {
         const startRes = await axios.get("http://localhost:8082/start");
         currentThreadId = startRes.data.thread_id;
         setThreadId(currentThreadId);
       }
 
-      // 👉 GỬI CHAT
+      // Gửi chat
       const chatRes = await axios.post("http://localhost:8082/chat-mongdb", {
         thread_id: currentThreadId,
         message: userMessage,
       });
 
-      // push AI message
       setMessages((prev) => [
         ...prev,
-        { role: "ai", text: chatRes.data.response },
+        {
+          role: "ai",
+          text: chatRes.data.response, // ⚠️ backend trả "response"
+        },
       ]);
     } catch (err) {
       console.error("Chat error:", err);
@@ -109,7 +153,20 @@ export default function ChatbotModalWidget() {
                     msg.role === "user" ? styles.rightBubble : styles.leftBubble
                   }`}
                 >
-                  {msg.text}
+                  {parseMessage(msg.text).map((part, idx) =>
+                    part.type === "text" ? (
+                      <p key={idx} className={styles.messageText}>
+                        {part.content}
+                      </p>
+                    ) : (
+                      <img
+                        key={idx}
+                        src={part.src}
+                        alt={part.alt}
+                        className={styles.chatImage}
+                      />
+                    )
+                  )}
                 </div>
               </div>
             ))}
@@ -119,7 +176,7 @@ export default function ChatbotModalWidget() {
           <div className={styles.inputArea}>
             <Input
               placeholder={
-                loading ? "AI đang trả lời..." : "Hỏi về sản phẩm, giá..."
+                loading ? "AI đang trả lời..." : "Hỏi về quán cà phê, giá..."
               }
               value={input}
               disabled={loading}

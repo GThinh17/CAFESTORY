@@ -41,6 +41,12 @@ public class Blog { //Check
         @Column(name = "moderation_reason")
         private String moderationReason;
 
+        @Column(name = "category")
+        private String category;
+
+        @Column(name = "safe_score")
+        private Double safeScore;
+
         @Column(name = "allow_comment")
         private Boolean allowComment;
 

@@ -91,19 +91,28 @@
 
 .imgGrid {
   width: 100%;
-  max-width: 100%;
   height: 100%;
   display: grid;
-
-  overflow: hidden;
+  gap: 4px;
+  overflow-y: auto;
 }
 
 .imgGrid.oneImg {
   grid-template-columns: 1fr;
-  grid-template-rows: 2fr;
+  grid-template-rows: 1fr;
 }
 
-.imgGrid.oneImg .imgCon {
+.imgGrid.twoImg {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr; /* Takes full height if only 2 images */
+}
+
+.imgGrid.multiImg {
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 250px;
+}
+
+.imgGrid .imgCon {
   width: 100%;
   height: 100%;
 }

@@ -43,6 +43,12 @@ export function CreateModal({
   const [isPostCf, setIsPostCf] = useState(false);
   const [pageId, setPageId] = useState("");
   const [cfOwnerId, setCfOwnerId] = useState("");
+  
+  const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isPredicting, setIsPredicting] = useState(false);
+  const [aiCategories, setAiCategories] = useState<{name: string, prob: number}[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const { user, token } = useAuth();
   const username = user?.username;
@@ -183,13 +189,26 @@ export function CreateModal({
     return urls;
   };
 
+  const resetForm = () => {
+      setcaption("");
+      setMediaFiles([]);
+      setSelectedCollaborators([]);
+      setUploadedUrls([]);
+      setAiCategories([]);
+      setSelectedCategory("");
+      setIsImg(false);
+  };
+
   // ------------------- CREATE BLOG AND TAG COLLABORATORS -------------------
   const handleSharePost = async () => {
     try {
       setLoadingUp(true);
 
-      let mediaUrls: string[] = [];
-      if (mediaFiles.length > 0) mediaUrls = await uploadImages();
+      let mediaUrls: string[] = uploadedUrls;
+      // Fallback in case upload didn't finish or skipped somehow
+      if (mediaUrls.length === 0 && mediaFiles.length > 0) {
+          mediaUrls = await uploadImages();
+      }
 
       const payload: any = {
         caption,
@@ -198,6 +217,7 @@ export function CreateModal({
         allowComment,
         isPin,
         locationId,
+        category: selectedCategory || null,
       };
 
       if (isPostCf) {
@@ -231,10 +251,7 @@ export function CreateModal({
         })
       );
 
-      setcaption("");
-      setMediaFiles([]);
-      setSelectedCollaborators([]);
-      setIsImg(false);
+      resetForm();
       onClose();
     } catch (err) {
       console.error(err);
@@ -258,10 +275,67 @@ export function CreateModal({
                 type="file"
                 accept="image/*"
                 multiple
-                onChange={(e) => {
+                onChange={async (e) => {
                   const files = Array.from(e.target.files || []);
+                  if (files.length === 0) return;
                   setMediaFiles(files);
                   setIsImg(true);
+                  setIsUploading(true);
+                  
+                  // Upload to Cloudinary right away
+                  const urls: string[] = [];
+                  for (const file of files) {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("upload_preset", "upload");
+
+                    try {
+                      const res = await axios.post("https://api.cloudinary.com/v1_1/dwdjlzl9h/image/upload", formData);
+                      if (res.data.secure_url) urls.push(res.data.secure_url);
+                    } catch (e) {
+                      console.error(e);
+                    }
+                  }
+                  setUploadedUrls(urls);
+                  setIsUploading(false);
+
+                  // Call predict API
+                  if (urls.length > 0) {
+                     setIsPredicting(true);
+                     try {
+                        const predictRes = await axios.post("http://localhost:8080/api/blogs/predict", { urls }, {
+                            headers: { Authorization: `Bearer ${token}` }
+                        });
+                        
+                        const payload = predictRes.data?.data || predictRes.data;
+                        if (payload?.details?.length > 0) {
+                            // Sum probabilities across multiple images to get average
+                            const aggDetails: Record<string, number> = {};
+                            let validCats = 0;
+                            payload.details.forEach((dt: any) => {
+                                if (dt.categories_prob) {
+                                    validCats++;
+                                    Object.keys(dt.categories_prob).forEach(k => {
+                                        aggDetails[k] = (aggDetails[k] || 0) + dt.categories_prob[k];
+                                    });
+                                }
+                            });
+                            
+                            if (validCats > 0) {
+                                const arr = Object.keys(aggDetails).map(k => ({
+                                    name: k, 
+                                    prob: aggDetails[k] / validCats
+                                }));
+                                arr.sort((a,b) => b.prob - a.prob);
+                                setAiCategories(arr);
+                            }
+                        }
+                     } catch(e) {
+                        console.error("AI predict error", e);
+                     } finally {
+                        setIsPredicting(false);
+                     }
+                  }
                 }}
               />
             )}
@@ -327,8 +401,52 @@ export function CreateModal({
               </div>
             )}
 
-            <div className="btnShare">
-              <Button disabled={loadingUp} onClick={handleSharePost}>
+            <div className="optionRow" style={{flexDirection: "column", alignItems: "flex-start"}}>
+              <Label style={{marginBottom: "8px", fontWeight: "bold"}}>Nhãn chủ đề (AI phân tích)</Label>
+              {isUploading ? (
+                 <span className="text-xs text-blue-500 italic">Đang tải ảnh lên...</span>
+              ) : isPredicting ? (
+                 <span className="text-xs text-orange-500 italic">⏳ Đang phân tích AI...</span>
+              ) : mediaFiles.length > 0 ? (
+                 <div className="flex flex-col gap-2 w-full mt-2">
+                   <div 
+                     onClick={() => setSelectedCategory("")}
+                     className={`cursor-pointer px-3 py-2 rounded border text-sm font-medium transition-colors ${selectedCategory === "" ? "bg-amber-100 border-amber-500 text-amber-800" : "bg-white hover:bg-gray-50 border-gray-200"}`}
+                   >
+                     ✨ Tự động (Mặc định: {aiCategories.length > 0 ? (
+                        aiCategories[0].name === 'study_cafe' ? '📚 Học tập' :
+                        aiCategories[0].name === 'pet_cafe' ? '🐶 Thú cưng' :
+                        aiCategories[0].name === 'garden_cafe' ? '🌿 Sân vườn' :
+                        aiCategories[0].name === 'aesthetic_cafe' ? '✨ Chụp ảnh' :
+                        aiCategories[0].name === 'food_cafe' ? '🍕 Ăn uống' : aiCategories[0].name
+                     ) + ` - ${Math.round(aiCategories[0].prob * 100)}%` : 'Đang phân tích...'})
+                   </div>
+                   <div className="flex flex-wrap gap-2">
+                     {aiCategories.map(c => (
+                       <div 
+                         key={c.name}
+                         onClick={() => setSelectedCategory(c.name)}
+                         className={`cursor-pointer px-3 py-1.5 rounded-full border text-xs font-medium transition-colors ${selectedCategory === c.name ? "bg-blue-100 border-blue-500 text-blue-800" : "bg-white hover:bg-gray-100 border-gray-200"}`}
+                       >
+                         {c.name === 'study_cafe' ? '📚 Học tập' : 
+                          c.name === 'pet_cafe' ? '🐶 Thú cưng' : 
+                          c.name === 'garden_cafe' ? '🌿 Sân vườn' : 
+                          c.name === 'aesthetic_cafe' ? '✨ Chụp ảnh' : 
+                          c.name === 'food_cafe' ? '🍕 Ăn uống' : c.name} - ({Math.round(c.prob * 100)}%)
+                       </div>
+                     ))}
+                   </div>
+                 </div>
+              ) : (
+                <span className="text-xs text-gray-400">Tải ảnh lên để xem gợi ý AI</span>
+              )}
+            </div>
+
+            <div className="btnShare flex gap-2">
+              <Button disabled={loadingUp} variant="outline" className="flex-1 w-50" onClick={() => { resetForm(); onClose(); }}>
+                Hủy
+              </Button>
+              <Button disabled={loadingUp} className="flex-1" onClick={handleSharePost}>
                 {loadingUp ? "Đăng tải..." : "Chia sẻ"}
               </Button>
             </div>

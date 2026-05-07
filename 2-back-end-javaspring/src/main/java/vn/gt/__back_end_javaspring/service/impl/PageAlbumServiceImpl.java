@@ -2,7 +2,7 @@ package vn.gt.__back_end_javaspring.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.actuate.web.mappings.MappingsEndpoint;
+
 import org.springframework.data.repository.Repository;
 import org.springframework.stereotype.Service;
 import vn.gt.__back_end_javaspring.DTO.PageAlbumCreateDTO;
@@ -28,7 +28,7 @@ public class PageAlbumServiceImpl implements PageAlbumService {
     private final PageAlbumRepository pageAlbumReposiroty;
     private final PageAlbumMapper pageAlbumMapper;
     private final PageRepository pageRepository;
-    private final MappingsEndpoint mappingsEndpoint;
+
     private final PageImageRepository pageImageRepository;
 
 

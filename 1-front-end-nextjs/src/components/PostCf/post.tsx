@@ -35,6 +35,7 @@ export interface PostProps {
   caption: string;
   time: string;
   postId: string; // 👈 blogId
+  category?: string; // 👈 AI predicted category
   userIdLogin: string; // 👈 id user login
   onOpenPost: () => void;
   onLikeUpdate: (postId: string) => void; // 👈 update UI
@@ -49,6 +50,7 @@ export function Post({
   caption,
   time,
   postId,
+  category,
   userIdLogin,
   onOpenPost,
   onLikeUpdate,
@@ -137,7 +139,8 @@ export function Post({
 
   return (
     <>
-      <div className="post">
+      <div className="post relative">
+       
         {/* Header */}
         <div className="post-header">
           <div className="user-info">
@@ -154,6 +157,15 @@ export function Post({
             <span className="dot">•</span>
             <span className="time">{time}</span>
           </div>
+           {category && category !== 'unknown' && (
+           <div className="tag">
+             {category === 'study_cafe' ? '📚Học tập' : 
+              category === 'pet_cafe' ? '🐶Thú cưng' : 
+              category === 'garden_cafe' ? '🌿Sân vườn' : 
+              category === 'aesthetic_cafe' ? '✨Chụp ảnh' : 
+              category === 'food_cafe' ? '🍕Đồ ăn' : category}
+           </div>
+        )}
           {isMe ? (
             <Trash2 size={15} className="more-icon" />
           ) : (
@@ -163,6 +175,7 @@ export function Post({
               onClick={() => setOpenReport(true)}
             />
           )}
+          
         </div>
 
         {/* Carousel */}

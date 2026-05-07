@@ -73,6 +73,46 @@ public class BlogServiceImpl implements BlogService {
             blog.setMediaList(mediaList);
         }
 
+        // AI Classification Integration
+        if (dto.getMediaUrls() != null && !dto.getMediaUrls().isEmpty()) {
+            try {
+                org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+                java.util.Map<String, Object> request = new java.util.HashMap<>();
+                request.put("urls", dto.getMediaUrls());
+
+                org.springframework.http.ResponseEntity<java.util.Map> response = restTemplate.postForEntity(
+                        "http://localhost:8000/api/v1/predict_urls",
+                        request,
+                        java.util.Map.class
+                );
+
+                if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                    java.util.Map<String, Object> body = response.getBody();
+                    
+                    // Safe parsing
+                    Object scoreObj = body.get("average_safe_score");
+                    Double safeScore = scoreObj instanceof Number ? ((Number) scoreObj).doubleValue() : 0.0;
+                    
+                    String predictedCategory = (String) body.get("predicted_category");
+
+                    blog.setSafeScore(safeScore);
+                    if (dto.getCategory() != null && !dto.getCategory().isEmpty()) {
+                        blog.setCategory(dto.getCategory());
+                    } else {
+                        blog.setCategory(predictedCategory);
+                    }
+
+                    if (safeScore < 0.5) {
+                        blog.setModerationStatus("PENDING_REVIEW");
+                        blog.setModerationReason("Dấu hiệu bài viết sai chủ đề (Tỉ lệ Cafe: " + Math.round(safeScore * 100) + "%)");
+                    } else {
+                        blog.setModerationStatus("APPROVED");
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Warning: AI classification failed - " + e.getMessage());
+            }
+        }
 
         Blog saved = blogRepository.save(blog);
 
@@ -179,15 +219,15 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     @Transactional(readOnly = true)
-    public CursorPage<BlogResponse> findNewestBlog(String cursor, int size) {
+    public CursorPage<BlogResponse> findNewestBlog(String category, String cursor, int size) {
         List<Blog> blogs;
         Pageable pageRequest = PageRequest.of(0, size);
 
         if (cursor == null || cursor.isBlank()) {
-            blogs = blogRepository.firstPage(pageRequest);
+            blogs = blogRepository.firstPage(category, pageRequest);
         } else {
             var p = CursorUtil.decode(cursor); // Pair<createdAt, id>
-            blogs = blogRepository.nextPage(p.getLeft(), p.getRight(), pageRequest);
+            blogs = blogRepository.nextPage(category, p.getLeft(), p.getRight(), pageRequest);
         }
 
         var items = blogMapper.toResponseList(blogs);
@@ -232,5 +272,21 @@ public class BlogServiceImpl implements BlogService {
                 .data(items)
                 .nextCursor(nextCursor)
                 .build();
+    }
+
+    @Override
+    public org.springframework.data.domain.Page<BlogResponse> getPendingReviewBlogs(PageRequest pageRequest) {
+        org.springframework.data.domain.Page<Blog> blogPage = blogRepository.findByModerationStatus("PENDING_REVIEW", pageRequest);
+        return blogPage.map(blogMapper::toResponse);
+    }
+
+    @Override
+    public BlogResponse approveBlog(String id) {
+        Blog blog = blogRepository.findById(id)
+                .orElseThrow(() -> new BlogNotFoundException("Blog not found!"));
+        blog.setModerationStatus("APPROVED");
+        blog.setModerationReason(null);
+        Blog saved = blogRepository.save(blog);
+        return blogMapper.toResponse(saved);
     }
 }

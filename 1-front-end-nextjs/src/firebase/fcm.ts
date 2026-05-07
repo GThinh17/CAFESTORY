@@ -5,7 +5,7 @@ import axios from "axios";
 import { app } from "../api/config/firebase";
 import axiosClient from "@/api/config/axiosClient";
 
-const VAPID_KEY =
+const VAPID_KEY = 
   "BBOLiiSbwHTslCoEGOpbj-KVkF6e_RWg4ZoefUDDvbeu3Sm5g2NMvrDo4S89NfYcGgNahoRkdt3ARiSGypEXgnQ";
 
 export const registerFcm = async (userId: string) => {

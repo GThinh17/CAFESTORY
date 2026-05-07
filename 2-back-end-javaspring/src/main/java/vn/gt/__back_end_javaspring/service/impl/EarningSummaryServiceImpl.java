@@ -126,10 +126,8 @@ public class EarningSummaryServiceImpl implements EarningSummaryService {
     @Transactional
     public void generateMonthlySummary(String reviewerId, Integer year, Integer month) {
 
-
         if (earningSummaryRepository.existsByReviewer_IdAndYearAndMonth(
                 reviewerId, year, month)) {
-
             return;
         }
 
@@ -139,6 +137,8 @@ public class EarningSummaryServiceImpl implements EarningSummaryService {
             LocalDateTime start = ym.atDay(1).atStartOfDay();
             LocalDateTime end = start.plusMonths(1);
 
+            System.out.println("Log ra start datte: "+ start.toString());
+            System.out.println("Log ra end datte: "+ end.toString());
             Reviewer reviewer = reviewerRepository.findById(reviewerId)
                     .orElseThrow(() -> new ReviewerNotFound("Reviewer not found"));
 
@@ -147,20 +147,23 @@ public class EarningSummaryServiceImpl implements EarningSummaryService {
             List<EarningEvent> events =
                     earningEventRepository.findMonthlyEvents(reviewerId, start, end);
 
+            System.out.println("EarningEvents size: " + events.size());
             Long likes = events.stream().filter(e -> e.getSourceType() == SourceType.LIKE).count();
             Long comments = events.stream().filter(e -> e.getSourceType() == SourceType.COMMENT).count();
             Long shares = events.stream().filter(e -> e.getSourceType() == SourceType.SHARE).count();
 
-
-
+            System.out.println("Likes: " + likes);
+            System.out.println("Comments: " + comments);
+            System.out.println("Shares: " + shares);
+            System.out.println("Earnings cua reviewer: " + earningSummaryRepository.count());
             long followers = user.getFollowerCount().longValue();
-
+            System.out.println("Follower :" + followers);
 
             BigDecimal totalAmount = events.stream()
                     .map(EarningEvent::getAmount)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-
+            System.out.println("Total: " + totalAmount);
             EarningSummaryCreateDTO dto = new EarningSummaryCreateDTO();
             dto.setReviewerId(reviewerId);
             dto.setYear(year);
@@ -174,16 +177,16 @@ public class EarningSummaryServiceImpl implements EarningSummaryService {
             EarningSummaryResponse saved = createSummary(dto);
 
 
-
             updateStatusSummary(saved.getId(), EarningSummaryStatus.CLOSED.name());
 
             Wallet wallet = walletRepository.findWalletByUser_Id(user.getId());
             if (wallet == null) {
                 throw new RuntimeException("Wallet not found");
             }
-            if(totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
-                throw new  RuntimeException("Total amount must be greater than 0");
-            }
+
+//            if(totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
+//                throw new  RuntimeException("Total amount must be greater than 0");
+//            }
 
             WalletTransactionCreateDTO tx = new WalletTransactionCreateDTO();
             tx.setWalletId(wallet.getId());

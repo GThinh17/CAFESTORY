@@ -17,14 +17,14 @@ public class EarningSummaryScheduler {
     private final ReviewerService reviewerService;
 
 //@Scheduled(fixedRate = 60000) // 2 phút
-    @Scheduled(cron = "0 59 23 L * ?")
+//    @Scheduled(cron = "0 59 23 L * ?")
     public void generateMonthlySummary() {
     System.out.println("Job chạy lúc: " + LocalDateTime.now());
 
         YearMonth lastMonth = YearMonth.now().minusMonths(1);
         int year = lastMonth.getYear();
-        int month = lastMonth.getMonthValue();
-
+//        int month = lastMonth.getMonthValue();
+        int month = 12;
         List<String> allReviewerIds = reviewerService.getAllReviewerIds();
         for(String reviewerId : allReviewerIds) {
             earningSummaryService.generateMonthlySummary(reviewerId, year, month);

@@ -41,9 +41,7 @@ public class WalletTransasctionServiceImpl implements WalletTransactionService {
 
         BigDecimal amount = dto.getAmount();
 
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("AMount must be greater than 0");
-        }
+
         TransactionType transactionType = dto.getTransactionType();
 
         BigDecimal balanceBefore = wallet.getBalance();
